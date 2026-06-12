@@ -8,10 +8,6 @@ interface AuthLayoutProps {
   subtitle: string;
 }
 
-/**
- * Split-screen auth layout (reference: Merka Coffee login design):
- * left dark photo with a quote, right centered form.
- */
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen bg-white">
@@ -55,6 +51,20 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

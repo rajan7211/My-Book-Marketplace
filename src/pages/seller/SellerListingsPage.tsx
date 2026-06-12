@@ -1,0 +1,381 @@
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { FiPlus, FiX } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { SellerLayout } from "./SellerLayout";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FormField } from "@/components/ui/form-field";
+import { sellerApi } from "@/api/seller.api";
+import { useAuthStore } from "@/store/auth.store";
+import { formatPrice, cn } from "@/lib/utils";
+
+/* ---------- validation ---------- */
+
+const listingSchema = Yup.object({
+  bookId: Yup.number().min(1, "Please select a book").required("Please select a book"),
+  price: Yup.number()
+    .typeError("Price must be a number")
+    .positive("Price must be greater than zero")
+    .required("Price is required"),
+  mrp: Yup.number()
+    .typeError("MRP must be a number")
+    .positive("MRP must be greater than zero")
+    .min(Yup.ref("price"), "MRP cannot be lower than selling price")
+    .required("MRP is required"),
+  stock: Yup.number()
+    .typeError("Stock must be a number")
+    .integer("Stock must be a whole number")
+    .min(0, "Stock cannot be negative") // Rule 5
+    .required("Stock is required"),
+});
+
+const newBookSchema = Yup.object({
+  isbn: Yup.string()
+    .matches(/^\d{13}$/, "ISBN must be exactly 13 digits")
+    .required("ISBN is required"),
+  title: Yup.string().trim().min(2, "Title is too short").required("Title is required"),
+  author: Yup.string().trim().min(2, "Author is too short").required("Author is required"),
+  publisher: Yup.string().trim().required("Publisher is required"),
+  category: Yup.string().required("Category is required"),
+  description: Yup.string()
+    .trim()
+    .min(20, "Description must be at least 20 characters")
+    .required("Description is required"),
+});
+
+const CATEGORIES = ["Fictions", "Biography", "History", "Graphic Design", "Self Help"];
+
+/* ---------- page ---------- */
+
+export default function SellerListingsPage() {
+  const { user } = useAuthStore();
+  const sellerId = user!.sellerId!;
+  const queryClient = useQueryClient();
+
+  const [modal, setModal] = useState<"closed" | "listing" | "book">("closed");
+
+  const { data: listings, isLoading } = useQuery({
+    queryKey: ["seller", "listings", sellerId],
+    queryFn: () => sellerApi.getMyListings(sellerId),
+  });
+
+  const { data: approvedBooks } = useQuery({
+    queryKey: ["seller", "approvedBooks"],
+    queryFn: sellerApi.getApprovedBooks,
+  });
+
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ["seller"] });
+    queryClient.invalidateQueries({ queryKey: ["books"] });
+  };
+
+  const createListing = useMutation({
+    mutationFn: (v: { bookId: number; price: number; mrp: number; stock: number }) =>
+      sellerApi.createListing({ sellerId, ...v }),
+    onSuccess: () => {
+      invalidate();
+      toast.success("Listing created and live on the marketplace!");
+      setModal("closed");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const createBook = useMutation({
+    mutationFn: sellerApi.createBook,
+    onSuccess: (book) => {
+      invalidate();
+      toast.success(
+        `"${book.title}" submitted. Status: Pending Approval — you can create a listing after the admin approves it.`
+      );
+      setModal("closed");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  // books this seller has NOT listed yet (avoid duplicate listings)
+  const listedBookIds = new Set(listings?.map((l) => l.bookId));
+  const availableBooks = approvedBooks?.filter((b) => !listedBookIds.has(b.id)) ?? [];
+
+  return (
+    <SellerLayout>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold">My Listings</h2>
+          <p className="text-sm text-gray-500">
+            Your offers on marketplace books — price & stock are yours alone.
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <Button variant="dark" onClick={() => setModal("book")}>
+            <FiPlus size={15} /> Submit New Book
+          </Button>
+          <Button onClick={() => setModal("listing")}>
+            <FiPlus size={15} /> Create Listing
+          </Button>
+        </div>
+      </div>
+
+      {/* Listing table */}
+      <Card>
+        <CardContent className="p-0">
+          {isLoading ? (
+            <div className="space-y-3 p-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-14" />
+              ))}
+            </div>
+          ) : !listings?.length ? (
+            <p className="py-16 text-center text-sm text-gray-500">
+              No listings yet. Create your first listing!
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+                  <th className="px-6 py-4">Book</th>
+                  <th className="px-4 py-4">ISBN</th>
+                  <th className="px-4 py-4">Price</th>
+                  <th className="px-4 py-4">MRP</th>
+                  <th className="px-4 py-4">Stock</th>
+                  <th className="px-6 py-4">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {listings.map((l) => (
+                  <tr key={l.id} className="hover:bg-gray-50/50">
+                    <td className="px-6 py-3">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={l.book?.coverImage}
+                          alt=""
+                          className="h-12 w-9 rounded object-cover"
+                        />
+                        <div>
+                          <p className="font-semibold">{l.book?.title}</p>
+                          <p className="text-xs text-gray-500">{l.book?.author}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs">{l.book?.isbn}</td>
+                    <td className="px-4 py-3 font-semibold">{formatPrice(l.price)}</td>
+                    <td className="px-4 py-3 text-gray-400 line-through">
+                      {formatPrice(l.mrp)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge
+                        variant={
+                          l.stock === 0
+                            ? "destructive"
+                            : l.stock <= 5
+                              ? "warning"
+                              : "success"
+                        }
+                      >
+                        {l.stock}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-3">
+                      <Badge variant={l.status === "ACTIVE" ? "success" : "outline"}>
+                        {l.status.toLowerCase()}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ---------- Create Listing modal (Scenario A) ---------- */}
+      {modal === "listing" && (
+        <Modal title="Create Listing" onClose={() => setModal("closed")}>
+          <p className="mb-4 text-xs text-gray-500">
+            Select an approved book from the catalog and set your own price &
+            stock. Can't find the book?{" "}
+            <button
+              className="font-semibold text-brand-yellow-dark underline"
+              onClick={() => setModal("book")}
+            >
+              Submit a new book
+            </button>
+          </p>
+          <Formik
+            initialValues={{ bookId: 0, price: "", mrp: "", stock: "" }}
+            validationSchema={listingSchema}
+            onSubmit={(v) =>
+              createListing.mutate({
+                bookId: Number(v.bookId),
+                price: Number(v.price),
+                mrp: Number(v.mrp),
+                stock: Number(v.stock),
+              })
+            }
+          >
+            {({ values, setFieldValue, errors, touched }) => (
+              <Form className="space-y-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">Book</label>
+                  <select
+                    value={values.bookId}
+                    onChange={(e) => setFieldValue("bookId", Number(e.target.value))}
+                    className={cn(
+                      "h-11 w-full rounded-lg border bg-white px-3 text-sm focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/50",
+                      touched.bookId && errors.bookId ? "border-red-400" : "border-gray-200"
+                    )}
+                  >
+                    <option value={0}>— Select an approved book —</option>
+                    {availableBooks.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.title} — {b.author} ({b.isbn})
+                      </option>
+                    ))}
+                  </select>
+                  {touched.bookId && errors.bookId && (
+                    <p className="mt-1 text-xs font-medium text-red-500">{errors.bookId}</p>
+                  )}
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <FormField name="price" label="Price (₹)" placeholder="399" />
+                  <FormField name="mrp" label="MRP (₹)" placeholder="499" />
+                  <FormField name="stock" label="Stock" placeholder="50" />
+                </div>
+                <Button
+                  type="submit"
+                  className="h-11 w-full font-bold"
+                  disabled={createListing.isPending}
+                >
+                  {createListing.isPending ? "Creating..." : "Create Listing"}
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Modal>
+      )}
+
+      {/* ---------- Submit New Book modal (Scenario B) ---------- */}
+      {modal === "book" && (
+        <Modal title="Submit New Book" onClose={() => setModal("closed")}>
+          <p className="mb-4 text-xs text-gray-500">
+            The book will be <b>Pending Approval</b> until the admin reviews it.
+            Duplicate ISBNs are rejected automatically.
+          </p>
+          <Formik
+            initialValues={{
+              isbn: "",
+              title: "",
+              author: "",
+              publisher: "",
+              category: "",
+              description: "",
+            }}
+            validationSchema={newBookSchema}
+            onSubmit={(v) => createBook.mutate(v)}
+          >
+            {({ values, setFieldValue, errors, touched, handleChange, handleBlur }) => (
+              <Form className="space-y-4">
+                <FormField name="isbn" label="ISBN (13 digits)" placeholder="9781847941831" />
+                <FormField name="title" label="Title" placeholder="Book title" />
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField name="author" label="Author" placeholder="Author name" />
+                  <FormField name="publisher" label="Publisher" placeholder="Publisher" />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">Category</label>
+                  <select
+                    value={values.category}
+                    onChange={(e) => setFieldValue("category", e.target.value)}
+                    className={cn(
+                      "h-11 w-full rounded-lg border bg-white px-3 text-sm focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/50",
+                      touched.category && errors.category ? "border-red-400" : "border-gray-200"
+                    )}
+                  >
+                    <option value="">— Select category —</option>
+                    {CATEGORIES.map((c) => (
+                      <option key={c}>{c}</option>
+                    ))}
+                  </select>
+                  {touched.category && errors.category && (
+                    <p className="mt-1 text-xs font-medium text-red-500">{errors.category}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">Description</label>
+                  <textarea
+                    name="description"
+                    rows={3}
+                    value={values.description}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Short description of the book (min 20 characters)"
+                    className={cn(
+                      "w-full rounded-lg border px-3.5 py-2.5 text-sm focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/50",
+                      touched.description && errors.description
+                        ? "border-red-400"
+                        : "border-gray-200"
+                    )}
+                  />
+                  {touched.description && errors.description && (
+                    <p className="mt-1 text-xs font-medium text-red-500">
+                      {errors.description}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  type="submit"
+                  className="h-11 w-full font-bold"
+                  disabled={createBook.isPending}
+                >
+                  {createBook.isPending ? "Submitting..." : "Submit for Approval"}
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Modal>
+      )}
+    </SellerLayout>
+  );
+}
+
+/* ---------- shared modal shell ---------- */
+
+function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-5 flex items-center justify-between">
+          <h3 className="text-lg font-bold">{title}</h3>
+          <button
+            onClick={onClose}
+            className="grid h-8 w-8 place-items-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            aria-label="Close"
+          >
+            <FiX size={17} />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+

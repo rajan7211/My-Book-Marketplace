@@ -1,27 +1,99 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { FiTool } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { FiUsers, FiUser, FiBookOpen, FiPackage } from "react-icons/fi";
+import { AdminLayout } from "./AdminLayout";
+import { Card, CardContent } from "@/components/ui/card";
+import { adminApi } from "@/api/admin.api";
 
-/** Placeholder — full admin portal (seller/book approval, stats) is the next build phase. */
 export default function AdminDashboardPage() {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["admin", "stats"],
+    queryFn: adminApi.getStats,
+  });
+
+  // PDF dashboard requirement: Total Sellers / Customers / Books / Orders
+  const cards = [
+    {
+      label: "Total Sellers",
+      value: stats?.totalSellers,
+      icon: FiUsers,
+      color: "bg-blue-100 text-blue-600",
+    },
+    {
+      label: "Total Customers",
+      value: stats?.totalCustomers,
+      icon: FiUser,
+      color: "bg-purple-100 text-purple-600",
+    },
+    {
+      label: "Total Books",
+      value: stats?.totalBooks,
+      icon: FiBookOpen,
+      color: "bg-amber-100 text-amber-600",
+    },
+    {
+      label: "Total Orders",
+      value: stats?.totalOrders,
+      icon: FiPackage,
+      color: "bg-green-100 text-green-600",
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen flex-col bg-brand-gray">
-      <Navbar />
-      <main className="grid flex-1 place-items-center px-4 py-20">
-        <div className="max-w-md rounded-xl bg-white p-10 text-center shadow-sm">
-          <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-brand-yellow/20 text-brand-yellow-dark">
-            <FiTool size={28} />
-          </span>
-          <h1 className="mt-5 text-xl font-bold">Admin Dashboard</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Seller Approval, Book Approval and Marketplace Statistics are
-            coming in the next build phase.
-          </p>
-        </div>
-      </main>
-      <Footer />
-    </div>
+    <AdminLayout>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map(({ label, value, icon: Icon, color }) => (
+          <Card key={label}>
+            <CardContent className="flex items-center gap-4 p-5">
+              <span className={`grid h-12 w-12 place-items-center rounded-xl ${color}`}>
+                <Icon size={20} />
+              </span>
+              <div>
+                <p className="text-xs text-gray-500">{label}</p>
+                <p className="text-2xl font-bold">{isLoading ? "…" : value}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Pending approvals call-to-action */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <Link to="/admin/sellers">
+          <Card className="transition hover:shadow-md">
+            <CardContent className="flex items-center justify-between p-6">
+              <div>
+                <h3 className="font-bold">Pending Seller Approvals</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Review and approve new seller registrations.
+                </p>
+              </div>
+              <span className="grid h-12 w-12 place-items-center rounded-full bg-amber-100 text-lg font-bold text-amber-600">
+                {stats?.pendingSellers ?? 0}
+              </span>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link to="/admin/books">
+          <Card className="transition hover:shadow-md">
+            <CardContent className="flex items-center justify-between p-6">
+              <div>
+                <h3 className="font-bold">Pending Book Approvals</h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Review books submitted by sellers before they go live.
+                </p>
+              </div>
+              <span className="grid h-12 w-12 place-items-center rounded-full bg-amber-100 text-lg font-bold text-amber-600">
+                {stats?.pendingBooks ?? 0}
+              </span>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
+    </AdminLayout>
   );
 }
+
+
 
 

@@ -55,6 +55,13 @@
       "roleId": 1,
       "createdAt": "2026-06-12T06:10:39.123Z",
       "id": 6
+    },
+    {
+      "email": "ronakthakur123@gmail.com",
+      "password": "Ronak@123",
+      "roleId": 2,
+      "createdAt": "2026-06-12T07:19:16.707Z",
+      "id": 7
     }
   ],
   "customers": [
@@ -103,6 +110,16 @@
       "mobile": "9898989898",
       "status": "PENDING_APPROVAL",
       "createdAt": "2026-03-01T10:00:00.000Z"
+    },
+    {
+      "userId": 7,
+      "businessName": "Book merket shop",
+      "contactPerson": "Ronak Thakur",
+      "email": "ronakthakur123@gmail.com",
+      "mobile": "8580432871",
+      "status": "APPROVED",
+      "createdAt": "2026-06-12T07:19:16.719Z",
+      "id": 4
     }
   ],
   "books": [
@@ -455,6 +472,19 @@
       "status": "PENDING_APPROVAL",
       "tags": [],
       "createdAt": "2026-03-02T11:00:00.000Z"
+    },
+    {
+      "isbn": "9783452319823",
+      "title": "The Psychology of Money ",
+      "author": "Morgan Housel",
+      "publisher": "Harriman House",
+      "category": "Self Help",
+      "description": "A personal finance book that argues doing well with money has less to do with intelligence and everything to do with behavior",
+      "coverImage": "/covers/book.jpg",
+      "status": "APPROVED",
+      "tags": [],
+      "createdAt": "2026-06-12T07:49:05.968Z",
+      "id": 24
     }
   ],
   "listings": [
@@ -474,7 +504,7 @@
       "sellerId": 2,
       "price": 380,
       "mrp": 499,
-      "stock": 19,
+      "stock": 18,
       "status": "ACTIVE",
       "createdAt": "2026-02-20T10:05:00.000Z"
     },
@@ -707,6 +737,36 @@
       "stock": 7,
       "status": "ACTIVE",
       "createdAt": "2026-02-24T10:10:00.000Z"
+    },
+    {
+      "sellerId": 4,
+      "bookId": 24,
+      "price": 499,
+      "mrp": 599,
+      "stock": 19,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-12T07:55:49.185Z",
+      "id": 26
+    },
+    {
+      "sellerId": 4,
+      "bookId": 17,
+      "price": 499,
+      "mrp": 599,
+      "stock": 20,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-12T08:28:11.684Z",
+      "id": 27
+    },
+    {
+      "sellerId": 4,
+      "bookId": 13,
+      "price": 999,
+      "mrp": 1100,
+      "stock": 8,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-12T08:32:31.113Z",
+      "id": 28
     }
   ],
   "carts": [
@@ -742,6 +802,46 @@
       "status": "CREATED",
       "createdAt": "2026-06-12T06:21:28.417Z",
       "id": 2
+    },
+    {
+      "customerId": 2,
+      "sellerId": 2,
+      "sellerName": "Readers Paradise",
+      "shippingAddress": "qWAREGDRH,HJK.L",
+      "totalAmount": 380,
+      "status": "CREATED",
+      "createdAt": "2026-06-12T07:18:11.887Z",
+      "id": 3
+    },
+    {
+      "customerId": 2,
+      "sellerId": 4,
+      "sellerName": "Book merket shop",
+      "shippingAddress": "HomeLand Mohali",
+      "totalAmount": 499,
+      "status": "ACCEPTED",
+      "createdAt": "2026-06-12T08:01:42.794Z",
+      "id": 4
+    },
+    {
+      "customerId": 2,
+      "sellerId": 4,
+      "sellerName": "Book merket shop",
+      "shippingAddress": "wraetsrydtufiyguihj",
+      "totalAmount": 999,
+      "status": "CREATED",
+      "createdAt": "2026-06-12T08:36:07.961Z",
+      "id": 5
+    },
+    {
+      "customerId": 2,
+      "sellerId": 4,
+      "sellerName": "Book merket shop",
+      "shippingAddress": "1234562345678",
+      "totalAmount": 999,
+      "status": "CREATED",
+      "createdAt": "2026-06-12T08:37:02.471Z",
+      "id": 6
     }
   ],
   "orderItems": [
@@ -764,6 +864,46 @@
       "price": 380,
       "quantity": 1,
       "id": 2
+    },
+    {
+      "orderId": 3,
+      "listingId": 2,
+      "bookId": 1,
+      "title": "Atomic Habits",
+      "coverImage": "/covers/atomic-habits.jpg",
+      "price": 380,
+      "quantity": 1,
+      "id": 3
+    },
+    {
+      "orderId": 4,
+      "listingId": 26,
+      "bookId": 24,
+      "title": "The Psychology of Money ",
+      "coverImage": "/covers/MoneyBook.jpg",
+      "price": 499,
+      "quantity": 1,
+      "id": 4
+    },
+    {
+      "orderId": 5,
+      "listingId": 28,
+      "bookId": 13,
+      "title": "How to Invest",
+      "coverImage": "/covers/how-to-invest.svg",
+      "price": 999,
+      "quantity": 1,
+      "id": 5
+    },
+    {
+      "orderId": 6,
+      "listingId": 28,
+      "bookId": 13,
+      "title": "How to Invest",
+      "coverImage": "/covers/how-to-invest.svg",
+      "price": 999,
+      "quantity": 1,
+      "id": 6
     }
   ]
 }
