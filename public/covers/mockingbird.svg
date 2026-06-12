@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+<rect width="400" height="600" fill="#274237"/>
+<path d="M 160 380 q 40 -50 90 -20 q -30 10 -35 35 q -25 -15 -55 -15 Z" fill="#e2b73c"/><path d="M 250 360 q 30 -25 55 -15 l -30 30 Z" fill="#e2b73c" opacity="0.8"/>
+<rect x="14" y="14" width="372" height="572" fill="none" stroke="#e2b73c" stroke-width="2" opacity="0.5"/>
+<text x="200" y="110" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="#f2ead7" text-anchor="middle">TO KILL A</text>
+<text x="200" y="158" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="#f2ead7" text-anchor="middle">MOCKINGBIRD</text>
+
+<text x="200" y="520" font-family="Verdana, sans-serif" font-size="18" fill="#e2b73c" text-anchor="middle">Harper Lee</text>
+</svg>

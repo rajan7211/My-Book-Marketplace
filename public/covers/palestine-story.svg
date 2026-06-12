@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+<rect width="400" height="600" fill="#efe9dc"/>
+<rect x="120" y="330" width="160" height="110" fill="none" stroke="#b3552e" stroke-width="4"/><path d="M 120 440 q 80 -60 160 0 Z" fill="#b3552e" opacity="0.4"/>
+<rect x="14" y="14" width="372" height="572" fill="none" stroke="#b3552e" stroke-width="2" opacity="0.5"/>
+<text x="200" y="110" font-family="Georgia, serif" font-size="40" font-weight="bold" fill="#1f1f1f" text-anchor="middle">PALESTINE</text>
+<text x="200" y="158" font-family="Georgia, serif" font-size="40" font-weight="bold" fill="#1f1f1f" text-anchor="middle">THE STORY</text>
+
+<text x="200" y="520" font-family="Verdana, sans-serif" font-size="18" fill="#b3552e" text-anchor="middle">Rashid Khalidi</text>
+</svg>

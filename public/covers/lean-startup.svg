@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+<rect width="400" height="600" fill="#ffffff"/>
+<circle cx="200" cy="380" r="70" fill="none" stroke="#2f80c2" stroke-width="16" stroke-dasharray="240 60"/><polygon points="265,330 295,345 260,365" fill="#2f80c2"/>
+<rect x="14" y="14" width="372" height="572" fill="none" stroke="#2f80c2" stroke-width="2" opacity="0.5"/>
+<text x="200" y="110" font-family="Georgia, serif" font-size="40" font-weight="bold" fill="#10355c" text-anchor="middle">THE LEAN</text>
+<text x="200" y="158" font-family="Georgia, serif" font-size="40" font-weight="bold" fill="#10355c" text-anchor="middle">STARTUP</text>
+
+<text x="200" y="520" font-family="Verdana, sans-serif" font-size="18" fill="#2f80c2" text-anchor="middle">Eric Ries</text>
+</svg>

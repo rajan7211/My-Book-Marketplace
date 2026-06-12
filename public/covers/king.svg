@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+<rect width="400" height="600" fill="#111111"/>
+<rect x="60" y="300" width="280" height="150" fill="#f4d03f" opacity="0.12"/><circle cx="200" cy="375" r="70" fill="#3c3c3c"/><circle cx="200" cy="350" r="32" fill="#8d6e63"/><path d="M 145 420 q 55 -50 110 0 l 0 25 l -110 0 Z" fill="#37474f"/>
+<rect x="14" y="14" width="372" height="572" fill="none" stroke="#f4d03f" stroke-width="2" opacity="0.5"/>
+<text x="200" y="110" font-family="Georgia, serif" font-size="40" font-weight="bold" fill="#f4d03f" text-anchor="middle">KING</text>
+<text x="200" y="158" font-family="Georgia, serif" font-size="40" font-weight="bold" fill="#f4d03f" text-anchor="middle">A LIFE</text>
+
+<text x="200" y="520" font-family="Verdana, sans-serif" font-size="18" fill="#f4d03f" text-anchor="middle">Jonathan Eig</text>
+</svg>

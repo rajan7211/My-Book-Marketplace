@@ -1,0 +1,111 @@
+import { Link, useNavigate } from "react-router-dom";
+import { FiShoppingCart } from "react-icons/fi";
+import type { BookWithListings } from "@/types";
+import { formatPrice } from "@/lib/utils";
+import { toast } from "react-toastify";
+import { useCartStore } from "@/store/cart.store";
+import { useAuthStore } from "@/store/auth.store";
+
+interface BookCardProps {
+  book: BookWithListings;
+  compact?: boolean;
+}
+
+/**
+ * Quick "Add to cart" picks the cheapest in-stock listing (best offer).
+ * Full seller comparison happens on the Book Details page.
+ */
+export function BookCard({ book, compact = false }: BookCardProps) {
+  const navigate = useNavigate();
+  const addItem = useCartStore((s) => s.addItem);
+  const { user, isAuthenticated } = useAuthStore();
+
+  const inStock = book.listings.filter((l) => l.stock > 0);
+  const best = inStock.length
+    ? inStock.reduce((a, b) => (b.price < a.price ? b : a))
+    : undefined;
+
+  const handleAdd = () => {
+    if (!isAuthenticated) {
+      toast.warn("Please login to add items to cart");
+      navigate("/login");
+      return;
+    }
+    if (user?.role !== "CUSTOMER") {
+      toast.warn("Only customers can purchase books");
+      return;
+    }
+    if (!best) {
+      toast.error("This book is currently out of stock");
+      return;
+    }
+    const res = addItem({
+      listingId: best.id,
+      bookId: book.id,
+      sellerId: best.sellerId,
+      sellerName: best.seller?.businessName ?? "Seller",
+      title: book.title,
+      author: book.author,
+      coverImage: book.coverImage,
+      price: best.price,
+      quantity: 1,
+      stock: best.stock,
+    });
+    res.ok ? toast.success(`"${book.title}" added to cart`) : toast.error(res.message);
+  };
+
+  return (
+    <div className="group flex w-full flex-col">
+      <Link
+        to={`/books/${book.id}`}
+        className="relative block overflow-hidden rounded-lg bg-gray-100 shadow-sm"
+      >
+        <img
+          src={book.coverImage}
+          alt={book.title}
+          className="aspect-[2/3] w-full object-cover transition duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+        {!best && (
+          <span className="absolute left-2 top-2 rounded bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+            Out of stock
+          </span>
+        )}
+      </Link>
+
+      <div className={compact ? "pt-2.5" : "pt-3"}>
+        <Link to={`/books/${book.id}`}>
+          <h3 className="truncate text-[13px] font-semibold text-brand-dark hover:text-brand-yellow-dark">
+            {book.title}
+          </h3>
+        </Link>
+        <p className="truncate text-[11px] text-gray-500">{book.author}</p>
+
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[13px] font-bold text-brand-dark">
+              {best ? formatPrice(best.price) : "—"}
+            </span>
+            {best && book.maxMrp && book.maxMrp > best.price && (
+              <span className="text-[10px] text-gray-400 line-through">
+                {formatPrice(book.maxMrp)}
+              </span>
+            )}
+          </div>
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-1 rounded border border-brand-dark px-2 py-1 text-[10px] font-semibold text-brand-dark transition hover:bg-brand-dark hover:text-white"
+          >
+            <FiShoppingCart size={11} />
+            Add to cart
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+

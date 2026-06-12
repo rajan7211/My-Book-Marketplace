@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 6%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 6%;
+    --primary: 42 91% 53%;
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 60 5% 94%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 42 91% 53%;
+    --accent-foreground: 0 0% 6%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89%;
+    --input: 0 0% 84%;
+    --ring: 42 91% 53%;
+    --radius: 0.5rem;
+  }
+
+  body {
+    @apply bg-brand-gray text-brand-dark font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .section-title-underline {
+    @apply relative inline-block pb-2;
+  }
+  .section-title-underline::after {
+    content: "";
+    @apply absolute left-0 bottom-0 h-[3px] w-16 bg-brand-yellow rounded-full;
+  }
+}
+
+
+

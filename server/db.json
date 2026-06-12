@@ -1,0 +1,769 @@
+{
+  "roles": [
+    {
+      "id": 1,
+      "name": "CUSTOMER"
+    },
+    {
+      "id": 2,
+      "name": "SELLER"
+    },
+    {
+      "id": 3,
+      "name": "ADMIN"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@worldknowledge.com",
+      "password": "Admin@123",
+      "roleId": 3,
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "email": "john.doe@mail.com",
+      "password": "John@123",
+      "roleId": 1,
+      "createdAt": "2026-02-10T10:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "email": "seller.a@bookhub.com",
+      "password": "Seller@123",
+      "roleId": 2,
+      "createdAt": "2026-02-12T10:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "email": "seller.b@readers.com",
+      "password": "Seller@123",
+      "roleId": 2,
+      "createdAt": "2026-02-15T10:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "email": "seller.c@pagestore.com",
+      "password": "Seller@123",
+      "roleId": 2,
+      "createdAt": "2026-03-01T10:00:00.000Z"
+    },
+    {
+      "email": "ronakthakur434@gmail.com",
+      "password": "Ronak@123",
+      "roleId": 1,
+      "createdAt": "2026-06-12T06:10:39.123Z",
+      "id": 6
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "userId": 2,
+      "firstName": "John",
+      "lastName": "Doe",
+      "createdAt": "2026-02-10T10:00:00.000Z"
+    },
+    {
+      "userId": 6,
+      "firstName": "Ronak",
+      "lastName": "Thakur",
+      "createdAt": "2026-06-12T06:10:39.146Z",
+      "id": 2
+    }
+  ],
+  "sellers": [
+    {
+      "id": 1,
+      "userId": 3,
+      "businessName": "BookHub Traders",
+      "contactPerson": "Amit Sharma",
+      "email": "seller.a@bookhub.com",
+      "mobile": "9876543210",
+      "status": "APPROVED",
+      "createdAt": "2026-02-12T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "userId": 4,
+      "businessName": "Readers Paradise",
+      "contactPerson": "Priya Verma",
+      "email": "seller.b@readers.com",
+      "mobile": "9812345678",
+      "status": "APPROVED",
+      "createdAt": "2026-02-15T10:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "userId": 5,
+      "businessName": "Page Store",
+      "contactPerson": "Rahul Nair",
+      "email": "seller.c@pagestore.com",
+      "mobile": "9898989898",
+      "status": "PENDING_APPROVAL",
+      "createdAt": "2026-03-01T10:00:00.000Z"
+    }
+  ],
+  "books": [
+    {
+      "id": 1,
+      "isbn": "9781847941831",
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "publisher": "Random House",
+      "description": "An easy and proven way to build good habits and break bad ones. Tiny changes, remarkable results.",
+      "category": "Self Help",
+      "coverImage": "/covers/atomic-habits.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller",
+        "trending"
+      ],
+      "createdAt": "2026-02-12T11:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "isbn": "9780747581086",
+      "title": "Harry Potter and the Half-Blood Prince",
+      "author": "J. K. Rowling",
+      "publisher": "Bloomsbury",
+      "description": "The sixth book in the Harry Potter series, where Voldemort's past is unveiled through memories.",
+      "category": "Fictions",
+      "coverImage": "/covers/half-blood-prince.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "trending"
+      ],
+      "createdAt": "2026-02-12T11:05:00.000Z"
+    },
+    {
+      "id": 3,
+      "isbn": "9786053435693",
+      "title": "Viking",
+      "author": "Robert Leighton",
+      "publisher": "Pegasus",
+      "description": "An epic tale of warriors, conquest and survival in the brutal Viking age.",
+      "category": "History",
+      "coverImage": "/covers/viking.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "trending"
+      ],
+      "createdAt": "2026-02-12T11:10:00.000Z"
+    },
+    {
+      "id": 4,
+      "isbn": "9780349436937",
+      "title": "Pride and Protest",
+      "author": "Nikki Payne",
+      "publisher": "Berkley",
+      "description": "A woman goes head-to-head with the CEO of the company gentrifying her neighborhood in this fresh retelling.",
+      "category": "Fictions",
+      "coverImage": "/covers/pride-protest.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release",
+        "created-for-you"
+      ],
+      "createdAt": "2026-02-13T11:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "isbn": "9780446696982",
+      "title": "Forget a Mentor, Find a Sponsor",
+      "author": "Sylvia Ann Hewlett",
+      "publisher": "Harvard Business",
+      "description": "In this powerful yet practical book, economist and thought leader shows why sponsors matter.",
+      "category": "Biography",
+      "coverImage": "/covers/find-a-sponsor.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release",
+        "created-for-you"
+      ],
+      "createdAt": "2026-02-13T11:05:00.000Z"
+    },
+    {
+      "id": 6,
+      "isbn": "9780525559474",
+      "title": "The Midnight Library",
+      "author": "Matt Haig",
+      "publisher": "Viking",
+      "description": "Between life and death there is a library, and within that library, the shelves go on forever.",
+      "category": "Fictions",
+      "coverImage": "/covers/midnight-library.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-02-13T11:10:00.000Z"
+    },
+    {
+      "id": 7,
+      "isbn": "9781610396356",
+      "title": "The Fortunes of Africa",
+      "author": "Martin Meredith",
+      "publisher": "PublicAffairs",
+      "description": "A 5000-year history of wealth, greed and endeavour across the African continent.",
+      "category": "History",
+      "coverImage": "/covers/fortunes-africa.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller",
+        "macrobiotic"
+      ],
+      "createdAt": "2026-02-14T11:00:00.000Z"
+    },
+    {
+      "id": 8,
+      "isbn": "9780804139298",
+      "title": "Zero to One",
+      "author": "Peter Thiel",
+      "publisher": "Crown Business",
+      "description": "Notes on startups, or how to build the future. Doing what we already know takes the world from 1 to n. Creating something new takes it from 0 to 1.",
+      "category": "Graphic Design",
+      "coverImage": "/covers/zero-to-one.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller",
+        "created-for-you"
+      ],
+      "createdAt": "2026-02-14T11:05:00.000Z"
+    },
+    {
+      "id": 9,
+      "isbn": "9781610394390",
+      "title": "The Looting Machine",
+      "author": "Tom Burgis",
+      "publisher": "PublicAffairs",
+      "description": "Warlords, oligarchs, corporations, smugglers, and the theft of Africa's wealth.",
+      "category": "History",
+      "coverImage": "/covers/looting-machine.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-02-14T11:10:00.000Z"
+    },
+    {
+      "id": 10,
+      "isbn": "9781503280786",
+      "title": "Moby Dick",
+      "author": "Herman Melville",
+      "publisher": "Harper & Brothers",
+      "description": "The saga of Captain Ahab and his monomaniacal pursuit of the white whale.",
+      "category": "Fictions",
+      "coverImage": "/covers/moby-dick.svg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-02-15T11:00:00.000Z"
+    },
+    {
+      "id": 11,
+      "isbn": "9789785205800",
+      "title": "Abba Kyari",
+      "author": "Yashau Adamu",
+      "publisher": "Premium Times",
+      "description": "The life and times of one of Nigeria's most influential chiefs of staff.",
+      "category": "Biography",
+      "coverImage": "/covers/abba-kyari.svg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller",
+        "biography-autography"
+      ],
+      "createdAt": "2026-02-15T11:05:00.000Z"
+    },
+    {
+      "id": 12,
+      "isbn": "9780307887894",
+      "title": "The Lean Startup",
+      "author": "Eric Ries",
+      "publisher": "Crown Business",
+      "description": "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
+      "category": "Graphic Design",
+      "coverImage": "/covers/lean-startup.svg",
+      "status": "APPROVED",
+      "tags": [
+        "created-for-you"
+      ],
+      "createdAt": "2026-02-15T11:10:00.000Z"
+    },
+    {
+      "id": 13,
+      "isbn": "9781982132798",
+      "title": "How to Invest",
+      "author": "David M. Rubenstein",
+      "publisher": "Simon & Schuster",
+      "description": "Masters on the craft — the world's greatest investors reveal their strategies.",
+      "category": "Graphic Design",
+      "coverImage": "/covers/how-to-invest.svg",
+      "status": "APPROVED",
+      "tags": [
+        "macrobiotic"
+      ],
+      "createdAt": "2026-02-16T11:00:00.000Z"
+    },
+    {
+      "id": 14,
+      "isbn": "9781250854513",
+      "title": "The Atlas Paradox",
+      "author": "Olivie Blake",
+      "publisher": "Tor Books",
+      "description": "The long-awaited sequel to the dark academia sensation The Atlas Six.",
+      "category": "Fictions",
+      "coverImage": "/covers/atlas-paradox.svg",
+      "status": "APPROVED",
+      "tags": [
+        "macrobiotic"
+      ],
+      "createdAt": "2026-02-16T11:05:00.000Z"
+    },
+    {
+      "id": 15,
+      "isbn": "9780060935467",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "publisher": "Harper Perennial",
+      "description": "The unforgettable novel of childhood in a sleepy Southern town and the crisis of conscience that rocked it.",
+      "category": "Fictions",
+      "coverImage": "/covers/mockingbird.svg",
+      "status": "APPROVED",
+      "tags": [
+        "macrobiotic"
+      ],
+      "createdAt": "2026-02-16T11:10:00.000Z"
+    },
+    {
+      "id": 16,
+      "isbn": "9780374279295",
+      "title": "King: A Life",
+      "author": "Jonathan Eig",
+      "publisher": "Farrar, Straus",
+      "description": "The first full biography of Martin Luther King Jr. in decades — a landmark work.",
+      "category": "Biography",
+      "coverImage": "/covers/king.svg",
+      "status": "APPROVED",
+      "tags": [
+        "biography-autography"
+      ],
+      "createdAt": "2026-02-17T11:00:00.000Z"
+    },
+    {
+      "id": 17,
+      "isbn": "9781501135910",
+      "title": "Shoe Dog",
+      "author": "Phil Knight",
+      "publisher": "Scribner",
+      "description": "A memoir by the creator of Nike — a candid and riveting story of the company's early days.",
+      "category": "Biography",
+      "coverImage": "/covers/shoe-dog.svg",
+      "status": "APPROVED",
+      "tags": [
+        "biography-autography",
+        "bestseller"
+      ],
+      "createdAt": "2026-02-17T11:05:00.000Z"
+    },
+    {
+      "id": 18,
+      "isbn": "9780333642344",
+      "title": "Sowing the Mustard Seed",
+      "author": "Yoweri Museveni",
+      "publisher": "Macmillan",
+      "description": "The struggle for freedom and democracy in Uganda.",
+      "category": "Biography",
+      "coverImage": "/covers/sowing-seed.svg",
+      "status": "APPROVED",
+      "tags": [
+        "biography-autography"
+      ],
+      "createdAt": "2026-02-17T11:10:00.000Z"
+    },
+    {
+      "id": 19,
+      "isbn": "9780316548182",
+      "title": "Long Walk to Freedom",
+      "author": "Nelson Mandela",
+      "publisher": "Little, Brown",
+      "description": "The autobiography of Nelson Mandela — one of the great moral and political leaders of our time.",
+      "category": "Biography",
+      "coverImage": "/covers/long-walk.svg",
+      "status": "APPROVED",
+      "tags": [
+        "biography-autography"
+      ],
+      "createdAt": "2026-02-18T11:00:00.000Z"
+    },
+    {
+      "id": 20,
+      "isbn": "9781250787651",
+      "title": "Palestine: The Story",
+      "author": "Rashid Khalidi",
+      "publisher": "Metropolitan",
+      "description": "A hundred years' history on Palestine — settler colonialism and resistance.",
+      "category": "History",
+      "coverImage": "/covers/palestine-story.svg",
+      "status": "APPROVED",
+      "tags": [
+        "palestine"
+      ],
+      "createdAt": "2026-02-18T11:05:00.000Z"
+    },
+    {
+      "id": 21,
+      "isbn": "9781476740386",
+      "title": "Born a Crime",
+      "author": "Trevor Noah",
+      "publisher": "Spiegel & Grau",
+      "description": "Stories from a South African childhood by the comedian and host.",
+      "category": "Biography",
+      "coverImage": "/covers/born-a-crime.svg",
+      "status": "APPROVED",
+      "tags": [
+        "palestine"
+      ],
+      "createdAt": "2026-02-18T11:10:00.000Z"
+    },
+    {
+      "id": 22,
+      "isbn": "9781682451234",
+      "title": "Against the Run of Play",
+      "author": "Olusegun Adeniyi",
+      "publisher": "Kachifo",
+      "description": "How an incumbent president was defeated in Nigeria.",
+      "category": "History",
+      "coverImage": "/covers/against-run-play.svg",
+      "status": "APPROVED",
+      "tags": [
+        "palestine"
+      ],
+      "createdAt": "2026-02-19T11:00:00.000Z"
+    },
+    {
+      "id": 23,
+      "isbn": "9781501124020",
+      "title": "Principles",
+      "author": "Ray Dalio",
+      "publisher": "Simon & Schuster",
+      "description": "Life and work principles from the founder of Bridgewater Associates.",
+      "category": "Graphic Design",
+      "coverImage": "/covers/principles.svg",
+      "status": "PENDING_APPROVAL",
+      "tags": [],
+      "createdAt": "2026-03-02T11:00:00.000Z"
+    }
+  ],
+  "listings": [
+    {
+      "id": 1,
+      "bookId": 1,
+      "sellerId": 1,
+      "price": 399,
+      "mrp": 499,
+      "stock": 50,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "bookId": 1,
+      "sellerId": 2,
+      "price": 380,
+      "mrp": 499,
+      "stock": 19,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:05:00.000Z"
+    },
+    {
+      "id": 3,
+      "bookId": 2,
+      "sellerId": 1,
+      "price": 550,
+      "mrp": 699,
+      "stock": 35,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:10:00.000Z"
+    },
+    {
+      "id": 4,
+      "bookId": 3,
+      "sellerId": 2,
+      "price": 420,
+      "mrp": 520,
+      "stock": 15,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:15:00.000Z"
+    },
+    {
+      "id": 5,
+      "bookId": 4,
+      "sellerId": 1,
+      "price": 1265,
+      "mrp": 1465,
+      "stock": 14,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:20:00.000Z"
+    },
+    {
+      "id": 6,
+      "bookId": 5,
+      "sellerId": 2,
+      "price": 2100,
+      "mrp": 2950,
+      "stock": 12,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:25:00.000Z"
+    },
+    {
+      "id": 7,
+      "bookId": 6,
+      "sellerId": 1,
+      "price": 1262,
+      "mrp": 1465,
+      "stock": 30,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:30:00.000Z"
+    },
+    {
+      "id": 8,
+      "bookId": 6,
+      "sellerId": 2,
+      "price": 1199,
+      "mrp": 1465,
+      "stock": 8,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-20T10:35:00.000Z"
+    },
+    {
+      "id": 9,
+      "bookId": 7,
+      "sellerId": 1,
+      "price": 1008,
+      "mrp": 1199,
+      "stock": 40,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-21T10:00:00.000Z"
+    },
+    {
+      "id": 10,
+      "bookId": 7,
+      "sellerId": 2,
+      "price": 980,
+      "mrp": 1199,
+      "stock": 18,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-21T10:05:00.000Z"
+    },
+    {
+      "id": 11,
+      "bookId": 8,
+      "sellerId": 1,
+      "price": 1008,
+      "mrp": 1299,
+      "stock": 22,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-21T10:10:00.000Z"
+    },
+    {
+      "id": 12,
+      "bookId": 9,
+      "sellerId": 2,
+      "price": 1008,
+      "mrp": 1150,
+      "stock": 14,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-21T10:15:00.000Z"
+    },
+    {
+      "id": 13,
+      "bookId": 10,
+      "sellerId": 1,
+      "price": 1008,
+      "mrp": 1100,
+      "stock": 9,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-21T10:20:00.000Z"
+    },
+    {
+      "id": 14,
+      "bookId": 11,
+      "sellerId": 2,
+      "price": 1008,
+      "mrp": 1200,
+      "stock": 11,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-21T10:25:00.000Z"
+    },
+    {
+      "id": 15,
+      "bookId": 12,
+      "sellerId": 1,
+      "price": 2110,
+      "mrp": 2500,
+      "stock": 16,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-22T10:00:00.000Z"
+    },
+    {
+      "id": 16,
+      "bookId": 13,
+      "sellerId": 2,
+      "price": 1012,
+      "mrp": 1199,
+      "stock": 20,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-22T10:05:00.000Z"
+    },
+    {
+      "id": 17,
+      "bookId": 14,
+      "sellerId": 1,
+      "price": 1186,
+      "mrp": 1350,
+      "stock": 13,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-22T10:10:00.000Z"
+    },
+    {
+      "id": 18,
+      "bookId": 15,
+      "sellerId": 2,
+      "price": 824,
+      "mrp": 999,
+      "stock": 27,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-22T10:15:00.000Z"
+    },
+    {
+      "id": 19,
+      "bookId": 16,
+      "sellerId": 1,
+      "price": 1012,
+      "mrp": 1250,
+      "stock": 19,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-23T10:00:00.000Z"
+    },
+    {
+      "id": 20,
+      "bookId": 17,
+      "sellerId": 2,
+      "price": 1186,
+      "mrp": 1399,
+      "stock": 24,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-23T10:05:00.000Z"
+    },
+    {
+      "id": 21,
+      "bookId": 18,
+      "sellerId": 1,
+      "price": 1180,
+      "mrp": 1300,
+      "stock": 10,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-23T10:10:00.000Z"
+    },
+    {
+      "id": 22,
+      "bookId": 19,
+      "sellerId": 2,
+      "price": 860,
+      "mrp": 999,
+      "stock": 21,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-23T10:15:00.000Z"
+    },
+    {
+      "id": 23,
+      "bookId": 20,
+      "sellerId": 1,
+      "price": 1010,
+      "mrp": 1150,
+      "stock": 17,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-24T10:00:00.000Z"
+    },
+    {
+      "id": 24,
+      "bookId": 21,
+      "sellerId": 2,
+      "price": 1186,
+      "mrp": 1350,
+      "stock": 0,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-24T10:05:00.000Z"
+    },
+    {
+      "id": 25,
+      "bookId": 22,
+      "sellerId": 1,
+      "price": 1184,
+      "mrp": 1299,
+      "stock": 7,
+      "status": "ACTIVE",
+      "createdAt": "2026-02-24T10:10:00.000Z"
+    }
+  ],
+  "carts": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "createdAt": "2026-03-01T10:00:00.000Z"
+    },
+    {
+      "customerId": 2,
+      "createdAt": "2026-06-12T06:10:39.159Z",
+      "id": 2
+    }
+  ],
+  "cartItems": [],
+  "orders": [
+    {
+      "customerId": 2,
+      "sellerId": 1,
+      "sellerName": "BookHub Traders",
+      "shippingAddress": "aezdhxfjcgvhgjj",
+      "totalAmount": 13915,
+      "status": "CREATED",
+      "createdAt": "2026-06-12T06:10:58.186Z",
+      "id": 1
+    },
+    {
+      "customerId": 2,
+      "sellerId": 2,
+      "sellerName": "Readers Paradise",
+      "shippingAddress": "adasfghawretsr,",
+      "totalAmount": 380,
+      "status": "CREATED",
+      "createdAt": "2026-06-12T06:21:28.417Z",
+      "id": 2
+    }
+  ],
+  "orderItems": [
+    {
+      "orderId": 1,
+      "listingId": 5,
+      "bookId": 4,
+      "title": "Pride and Protest",
+      "coverImage": "/covers/pride-protest.jpg",
+      "price": 1265,
+      "quantity": 11,
+      "id": 1
+    },
+    {
+      "orderId": 2,
+      "listingId": 2,
+      "bookId": 1,
+      "title": "Atomic Habits",
+      "coverImage": "/covers/atomic-habits.jpg",
+      "price": 380,
+      "quantity": 1,
+      "id": 2
+    }
+  ]
+}
