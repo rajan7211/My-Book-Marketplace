@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FiChevronDown, FiShoppingCart, FiLogOut, FiUser } from "react-icons/fi";
+import { FiChevronDown, FiShoppingCart, FiLogOut, FiUser, FiMenu } from "react-icons/fi";
 import { useState, useRef, useEffect } from "react";
 import { Logo } from "./Logo";
+import { SideMenu } from "./SideMenu";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth.store";
 import { useCartStore } from "@/store/cart.store";
@@ -12,6 +13,7 @@ export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const totalItems = useCartStore((s) => s.totalItems());
   const [menuOpen, setMenuOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,7 +43,18 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-brand-dark text-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Logo />
+        <div className="flex items-center gap-2">
+          {/* Amazon-style hamburger */}
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="-ml-1 flex items-center gap-1.5 rounded-md px-2 py-2 text-gray-200 transition hover:bg-white/10 hover:text-white"
+            aria-label="Open menu"
+          >
+            <FiMenu size={22} />
+            <span className="hidden text-sm font-semibold sm:block">All</span>
+          </button>
+          <Logo />
+        </div>
 
         <nav className="hidden items-center gap-8 text-sm md:flex">
           <Link
@@ -123,10 +136,10 @@ export function Navbar() {
           )}
         </div>
       </div>
+
+      <SideMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </header>
   );
 }
-
-
 
 
