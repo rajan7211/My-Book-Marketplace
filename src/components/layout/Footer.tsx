@@ -11,6 +11,31 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+const QUICK_LINKS = [
+  { label: "Home", to: "/" },
+  { label: "About us", to: "/about" },
+  { label: "Contact", to: "/contact" },
+  { label: "Categories", to: "/books" },
+  { label: "Sign in", to: "/login" },
+];
+
+const CUSTOMER_LINKS = [
+  { label: "My account", to: "/orders" },
+  { label: "My orders", to: "/orders" },
+  { label: "Track order", to: "/orders" },
+  { label: "Terms", to: "/books" },
+  { label: "Privacy policy", to: "/books" },
+  { label: "FAQs", to: "/books" },
+];
+
+const SOCIALS = [
+  { Icon: FiFacebook, label: "Facebook" },
+  { Icon: FiInstagram, label: "Instagram" },
+  { Icon: FiLinkedin, label: "LinkedIn" },
+  { Icon: FiYoutube, label: "YouTube" },
+  { Icon: FiTwitter, label: "Twitter" },
+];
+
 export function Footer() {
   const [email, setEmail] = useState("");
 
@@ -25,105 +50,135 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-brand-dark text-white">
-      {/* Newsletter strip */}
-      <div className="border-b border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
-          <h3 className="max-w-xs font-serif text-xl font-semibold leading-snug">
-            Subscribe to our newsletter for newest books updates
-          </h3>
-          <form onSubmit={subscribe} className="flex w-full max-w-md gap-2">
+    <footer className="bg-[#0f0d1a] text-white">
+
+      {/* Newsletter */}
+      <div className="border-b border-white/[0.08]">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6">
+          <div className="max-w-xs">
+            <p className="mb-2 text-[11px] font-medium uppercase tracking-[.1em] text-purple-400">
+              Newsletter
+            </p>
+            <h3 className="font-serif text-[22px] font-semibold leading-snug text-[#f1f0f9]">
+              Fresh picks in your inbox every week
+            </h3>
+          </div>
+          <form onSubmit={subscribe} className="flex w-full max-w-sm gap-2">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Type your email here"
-              className="h-11 flex-1 rounded-lg border border-white/20 bg-white/5 px-4 text-sm text-white placeholder:text-gray-400 focus:border-brand-yellow focus:outline-none"
+              placeholder="Your email address…"
+              className="h-10 flex-1 rounded-lg border border-[#3d3760] bg-[#1a1730] px-4 text-sm text-[#f1f0f9] placeholder:text-[#534f6e] focus:border-purple-500 focus:outline-none"
             />
-            <Button type="submit" className="h-11 rounded-lg px-5 text-xs font-bold uppercase tracking-wider">
+            <Button
+              type="submit"
+              className="h-10 rounded-lg bg-purple-600 px-5 text-[12px] font-medium tracking-wide hover:bg-purple-700"
+            >
               Subscribe
             </Button>
           </form>
         </div>
       </div>
 
-      {/* Links */}
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4">
-        <div className="space-y-4">
+      {/* Main grid */}
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+
+        {/* Brand */}
+        <div>
           <Logo />
-          <p className="text-sm leading-relaxed text-gray-400">
-            Each book you purchase isn't just a story — it's a passport to new
-            worlds, exciting adventures and endless possibilities.
+          <p className="mt-4 text-sm leading-relaxed text-[#6b6888]">
+            Each book isn't just a story — it's a passport to new worlds,
+            exciting adventures, and endless possibilities.
           </p>
-          <div className="flex gap-3 pt-1">
-            {[FiFacebook, FiInstagram, FiLinkedin, FiYoutube, FiTwitter].map(
-              (Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-gray-300 transition hover:border-brand-yellow hover:text-brand-yellow"
-                >
-                  <Icon size={15} />
-                </a>
-              )
-            )}
+          <div className="mt-5 flex gap-2">
+            {SOCIALS.map(({ Icon, label }) => (
+              <a
+                key={label}
+                href="#"
+                aria-label={label}
+                className="grid h-8 w-8 place-items-center rounded-full border border-white/[0.12] text-[#6b6888] transition hover:border-purple-500 hover:text-purple-400"
+              >
+                <Icon size={14} />
+              </a>
+            ))}
           </div>
         </div>
 
+        {/* Quick links */}
         <div>
-          <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">
-            Quick Links
+          <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
+            Quick links
           </h4>
-          <ul className="space-y-2.5 text-sm text-gray-400">
-            <li><Link to="/" className="hover:text-brand-yellow">Home</Link></li>
-            <li><Link to="/books" className="hover:text-brand-yellow">About Us</Link></li>
-            <li><Link to="/books" className="hover:text-brand-yellow">Contact Us</Link></li>
-            <li><Link to="/books" className="hover:text-brand-yellow">Categories</Link></li>
-            <li><Link to="/login" className="hover:text-brand-yellow">Login</Link></li>
-            <li><Link to="/register" className="hover:text-brand-yellow">Sign In</Link></li>
+          <ul className="space-y-2.5">
+            {QUICK_LINKS.map(({ label, to }) => (
+              <li key={label}>
+                <Link
+                  to={to}
+                  className="text-sm text-[#6b6888] transition hover:text-purple-400"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
+        {/* Customer */}
         <div>
-          <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">
-            Customer Area
+          <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
+            Customer area
           </h4>
-          <ul className="space-y-2.5 text-sm text-gray-400">
-            <li><Link to="/orders" className="hover:text-brand-yellow">My Account</Link></li>
-            <li><Link to="/orders" className="hover:text-brand-yellow">My Orders</Link></li>
-            <li><Link to="/orders" className="hover:text-brand-yellow">Tracking List</Link></li>
-            <li><Link to="/books" className="hover:text-brand-yellow">Terms</Link></li>
-            <li><Link to="/books" className="hover:text-brand-yellow">Policy</Link></li>
-            <li><Link to="/books" className="hover:text-brand-yellow">FAQs</Link></li>
+          <ul className="space-y-2.5">
+            {CUSTOMER_LINKS.map(({ label, to }) => (
+              <li key={label}>
+                <Link
+                  to={to}
+                  className="text-sm text-[#6b6888] transition hover:text-purple-400"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
+        {/* Sell CTA */}
         <div>
-          <h4 className="mb-4 text-sm font-bold uppercase tracking-wider">
-            Don't Miss The Newest
+          <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
+            Sell with us
           </h4>
-          <p className="mb-4 text-sm text-gray-400">
-            Become a seller, list your books and reach thousands of readers.
-          </p>
-          <Link to="/seller/register">
-            <Button variant="outline" className="border-brand-yellow text-brand-yellow hover:bg-brand-yellow hover:text-brand-dark">
-              Become a Seller
-            </Button>
-          </Link>
+          <div className="rounded-xl border border-[#3d3760] bg-[#1a1730] p-5">
+            <p className="text-sm leading-relaxed text-[#6b6888]">
+              List your books and reach thousands of readers worldwide.
+            </p>
+            <Link to="/seller/register" className="mt-4 block">
+              <Button
+                variant="outline"
+                className="w-full border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white"
+              >
+                Become a seller
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-gray-500 sm:flex-row sm:px-6">
-          <p>© 2026 World Knowledge. All Rights Reserved.</p>
-          <p>
-            Privacy <span className="mx-2">|</span> Terms of Service
-          </p>
+      {/* Bottom bar */}
+      <div className="border-t border-white/[0.08]">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-[#534f6e] sm:flex-row sm:px-6">
+          <p>© 2026 Bookstore. All rights reserved.</p>
+          <div className="flex gap-5">
+            <Link to="#" className="transition hover:text-[#8b86a8]">Privacy</Link>
+            <Link to="#" className="transition hover:text-[#8b86a8]">Terms of service</Link>
+            <Link to="#" className="transition hover:text-[#8b86a8]">Cookie policy</Link>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
+
 
 
 
