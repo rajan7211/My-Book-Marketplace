@@ -36,7 +36,7 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   "Self Help": GiSun,
 };
 
-/** Amazon-style left slide-in navigation drawer. */
+/** Dark-themed left slide-in navigation drawer matching the navbar/hero palette. */
 export function SideMenu({ open, onClose }: SideMenuProps) {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -76,58 +76,102 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
       {/* Overlay */}
       <div
         onClick={onClose}
-        className={`fixed inset-0 z-[60] bg-black/60 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
+      {/* Drawer — same dark navy as navbar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-[70] flex w-[320px] max-w-[85vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+        style={{ backgroundColor: "#13111f" }}
+        className={`fixed inset-y-0 left-0 z-[70] flex w-[300px] max-w-[85vw] flex-col shadow-2xl transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"
         aria-label="Main menu"
       >
-        {/* Close button (outside-right, like Amazon) */}
+        {/* Close button */}
         <button
           onClick={onClose}
-          className={`absolute -right-12 top-3 grid h-10 w-10 place-items-center rounded-full text-white transition hover:bg-white/10 ${
+          className={`absolute -right-12 top-3 grid h-10 w-10 place-items-center rounded-full text-white/80 transition hover:bg-white/10 ${
             open ? "block" : "hidden"
           }`}
           aria-label="Close menu"
         >
-          <FiX size={24} />
+          <FiX size={22} />
         </button>
 
-        {/* Header — "Hello, Sign in" */}
+        {/* Header — avatar + greeting */}
         <button
-          onClick={() => go(isAuthenticated ? (user?.role === "ADMIN" ? "/admin" : user?.role === "SELLER" ? "/seller" : "/orders") : "/login")}
-          className="flex items-center gap-3 bg-brand-dark px-5 py-4 text-left text-white transition hover:bg-brand-dark-2"
+          onClick={() =>
+            go(
+              isAuthenticated
+                ? user?.role === "ADMIN"
+                  ? "/admin"
+                  : user?.role === "SELLER"
+                  ? "/seller"
+                  : "/orders"
+                : "/login"
+            )
+          }
+          style={{ backgroundColor: "#1e1b30" }}
+          className="flex items-center gap-3 border-b border-white/10 px-5 py-4 text-left transition hover:brightness-110"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-yellow text-sm font-bold text-brand-dark">
-            {isAuthenticated ? user?.name.charAt(0).toUpperCase() : <FiUser size={17} />}
+          {/* Avatar circle — gold on dark */}
+          <span
+            style={{ backgroundColor: "#f5a623", color: "#13111f" }}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold"
+          >
+            {isAuthenticated ? (
+              user?.name.charAt(0).toUpperCase()
+            ) : (
+              <FiUser size={17} />
+            )}
           </span>
-          <span className="text-[15px] font-bold">
-            {isAuthenticated ? `Hello, ${user?.name.split(" ")[0]}` : "Hello, Sign in"}
-          </span>
+          <div className="min-w-0">
+            <p className="text-[13px] text-white/50">Welcome back</p>
+            <p className="truncate text-[15px] font-bold text-white">
+              {isAuthenticated
+                ? `Hello, ${user?.name.split(" ")[0]}`
+                : "Hello, Sign in"}
+            </p>
+          </div>
+          <FiChevronRight size={16} className="ml-auto shrink-0 text-white/30" />
         </button>
 
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto">
+
           {/* Trending */}
           <Section title="Trending">
-            <Item icon={FiTrendingUp} label="Trending Now" onClick={() => go("/books?sort=newest")} />
-            <Item icon={FiStar} label="Bestsellers" onClick={() => go("/books")} />
-            <Item icon={FiClock} label="New Releases" onClick={() => go("/books?sort=newest")} />
+            <Item
+              icon={FiTrendingUp}
+              label="Trending Now"
+              onClick={() => go("/books?sort=newest")}
+            />
+            <Item
+              icon={FiStar}
+              label="Bestsellers"
+              onClick={() => go("/books")}
+            />
+            <Item
+              icon={FiClock}
+              label="New Releases"
+              onClick={() => go("/books?sort=newest")}
+            />
           </Section>
 
           <Divider />
 
           {/* Shop by Category */}
           <Section title="Shop by Category">
-            <Item icon={FiGrid} label="All Books" onClick={() => go("/books")} chevron />
+            <Item
+              icon={FiGrid}
+              label="All Books"
+              onClick={() => go("/books")}
+              chevron
+            />
             {(categories ?? []).map((c) => {
               const Icon = CATEGORY_ICONS[c] ?? FiBookOpen;
               return (
@@ -135,7 +179,9 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
                   key={c}
                   icon={Icon}
                   label={c}
-                  onClick={() => go(`/books?category=${encodeURIComponent(c)}`)}
+                  onClick={() =>
+                    go(`/books?category=${encodeURIComponent(c)}`)
+                  }
                   chevron
                 />
               );
@@ -146,12 +192,27 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
           {/* Programs */}
           <Section title="Programs & Features">
-            <Item icon={MdStorefront} label="Sell on World Knowledge" onClick={() => go("/seller/register")} chevron />
+            <Item
+              icon={MdStorefront}
+              label="Sell on World Knowledge"
+              onClick={() => go("/seller/register")}
+              chevron
+            />
             {user?.role === "SELLER" && (
-              <Item icon={FiPackage} label="Seller Dashboard" onClick={() => go("/seller")} chevron />
+              <Item
+                icon={FiPackage}
+                label="Seller Dashboard"
+                onClick={() => go("/seller")}
+                chevron
+              />
             )}
             {user?.role === "ADMIN" && (
-              <Item icon={FiGrid} label="Admin Dashboard" onClick={() => go("/admin")} chevron />
+              <Item
+                icon={FiGrid}
+                label="Admin Dashboard"
+                onClick={() => go("/admin")}
+                chevron
+              />
             )}
           </Section>
 
@@ -161,8 +222,16 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           <Section title="Help & Settings">
             {(!user || user.role === "CUSTOMER") && (
               <>
-                <Item icon={FiShoppingCart} label="My Cart" onClick={() => go("/cart")} />
-                <Item icon={FiPackage} label="My Orders" onClick={() => go("/orders")} />
+                <Item
+                  icon={FiShoppingCart}
+                  label="My Cart"
+                  onClick={() => go("/cart")}
+                />
+                <Item
+                  icon={FiPackage}
+                  label="My Orders"
+                  onClick={() => go("/orders")}
+                />
               </>
             )}
             <Item
@@ -174,14 +243,24 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
               }}
             />
             {isAuthenticated ? (
-              <Item icon={FiLogOut} label="Sign Out" onClick={handleLogout} danger />
+              <Item
+                icon={FiLogOut}
+                label="Sign Out"
+                onClick={handleLogout}
+                danger
+              />
             ) : (
-              <Item icon={FiLogIn} label="Sign In" onClick={() => go("/login")} />
+              <Item
+                icon={FiLogIn}
+                label="Sign In"
+                onClick={() => go("/login")}
+                highlight
+              />
             )}
           </Section>
 
-          {/* Footer note */}
-          <p className="px-5 pb-6 pt-2 text-[11px] text-gray-400">
+          {/* Footer */}
+          <p className="px-5 pb-6 pt-3 text-[11px] text-white/25">
             © 2026 World Knowledge — One book, many sellers.
           </p>
         </div>
@@ -190,19 +269,31 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   );
 }
 
-/* ---------- building blocks ---------- */
+/* ─── Building blocks ─── */
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="py-2">
-      <h3 className="px-5 pb-1 pt-3 text-[15px] font-bold text-brand-dark">{title}</h3>
+    <div className="py-1">
+      {/* Section label — purple accent like the hero badge */}
+      <h3
+        style={{ color: "#f5a623" }}
+        className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-[.12em]"
+      >
+        {title}
+      </h3>
       {children}
     </div>
   );
 }
 
 function Divider() {
-  return <hr className="border-gray-200" />;
+  return <hr className="border-white/10" />;
 }
 
 function Item({
@@ -211,25 +302,39 @@ function Item({
   onClick,
   chevron = false,
   danger = false,
+  highlight = false,
 }: {
   icon: React.ElementType;
   label: string;
   onClick: () => void;
   chevron?: boolean;
   danger?: boolean;
+  highlight?: boolean;
 }) {
+  const textColor = danger
+    ? "text-red-400"
+    : highlight
+    ? "text-purple-400"
+    : "text-white/80";
+
+  const iconColor = danger
+    ? "text-red-500"
+    : highlight
+    ? "text-purple-400"
+    : "text-white/40";
+
   return (
     <button
       onClick={onClick}
-      className={`flex w-full items-center justify-between px-5 py-2.5 text-left text-sm transition hover:bg-gray-100 ${
-        danger ? "text-red-600" : "text-gray-700"
-      }`}
+      className={`flex w-full items-center justify-between px-5 py-2.5 text-left text-[13.5px] transition-colors hover:bg-white/5 ${textColor}`}
     >
       <span className="flex items-center gap-3.5">
-        <Icon size={17} className={danger ? "text-red-500" : "text-gray-500"} />
+        <Icon size={16} className={iconColor} />
         {label}
       </span>
-      {chevron && <FiChevronRight size={15} className="text-gray-400" />}
+      {chevron && (
+        <FiChevronRight size={14} className="text-white/20" />
+      )}
     </button>
   );
 }

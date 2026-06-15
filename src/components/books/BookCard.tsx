@@ -25,7 +25,10 @@ export function BookCard({ book, compact = false }: BookCardProps) {
     ? inStock.reduce((a, b) => (b.price < a.price ? b : a))
     : undefined;
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!isAuthenticated) {
       toast.warn("Please login to add items to cart");
       navigate("/login");
@@ -51,14 +54,17 @@ export function BookCard({ book, compact = false }: BookCardProps) {
       quantity: 1,
       stock: best.stock,
     });
-    res.ok ? toast.success(`"${book.title}" added to cart`) : toast.error(res.message);
+    res.ok
+      ? toast.success(`"${book.title}" added to cart`)
+      : toast.error(res.message);
   };
 
   return (
     <div className="group flex w-full flex-col">
+      {/* ── Cover image ── */}
       <Link
         to={`/books/${book.id}`}
-        className="relative block overflow-hidden rounded-lg bg-gray-100 shadow-sm"
+        className="relative block overflow-hidden rounded-xl bg-gray-100 shadow-sm"
       >
         <img
           src={book.coverImage}
@@ -67,43 +73,68 @@ export function BookCard({ book, compact = false }: BookCardProps) {
           loading="lazy"
         />
         {!best && (
-          <span className="absolute left-2 top-2 rounded bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+          <span className="absolute left-2 top-2 rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
             Out of stock
           </span>
         )}
       </Link>
 
+      {/* ── Info block ── */}
       <div className={compact ? "pt-2.5" : "pt-3"}>
+        {/* Title */}
         <Link to={`/books/${book.id}`}>
-          <h3 className="truncate text-[13px] font-semibold text-brand-dark hover:text-brand-yellow-dark">
+          <h3 className="truncate text-[13px] font-semibold leading-snug text-brand-dark hover:text-brand-yellow-dark">
             {book.title}
           </h3>
         </Link>
-        <p className="truncate text-[11px] text-gray-500">{book.author}</p>
 
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-[13px] font-bold text-brand-dark">
-              {best ? formatPrice(best.price) : "—"}
+        {/* Author */}
+        <p className="mt-0.5 truncate text-[11px] text-gray-500">{book.author}</p>
+
+        {/* Price row */}
+        <div className="mt-2 flex items-baseline gap-1.5">
+          <span className="text-[13px] font-bold text-brand-dark">
+            {best ? formatPrice(best.price) : "—"}
+          </span>
+          {best && book.maxMrp && book.maxMrp > best.price && (
+            <span className="text-[10px] text-gray-400 line-through">
+              {formatPrice(book.maxMrp)}
             </span>
-            {best && book.maxMrp && book.maxMrp > best.price && (
-              <span className="text-[10px] text-gray-400 line-through">
-                {formatPrice(book.maxMrp)}
-              </span>
-            )}
-          </div>
-          <button
-            onClick={handleAdd}
-            className="flex items-center gap-1 rounded border border-brand-dark px-2 py-1 text-[10px] font-semibold text-brand-dark transition hover:bg-brand-dark hover:text-white"
-          >
-            <FiShoppingCart size={11} />
-            Add to cart
-          </button>
+          )}
         </div>
+
+        {/* ── Add to cart button — always full-width, never wraps ── */}
+        <button
+          onClick={handleAdd}
+          disabled={!best}
+          className={[
+            "mt-2.5 flex w-full items-center justify-center gap-1.5",
+            "h-8 rounded-lg border px-3",
+            "whitespace-nowrap text-[11px] font-semibold",
+            "transition-colors duration-150",
+            best
+              ? "border-brand-dark text-brand-dark hover:bg-brand-dark hover:text-white active:scale-[.98]"
+              : "cursor-not-allowed border-gray-200 text-gray-400",
+          ].join(" ")}
+          aria-label={best ? `Add ${book.title} to cart` : "Out of stock"}
+        >
+          <FiShoppingCart
+            size={12}
+            strokeWidth={2}
+            className="shrink-0"
+            aria-hidden="true"
+          />
+          <span>Add to cart</span>
+        </button>
       </div>
     </div>
   );
 }
+
+
+
+
+
 
 
 

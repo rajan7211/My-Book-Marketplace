@@ -41,7 +41,7 @@ export default function BookDetailsPage() {
       toast.warn("Only customers can purchase books");
       return;
     }
-    // PDF: customer MUST select a seller before adding to cart
+    // customer MUST select a seller before adding to cart
     if (!selected) {
       toast.error("Please select a seller first");
       return;
