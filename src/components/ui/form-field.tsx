@@ -61,7 +61,7 @@ export function FormField({
         )}
       </div>
       {hasError && (
-        <p className="text-xs font-medium text-destructive">{meta.error}</p>
+        <p className="text-xs font-medium text-red-500">{meta.error}</p>
       )}
     </div>
   );
