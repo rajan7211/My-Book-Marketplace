@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import loginSide from "@/assets/login-side.jpg";
+// import loginSide from "@/assets/login-side.jpg
+import loginSide from "@/assets/login-side.svg";
 import { GiBookmarklet } from "react-icons/gi";
 
 interface AuthLayoutProps {
@@ -14,10 +15,10 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
       {/* Left photo panel */}
       <div className="relative hidden w-[42%] lg:block">
         <img
-          src={loginSide}
-          alt="Library"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+  src={loginSide}
+  alt="Education Illustration"
+  className="absolute inset-0 h-full w-full object-cover"
+/>
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
         <div className="absolute bottom-14 left-10 right-10 text-white">
           <p className="font-serif text-3xl font-semibold italic leading-snug">

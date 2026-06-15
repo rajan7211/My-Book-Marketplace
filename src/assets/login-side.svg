@@ -1,0 +1,91 @@
+<svg width="900" height="1200" viewBox="0 0 900 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Background -->
+  <rect width="900" height="1200" fill="#FFFDF7"></rect>
+
+  <!-- Decorative blobs -->
+  <circle cx="760" cy="180" r="140" fill="#F4C542" opacity="0.18"></circle>
+  <circle cx="150" cy="980" r="180" fill="#F4C542" opacity="0.12"></circle>
+  <circle cx="100" cy="180" r="80" fill="#FFE8A3" opacity="0.4"></circle>
+
+  <!-- Floating books -->
+  <rect x="110" y="170" width="60" height="80" rx="8" fill="#3B82F6"></rect>
+  <rect x="190" y="130" width="60" height="90" rx="8" fill="#10B981"></rect>
+  <rect x="730" y="250" width="60" height="85" rx="8" fill="#EF4444"></rect>
+  <rect x="680" y="150" width="60" height="75" rx="8" fill="#8B5CF6"></rect>
+
+  <!-- Globe -->
+  <circle cx="700" cy="750" r="90" fill="#D6F0FF"></circle>
+  <circle cx="700" cy="750" r="75" stroke="#3B82F6" stroke-width="4"></circle>
+
+  <path d="M640 730C670 700 730 700 760 730" stroke="#3B82F6" stroke-width="4"></path>
+  <path d="M640 770C670 800 730 800 760 770" stroke="#3B82F6" stroke-width="4"></path>
+  <line x1="700" y1="675" x2="700" y2="825" stroke="#3B82F6" stroke-width="4"></line>
+
+  <!-- Desk -->
+  <rect x="180" y="760" width="520" height="22" rx="10" fill="#8B5E3C"></rect>
+  <rect x="220" y="780" width="16" height="130" fill="#8B5E3C"></rect>
+  <rect x="644" y="780" width="16" height="130" fill="#8B5E3C"></rect>
+
+  <!-- Student Head -->
+  <circle cx="430" cy="420" r="65" fill="#FDBA74"></circle>
+
+  <!-- Hair -->
+  <path d="M365 410C365 340 500 340 495 425C480 390 445 380 400 390C390 405 380 410 365 410Z" fill="#1F2937"></path>
+
+  <!-- Graduation Cap -->
+  <polygon points="350,360 430,325 510,360 430,395" fill="#111827"></polygon>
+
+  <rect x="405" y="390" width="50" height="12" rx="4" fill="#111827"></rect>
+
+  <line x1="505" y1="360" x2="545" y2="430" stroke="#111827" stroke-width="4"></line>
+
+  <circle cx="545" cy="430" r="8" fill="#F4C542"></circle>
+
+  <!-- Body -->
+  <rect x="355" y="490" width="150" height="190" rx="30" fill="#F4C542"></rect>
+
+  <!-- Laptop -->
+  <rect x="280" y="600" width="300" height="180" rx="16" fill="#374151"></rect>
+
+  <rect x="300" y="620" width="260" height="140" rx="10" fill="#E5E7EB"></rect>
+
+  <!-- Screen icon -->
+  <circle cx="430" cy="690" r="28" fill="#F4C542"></circle>
+
+  <path d="M430 675L445 700H415L430 675Z" fill="#374151"></path>
+
+  <!-- Arms -->
+  <rect x="320" y="560" width="60" height="30" rx="15" fill="#FDBA74"></rect>
+
+  <rect x="480" y="560" width="60" height="30" rx="15" fill="#FDBA74"></rect>
+
+  <!-- Book Stack -->
+  <rect x="180" y="690" width="110" height="20" fill="#EF4444"></rect>
+  <rect x="190" y="670" width="110" height="20" fill="#3B82F6"></rect>
+  <rect x="200" y="650" width="110" height="20" fill="#10B981"></rect>
+
+  <!-- Open Book -->
+  <path d="M580 600C610 575 655 575 685 600V665C655 645 610 645 580 665V600Z" fill="white"></path>
+
+  <path d="M685 600C715 575 760 575 790 600V665C760 645 715 645 685 665V600Z" fill="#FEF3C7"></path>
+
+  <line x1="685" y1="600" x2="685" y2="665" stroke="#D1D5DB" stroke-width="3"></line>
+
+  <!-- Knowledge icons -->
+  <circle cx="200" cy="450" r="45" fill="#F4C542"></circle>
+  <text x="200" y="465" text-anchor="middle" font-size="36" fill="white">💡</text>
+
+  <circle cx="720" cy="450" r="45" fill="#3B82F6"></circle>
+  <text x="720" y="465" text-anchor="middle" font-size="30" fill="white">📖</text>
+
+  <!-- Brand -->
+  <text x="450" y="1050" text-anchor="middle" fill="#1F2937" font-size="42" font-family="Georgia" font-weight="bold">
+    WORLD KNOWLEDGE
+  </text>
+
+  <text x="450" y="1100" text-anchor="middle" fill="#6B7280" font-size="22" font-family="Arial">
+    Learn • Explore • Graduate • Succeed
+  </text>
+
+</svg>
