@@ -100,28 +100,33 @@ export default function SellerRegisterPage() {
               name="businessName"
               label="Business Name"
               placeholder="e.g. BookHub Traders"
+              required
             />
             <FormField
               name="contactPerson"
               label="Contact Person"
               placeholder="Full name"
+              required
             />
             <FormField
               name="email"
               label="Email"
               type="email"
               placeholder="business@mail.com"
+              required
             />
             <FormField
               name="mobile"
               label="Mobile Number"
               placeholder="10-digit mobile number"
+              required
             />
             <FormField
               name="password"
               label="Password"
               type="password"
               placeholder="Create a password"
+              required
             />
 
             <Button

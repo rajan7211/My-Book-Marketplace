@@ -68,6 +68,7 @@ export default function LoginPage() {
               type="email"
               placeholder="Johndoe@mail.com"
               autoComplete="email"
+              required
             />
             <FormField
               name="password"
@@ -75,6 +76,7 @@ export default function LoginPage() {
               type="password"
               placeholder="Password"
               autoComplete="current-password"
+              required
             />
 
             <div className="flex items-center justify-between text-sm">
@@ -146,3 +148,5 @@ export default function LoginPage() {
     </AuthLayout>
   );
 }
+
+

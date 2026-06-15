@@ -74,12 +74,14 @@ export default function RegisterPage() {
                 label="First Name"
                 placeholder="John"
                 autoComplete="given-name"
+                required
               />
               <FormField
                 name="lastName"
                 label="Last Name"
                 placeholder="Doe"
                 autoComplete="family-name"
+                required
               />
             </div>
             <FormField
@@ -88,6 +90,7 @@ export default function RegisterPage() {
               type="email"
               placeholder="Johndoe@mail.com"
               autoComplete="email"
+              required
             />
             <FormField
               name="password"
@@ -95,6 +98,7 @@ export default function RegisterPage() {
               type="password"
               placeholder="Create a password"
               autoComplete="new-password"
+              required
             />
             <FormField
               name="confirmPassword"
@@ -102,6 +106,7 @@ export default function RegisterPage() {
               type="password"
               placeholder="Re-enter your password"
               autoComplete="new-password"
+              required
             />
 
             <Button

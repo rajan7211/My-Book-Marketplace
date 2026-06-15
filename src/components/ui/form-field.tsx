@@ -12,6 +12,7 @@ interface FormFieldProps {
   placeholder?: string;
   autoComplete?: string;
   className?: string;
+  required?: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export function FormField({
   placeholder,
   autoComplete,
   className,
+  required = false,
 }: FormFieldProps) {
   const [field, meta] = useField(name);
   const [show, setShow] = useState(false);
@@ -33,7 +35,10 @@ export function FormField({
 
   return (
     <div className={cn("space-y-1.5", className)}>
-      <Label htmlFor={name}>{label}</Label>
+      <Label htmlFor={name}>
+        {label}
+        {required && <span className="text-red-500 ml-0.5">*</span>}
+      </Label>
       <div className="relative">
         <Input
           id={name}
@@ -61,3 +66,6 @@ export function FormField({
     </div>
   );
 }
+
+
+
