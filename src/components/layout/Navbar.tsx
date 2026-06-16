@@ -8,10 +8,10 @@ import { useAuthStore } from "@/store/auth.store";
 import { useCartStore } from "@/store/cart.store";
 import { toast } from "react-toastify";
 
+
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Categories", to: "/books", icon: true },
-  { label: "Collections", to: "/books" },
   { label: "About", to: "/about" },
 ];
 
@@ -151,6 +151,7 @@ export function Navbar() {
     </header>
   );
 }
+
 
 
 

@@ -11,10 +11,7 @@ interface BookCardProps {
   compact?: boolean;
 }
 
-/**
- * Quick "Add to cart" picks the cheapest in-stock listing (best offer).
- * Full seller comparison happens on the Book Details page.
- */
+
 export function BookCard({ book, compact = false }: BookCardProps) {
   const navigate = useNavigate();
   const addItem = useCartStore((s) => s.addItem);
