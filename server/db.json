@@ -243,7 +243,6 @@
       "coverImage": "/covers/zero-to-one.jpg",
       "status": "APPROVED",
       "tags": [
-        "bestseller",
         "created-for-you"
       ],
       "createdAt": "2026-02-14T11:05:00.000Z"
@@ -273,9 +272,7 @@
       "category": "Fictions",
       "coverImage": "/covers/moby-dick.svg",
       "status": "APPROVED",
-      "tags": [
-        "bestseller"
-      ],
+      "tags": [],
       "createdAt": "2026-02-15T11:00:00.000Z"
     },
     {
@@ -289,7 +286,6 @@
       "coverImage": "/covers/abba-kyari.svg",
       "status": "APPROVED",
       "tags": [
-        "bestseller",
         "biography-autography"
       ],
       "createdAt": "2026-02-15T11:05:00.000Z"
@@ -380,8 +376,7 @@
       "coverImage": "/covers/shoe-dog.svg",
       "status": "APPROVED",
       "tags": [
-        "biography-autography",
-        "bestseller"
+        "biography-autography"
       ],
       "createdAt": "2026-02-17T11:05:00.000Z"
     },
@@ -1157,4 +1152,6 @@
     }
   ]
 }
+
+
 
