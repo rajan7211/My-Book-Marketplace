@@ -9,7 +9,7 @@ import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { authApi, type LoginPayload } from "@/api/auth.api";
 import { useAuthStore } from "@/store/auth.store";
-import loginSide from "@/assets/login-side.svg";
+
 
 /** PDF validation: email unique + valid, password cannot be empty */
 const loginSchema = Yup.object({

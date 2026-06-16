@@ -9,6 +9,8 @@ interface AuthLayoutProps {
   subtitle: string;
 }
 
+
+
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen bg-white">

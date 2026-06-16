@@ -710,7 +710,7 @@
       "sellerId": 2,
       "price": 380,
       "mrp": 499,
-      "stock": 18,
+      "stock": 17,
       "status": "ACTIVE",
       "createdAt": "2026-02-20T10:05:00.000Z"
     },
@@ -990,7 +990,7 @@
       "sellerId": 1,
       "price": 480,
       "mrp": 649,
-      "stock": 25,
+      "stock": 24,
       "status": "ACTIVE",
       "createdAt": "2026-06-16T10:00:00.000Z"
     },
@@ -1173,6 +1173,26 @@
       "status": "DELIVERED",
       "createdAt": "2026-06-16T08:23:52.400Z",
       "id": 7
+    },
+    {
+      "customerId": 2,
+      "sellerId": 2,
+      "sellerName": "Readers Paradise",
+      "shippingAddress": "Ronak Thakur, 9805467542, HomeLand Mohali,, mohali, punjab, 149004",
+      "totalAmount": 380,
+      "status": "CREATED",
+      "createdAt": "2026-06-16T09:27:03.357Z",
+      "id": 8
+    },
+    {
+      "customerId": 2,
+      "sellerId": 1,
+      "sellerName": "BookHub Traders",
+      "shippingAddress": "Ronak Thakur, 9845436272, 1324 , sector 80, mohali, punjab, 149004",
+      "totalAmount": 480,
+      "status": "CREATED",
+      "createdAt": "2026-06-16T09:40:32.383Z",
+      "id": 9
     }
   ],
   "orderItems": [
@@ -1245,6 +1265,26 @@
       "price": 399,
       "quantity": 1,
       "id": 7
+    },
+    {
+      "orderId": 8,
+      "listingId": 2,
+      "bookId": 1,
+      "title": "Atomic Habits",
+      "coverImage": "/covers/atomic-habits.jpg",
+      "price": 380,
+      "quantity": 1,
+      "id": 8
+    },
+    {
+      "orderId": 9,
+      "listingId": 30,
+      "bookId": 26,
+      "title": "Sapiens: A Brief History of Humankind",
+      "coverImage": "/covers/sapiens.jpg",
+      "price": 480,
+      "quantity": 1,
+      "id": 9
     }
   ]
 }

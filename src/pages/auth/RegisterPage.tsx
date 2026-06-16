@@ -8,12 +8,9 @@ import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { authApi, type RegisterPayload } from "@/api/auth.api";
 import { useAuthStore } from "@/store/auth.store";
-import loginSide from "@/assets/login-side.svg";
 
-/**
- * PDF required fields: First Name, Last Name, Email, Password.
- * Validation rules: email must be unique (checked in API), password not empty.
- */
+
+
 const registerSchema = Yup.object({
   firstName: Yup.string()
     .trim()
