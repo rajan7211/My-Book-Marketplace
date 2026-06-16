@@ -62,6 +62,27 @@
       "roleId": 2,
       "createdAt": "2026-06-12T07:19:16.707Z",
       "id": 7
+    },
+    {
+      "email": "customer434@gmail.com",
+      "password": "Customer@12",
+      "roleId": 1,
+      "createdAt": "2026-06-16T07:19:55.473Z",
+      "id": 8
+    },
+    {
+      "email": "seller987@gmail.com",
+      "password": "Seller@123",
+      "roleId": 2,
+      "createdAt": "2026-06-16T07:26:01.216Z",
+      "id": 9
+    },
+    {
+      "email": "sellerthakur123@gmail.com",
+      "password": "Seller@123",
+      "roleId": 2,
+      "createdAt": "2026-06-16T07:30:29.598Z",
+      "id": 10
     }
   ],
   "customers": [
@@ -78,6 +99,13 @@
       "lastName": "Thakur",
       "createdAt": "2026-06-12T06:10:39.146Z",
       "id": 2
+    },
+    {
+      "userId": 8,
+      "firstName": "Customer",
+      "lastName": "Thakur",
+      "createdAt": "2026-06-16T07:19:55.495Z",
+      "id": 3
     }
   ],
   "sellers": [
@@ -120,6 +148,26 @@
       "status": "APPROVED",
       "createdAt": "2026-06-12T07:19:16.719Z",
       "id": 4
+    },
+    {
+      "userId": 9,
+      "businessName": "my Shop",
+      "contactPerson": "Seller",
+      "email": "seller987@gmail.com",
+      "mobile": "8580432871",
+      "status": "APPROVED",
+      "createdAt": "2026-06-16T07:26:01.241Z",
+      "id": 5
+    },
+    {
+      "userId": 10,
+      "businessName": "Book merket shop",
+      "contactPerson": "Seller Thakur",
+      "email": "sellerthakur123@gmail.com",
+      "mobile": "8580432871",
+      "status": "APPROVED",
+      "createdAt": "2026-06-16T07:30:29.610Z",
+      "id": 6
     }
   ],
   "books": [
@@ -630,6 +678,19 @@
         "palestine"
       ],
       "createdAt": "2026-06-16T09:45:00.000Z"
+    },
+    {
+      "isbn": "9783452319821",
+      "title": "One Earth",
+      "author": "yash",
+      "publisher": "Rajan",
+      "category": "History",
+      "description": "One nation one earth",
+      "coverImage": "/covers/principles.svg",
+      "status": "APPROVED",
+      "tags": [],
+      "createdAt": "2026-06-16T08:08:08.648Z",
+      "id": 35
     }
   ],
   "listings": [
@@ -1012,6 +1073,16 @@
       "stock": 25,
       "status": "ACTIVE",
       "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "sellerId": 6,
+      "bookId": 35,
+      "price": 399,
+      "mrp": 799,
+      "stock": 19,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T08:09:48.943Z",
+      "id": 39
     }
   ],
   "carts": [
@@ -1024,6 +1095,11 @@
       "customerId": 2,
       "createdAt": "2026-06-12T06:10:39.159Z",
       "id": 2
+    },
+    {
+      "customerId": 3,
+      "createdAt": "2026-06-16T07:19:55.511Z",
+      "id": 3
     }
   ],
   "cartItems": [],
@@ -1087,6 +1163,16 @@
       "status": "CREATED",
       "createdAt": "2026-06-12T08:37:02.471Z",
       "id": 6
+    },
+    {
+      "customerId": 2,
+      "sellerId": 6,
+      "sellerName": "Book merket shop",
+      "shippingAddress": "HomeLand , Mohali",
+      "totalAmount": 399,
+      "status": "DELIVERED",
+      "createdAt": "2026-06-16T08:23:52.400Z",
+      "id": 7
     }
   ],
   "orderItems": [
@@ -1149,6 +1235,16 @@
       "price": 999,
       "quantity": 1,
       "id": 6
+    },
+    {
+      "orderId": 7,
+      "listingId": 39,
+      "bookId": 35,
+      "title": "One Earth",
+      "coverImage": "/covers/principles.svg",
+      "price": 399,
+      "quantity": 1,
+      "id": 7
     }
   ]
 }

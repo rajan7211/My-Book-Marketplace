@@ -3,13 +3,15 @@ import { useAuthStore } from "@/store/auth.store";
 import type { RoleName } from "@/types";
 
 interface ProtectedRouteProps {
+  role?: RoleName;
   roles?: RoleName[];
 }
 
 /** Role-based access control (RBAC) for routes. */
-export function ProtectedRoute({ roles }: ProtectedRouteProps) {
+export function ProtectedRoute({ role, roles }: ProtectedRouteProps) {
   const { user, isAuthenticated } = useAuthStore();
   const location = useLocation();
+  const allowedRoles = roles ?? (role ? [role] : undefined);
 
   if (!isAuthenticated || !user) {
     return (
@@ -20,7 +22,7 @@ export function ProtectedRoute({ roles }: ProtectedRouteProps) {
     );
   }
 
-  if (roles && !roles.includes(user.role)) {
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 
@@ -36,6 +38,8 @@ export function ProtectedRoute({ roles }: ProtectedRouteProps) {
 
   return <Outlet />;
 }
+
+
 
 
 

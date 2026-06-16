@@ -40,8 +40,9 @@ export default function App() {
         </Route>
 
         {/* Seller */}
-        <Route element={<ProtectedRoute role="SELLER" />}>
-          <Route path="/seller/dashboard" element={<SellerDashboardPage />} />
+        <Route element={<ProtectedRoute roles={["SELLER"]} />}>
+          <Route path="/seller" element={<SellerDashboardPage />} />
+          <Route path="/seller/dashboard" element={<Navigate to="/seller" replace />} />
           <Route path="/seller/listings" element={<SellerListingsPage />} />
           <Route path="/seller/inventory" element={<SellerInventoryPage />} />
           <Route path="/seller/orders" element={<SellerOrdersPage />} />
@@ -61,6 +62,8 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+
 
 
 

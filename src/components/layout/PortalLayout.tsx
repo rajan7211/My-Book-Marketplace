@@ -98,13 +98,12 @@ export function PortalLayout({ title, nav, children }: PortalLayoutProps) {
       {/* Main */}
       <div className="ml-60 flex-1">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-8">
-          <h1 className="text-lg font-bold text-brand-dark">{title}</h1>
           <div className="flex items-center gap-3 text-sm">
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-yellow text-xs font-bold text-brand-dark">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-yellow text-xs font-bold text-brand-dark">
               {user?.name.charAt(0).toUpperCase()}
             </span>
             <div className="leading-tight">
-              <p className="font-semibold">{user?.name}</p>
+              <p className="font-semibold text-brand-dark">{user?.name}</p>
               <p className="text-[11px] text-gray-500">{user?.email}</p>
             </div>
           </div>
