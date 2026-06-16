@@ -6,6 +6,8 @@ import { booksApi } from "@/api/books.api";
 import { BookCard } from "@/components/books/BookCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
+
+
 interface CategoryRowProps {
   title: string;
   tag: string;
@@ -102,5 +104,29 @@ export function CategoryRow({
     </section>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
