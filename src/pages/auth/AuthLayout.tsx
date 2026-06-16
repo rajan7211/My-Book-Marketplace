@@ -12,21 +12,13 @@ interface AuthLayoutProps {
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen bg-white">
-      {/* Left photo panel */}
-      <div className="relative hidden w-[42%] lg:block">
+      {/* Left book-store illustration panel */}
+      <div className="relative hidden w-[42%] overflow-hidden bg-[#F6F1E6] lg:block">
         <img
-  src={loginSide}
-  alt="Education Illustration"
-  className="absolute inset-0 h-full w-full object-cover"
-/>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
-        <div className="absolute bottom-14 left-10 right-10 text-white">
-          <p className="font-serif text-3xl font-semibold italic leading-snug">
-            "Not just great books, but a great experience."
-          </p>
-          <p className="mt-5 text-lg font-semibold">Amanda Rivera</p>
-          <p className="text-sm text-gray-300">Daily Reader</p>
-        </div>
+          src={loginSide}
+          alt="Book store marketplace illustration"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
       </div>
 
       {/* Right form panel */}
@@ -52,8 +44,6 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
     </div>
   );
 }
-
-
 
 
 
