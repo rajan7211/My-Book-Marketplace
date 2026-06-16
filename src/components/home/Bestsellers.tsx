@@ -7,6 +7,7 @@ import { BookCard } from "@/components/books/BookCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
+
 const TABS = ["All", "Fictions", "Biography", "History", "Graphic Design"];
 
 export function Bestsellers() {
@@ -14,7 +15,7 @@ export function Bestsellers() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["books", "bestsellers"],
-    queryFn: () => booksApi.getBooksByTag("bestseller", 20),
+    queryFn: () => booksApi.getBooksByTag("bestseller", 24),
   });
 
   const filtered =
@@ -51,12 +52,13 @@ export function Bestsellers() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+      {/* Medium-size grid: 6 columns on large screens */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {isLoading
-          ? Array.from({ length: 5 }).map((_, i) => (
+          ? Array.from({ length: 12 }).map((_, i) => (
               <Skeleton key={i} className="aspect-[2/3] rounded-lg" />
             ))
-          : filtered?.slice(0, 10).map((book) => (
+          : filtered?.slice(0, 12).map((book) => (
               <BookCard key={book.id} book={book} compact />
             ))}
       </div>
@@ -68,3 +70,6 @@ export function Bestsellers() {
     </section>
   );
 }
+
+
+

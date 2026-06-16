@@ -60,11 +60,11 @@ export function BookCard({ book, compact = false }: BookCardProps) {
   };
 
   return (
-    <div className="group flex w-full flex-col">
+    <div className="group flex w-full flex-col transition-transform duration-200 hover:-translate-y-0.5">
       {/* ── Cover image ── */}
       <Link
         to={`/books/${book.id}`}
-        className="relative block overflow-hidden rounded-xl bg-gray-100 shadow-sm"
+        className="relative block overflow-hidden rounded-lg bg-gray-100 shadow-sm ring-1 ring-black/5 transition-shadow duration-300 group-hover:shadow-md"
       >
         <img
           src={book.coverImage}
@@ -83,7 +83,7 @@ export function BookCard({ book, compact = false }: BookCardProps) {
       <div className={compact ? "pt-2.5" : "pt-3"}>
         {/* Title */}
         <Link to={`/books/${book.id}`}>
-          <h3 className="truncate text-[13px] font-semibold leading-snug text-brand-dark hover:text-brand-yellow-dark">
+          <h3 className="truncate text-[13px] font-semibold leading-snug text-brand-dark transition-colors hover:text-brand-yellow-dark">
             {book.title}
           </h3>
         </Link>
@@ -103,13 +103,13 @@ export function BookCard({ book, compact = false }: BookCardProps) {
           )}
         </div>
 
-        {/* ── Add to cart button — always full-width, never wraps ── */}
+        {/* ── Add to cart button — modern, compact, full-width ── */}
         <button
           onClick={handleAdd}
           disabled={!best}
           className={[
             "mt-2.5 flex w-full items-center justify-center gap-1.5",
-            "h-8 rounded-lg border px-3",
+            "h-8 rounded-md border px-3",
             "whitespace-nowrap text-[11px] font-semibold",
             "transition-colors duration-150",
             best
@@ -130,13 +130,5 @@ export function BookCard({ book, compact = false }: BookCardProps) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
 
 

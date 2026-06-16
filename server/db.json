@@ -315,7 +315,7 @@
       "title": "How to Invest",
       "author": "David M. Rubenstein",
       "publisher": "Simon & Schuster",
-      "description": "Masters on the craft — the world's greatest investors reveal their strategies.",
+      "description": "Masters on the craft \u2014 the world's greatest investors reveal their strategies.",
       "category": "Graphic Design",
       "coverImage": "/covers/how-to-invest.svg",
       "status": "APPROVED",
@@ -360,7 +360,7 @@
       "title": "King: A Life",
       "author": "Jonathan Eig",
       "publisher": "Farrar, Straus",
-      "description": "The first full biography of Martin Luther King Jr. in decades — a landmark work.",
+      "description": "The first full biography of Martin Luther King Jr. in decades \u2014 a landmark work.",
       "category": "Biography",
       "coverImage": "/covers/king.svg",
       "status": "APPROVED",
@@ -375,7 +375,7 @@
       "title": "Shoe Dog",
       "author": "Phil Knight",
       "publisher": "Scribner",
-      "description": "A memoir by the creator of Nike — a candid and riveting story of the company's early days.",
+      "description": "A memoir by the creator of Nike \u2014 a candid and riveting story of the company's early days.",
       "category": "Biography",
       "coverImage": "/covers/shoe-dog.svg",
       "status": "APPROVED",
@@ -406,7 +406,7 @@
       "title": "Long Walk to Freedom",
       "author": "Nelson Mandela",
       "publisher": "Little, Brown",
-      "description": "The autobiography of Nelson Mandela — one of the great moral and political leaders of our time.",
+      "description": "The autobiography of Nelson Mandela \u2014 one of the great moral and political leaders of our time.",
       "category": "Biography",
       "coverImage": "/covers/long-walk.svg",
       "status": "APPROVED",
@@ -421,7 +421,7 @@
       "title": "Palestine: The Story",
       "author": "Rashid Khalidi",
       "publisher": "Metropolitan",
-      "description": "A hundred years' history on Palestine — settler colonialism and resistance.",
+      "description": "A hundred years' history on Palestine \u2014 settler colonialism and resistance.",
       "category": "History",
       "coverImage": "/covers/palestine-story.svg",
       "status": "APPROVED",
@@ -485,6 +485,156 @@
       "tags": [],
       "createdAt": "2026-06-12T07:49:05.968Z",
       "id": 24
+    },
+    {
+      "id": 25,
+      "isbn": "9781451639612",
+      "title": "The 7 Habits of Highly Effective People",
+      "author": "Stephen R. Covey",
+      "publisher": "Free Press",
+      "description": "Powerful lessons in personal change \u2014 timeless principles for effectiveness in life and work.",
+      "category": "Self Help",
+      "coverImage": "/covers/7-habits.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-06-16T09:00:00.000Z"
+    },
+    {
+      "id": 26,
+      "isbn": "9780062316097",
+      "title": "Sapiens: A Brief History of Humankind",
+      "author": "Yuval Noah Harari",
+      "publisher": "Harper",
+      "description": "A sweeping account of the history of our species \u2014 from the Cognitive Revolution to the present.",
+      "category": "History",
+      "coverImage": "/covers/sapiens.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-06-16T09:05:00.000Z"
+    },
+    {
+      "id": 27,
+      "isbn": "9780062315007",
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "publisher": "HarperOne",
+      "description": "A young Andalusian shepherd embarks on a journey to find a worldly treasure \u2014 and discovers the treasure within.",
+      "category": "Fictions",
+      "coverImage": "/covers/alchemist.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-06-16T09:10:00.000Z"
+    },
+    {
+      "id": 28,
+      "isbn": "9781524763138",
+      "title": "Becoming",
+      "author": "Michelle Obama",
+      "publisher": "Crown",
+      "description": "An intimate, powerful, and inspiring memoir by the former First Lady of the United States.",
+      "category": "Biography",
+      "coverImage": "/covers/becoming.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-06-16T09:15:00.000Z"
+    },
+    {
+      "id": 29,
+      "isbn": "9780374533557",
+      "title": "Thinking, Fast and Slow",
+      "author": "Daniel Kahneman",
+      "publisher": "Farrar, Straus and Giroux",
+      "description": "Engaging the reader in a lively conversation about how we think, make choices, and arrive at judgments.",
+      "category": "Self Help",
+      "coverImage": "/covers/thinking-fast-slow.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "bestseller"
+      ],
+      "createdAt": "2026-06-16T09:20:00.000Z"
+    },
+    {
+      "id": 30,
+      "isbn": "9780399590504",
+      "title": "Educated",
+      "author": "Tara Westover",
+      "publisher": "Random House",
+      "description": "An unforgettable memoir about a young woman who, kept out of school, leaves her survivalist family and goes on to earn a PhD.",
+      "category": "Biography",
+      "coverImage": "/covers/educated.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "macrobiotic"
+      ],
+      "createdAt": "2026-06-16T09:25:00.000Z"
+    },
+    {
+      "id": 31,
+      "isbn": "9781577314806",
+      "title": "The Power of Now",
+      "author": "Eckhart Tolle",
+      "publisher": "New World Library",
+      "description": "A guide to spiritual enlightenment \u2014 living in the present moment and finding inner peace.",
+      "category": "Self Help",
+      "coverImage": "/covers/power-of-now.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "macrobiotic"
+      ],
+      "createdAt": "2026-06-16T09:30:00.000Z"
+    },
+    {
+      "id": 32,
+      "isbn": "9781784784493",
+      "title": "The Iron Cage",
+      "author": "Rashid Khalidi",
+      "publisher": "Verso",
+      "description": "The story of the Palestinian national movement and its struggle against settler colonialism.",
+      "category": "History",
+      "coverImage": "/covers/iron-cage.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "palestine"
+      ],
+      "createdAt": "2026-06-16T09:35:00.000Z"
+    },
+    {
+      "id": 33,
+      "isbn": "9780307381854",
+      "title": "I Shall Not Hate",
+      "author": "Izzeldin Abuelaish",
+      "publisher": "Bloomsbury",
+      "description": "A Palestinian doctor's journey from grief to hope \u2014 turning pain into a force for reconciliation.",
+      "category": "Biography",
+      "coverImage": "/covers/i-shall-not-hate.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "palestine"
+      ],
+      "createdAt": "2026-06-16T09:40:00.000Z"
+    },
+    {
+      "id": 34,
+      "isbn": "9781931859657",
+      "title": "Mornings in Jenin",
+      "author": "Susan Abulhawa",
+      "publisher": "Bloomsbury",
+      "description": "A poignant, multigenerational story of a Palestinian family caught in the conflict of the Middle East.",
+      "category": "Fictions",
+      "coverImage": "/covers/mornings-jenin.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "palestine"
+      ],
+      "createdAt": "2026-06-16T09:45:00.000Z"
     }
   ],
   "listings": [
@@ -767,6 +917,106 @@
       "status": "ACTIVE",
       "createdAt": "2026-06-12T08:32:31.113Z",
       "id": 28
+    },
+    {
+      "id": 29,
+      "bookId": 25,
+      "sellerId": 1,
+      "price": 450,
+      "mrp": 599,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 30,
+      "bookId": 26,
+      "sellerId": 1,
+      "price": 480,
+      "mrp": 649,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 31,
+      "bookId": 27,
+      "sellerId": 1,
+      "price": 510,
+      "mrp": 699,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 32,
+      "bookId": 28,
+      "sellerId": 1,
+      "price": 540,
+      "mrp": 749,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 33,
+      "bookId": 29,
+      "sellerId": 1,
+      "price": 570,
+      "mrp": 799,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 34,
+      "bookId": 30,
+      "sellerId": 1,
+      "price": 600,
+      "mrp": 849,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 35,
+      "bookId": 31,
+      "sellerId": 1,
+      "price": 630,
+      "mrp": 899,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 36,
+      "bookId": 32,
+      "sellerId": 1,
+      "price": 660,
+      "mrp": 949,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 37,
+      "bookId": 33,
+      "sellerId": 1,
+      "price": 690,
+      "mrp": 999,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
+    },
+    {
+      "id": 38,
+      "bookId": 34,
+      "sellerId": 1,
+      "price": 720,
+      "mrp": 1049,
+      "stock": 25,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-16T10:00:00.000Z"
     }
   ],
   "carts": [
@@ -907,3 +1157,4 @@
     }
   ]
 }
+

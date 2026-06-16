@@ -1,6 +1,5 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { FiArrowLeft, FiArrowRight, FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight } from "react-icons/fi";
 import { useQuery } from "@tanstack/react-query";
 import { booksApi } from "@/api/books.api";
 import { BookCard } from "@/components/books/BookCard";
@@ -21,81 +20,53 @@ export function CategoryRow({
   subtitle = "Fresh off the press — discover what readers are picking up this week.",
   viewAll = false,
 }: CategoryRowProps) {
-  const railRef = useRef<HTMLDivElement>(null);
-
   const { data, isLoading } = useQuery({
     queryKey: ["books", "tag", tag],
-    queryFn: () => booksApi.getBooksByTag(tag, 10),
+    queryFn: () => booksApi.getBooksByTag(tag, 24),
   });
 
-  const scroll = (dir: number) =>
-    railRef.current?.scrollBy({ left: dir * 400, behavior: "smooth" });
-
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
       {/* Header */}
-      <div className="mb-1.5 flex items-end justify-between">
+      <div className="mb-6 flex items-end justify-between border-b border-gray-200 pb-5">
         <div>
           {label && (
             <p className="mb-1.5 text-[11px] font-medium uppercase tracking-[.1em] text-purple-600">
               {label}
             </p>
           )}
-          <h2 className="font-serif text-[22px] font-semibold leading-snug text-[#1a1625]">
+          <h2 className="font-serif text-2xl font-bold sm:text-3xl">
             {title}
           </h2>
+          <p className="mt-2 text-sm text-gray-500">{subtitle}</p>
         </div>
         {viewAll && (
           <Link
             to="/books"
-            className="flex items-center gap-1 text-sm font-medium text-purple-600 transition hover:text-purple-800"
+            className="hidden items-center gap-1 pb-2.5 text-sm font-medium text-gray-600 hover:text-brand-dark sm:flex"
           >
             View all <FiArrowUpRight size={14} />
           </Link>
         )}
       </div>
-      <p className="mb-6 text-sm text-gray-500">{subtitle}</p>
 
-      {/* Rail */}
-      <div className="relative">
-        <button
-          onClick={() => scroll(-1)}
-          className="absolute -left-4 top-1/3 z-10 hidden h-[34px] w-[34px] -translate-y-1/2 place-items-center rounded-full border border-[#e5e3f0] bg-white text-gray-500 transition hover:bg-[#1a1625] hover:text-white lg:grid"
-          aria-label="Previous"
-        >
-          <FiArrowLeft size={14} />
-        </button>
-
-        <div
-          ref={railRef}
-          className="no-scrollbar flex gap-4 overflow-x-auto scroll-smooth pb-1"
-        >
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="w-[130px] shrink-0 space-y-2">
-                  <Skeleton className="h-[185px] w-[130px] rounded-xl" />
-                  <Skeleton className="h-3 w-3/4 rounded" />
-                  <Skeleton className="h-3 w-1/2 rounded" />
-                </div>
-              ))
-            : data?.map((book) => (
-                <div key={book.id} className="w-[130px] shrink-0">
-                  <BookCard book={book} compact />
-                </div>
-              ))}
-        </div>
-
-        <button
-          onClick={() => scroll(1)}
-          className="absolute -right-4 top-1/3 z-10 hidden h-[34px] w-[34px] -translate-y-1/2 place-items-center rounded-full border border-[#e5e3f0] bg-white text-gray-500 transition hover:bg-[#1a1625] hover:text-white lg:grid"
-          aria-label="Next"
-        >
-          <FiArrowRight size={14} />
-        </button>
+      {/* Medium-size grid: 6 columns on large screens */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        {isLoading
+          ? Array.from({ length: 12 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-[2/3] rounded-lg" />
+            ))
+          : data?.slice(0, 12).map((book) => (
+              <BookCard key={book.id} book={book} compact />
+            ))}
       </div>
+      {!isLoading && data?.length === 0 && (
+        <p className="py-10 text-center text-sm text-gray-500">
+          No books found in this section yet.
+        </p>
+      )}
     </section>
   );
 }
-
 
 
