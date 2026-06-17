@@ -1,0 +1,78 @@
+/* Glass surfaces — "display case" glass, warm not clinical */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Navbar glass-on-scroll state */
+.nav-glass {
+  background: rgba(15, 13, 26, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Gradient "underglow" used beneath section eyebrows — the
+   page's signature: a bookmark ribbon of light, not a generic line */
+.glow-ribbon {
+  position: relative;
+}
+.glow-ribbon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 3px;
+  width: 46px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--ribbon-from, #f5a623), var(--ribbon-to, #ec4899));
+  box-shadow: 0 0 12px 1px var(--ribbon-glow, rgba(245, 166, 35, 0.55));
+}
+
+/* Floating "page" shapes for the hero — drifting rectangles
+   with a soft glow, standing in for the brief's "floating shapes"
+   while staying grounded in the bookstore subject */
+@keyframes page-float {
+  0%, 100% { transform: translateY(0) rotate(var(--rot, -6deg)); }
+  50% { transform: translateY(-14px) rotate(var(--rot, -6deg)); }
+}
+.page-float {
+  animation: page-float 7s ease-in-out infinite;
+}
+
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -16px) scale(1.06); }
+  66% { transform: translate(-16px, 14px) scale(0.96); }
+}
+.blob-drift {
+  animation: blob-drift 14s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.glow-pulse {
+  animation: glow-pulse 2.6s ease-in-out infinite;
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .page-float,
+  .blob-drift,
+  .glow-pulse {
+    animation: none !important;
+  }
+}
+
+
+

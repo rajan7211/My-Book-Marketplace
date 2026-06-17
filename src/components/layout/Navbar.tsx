@@ -8,11 +8,9 @@ import { useAuthStore } from "@/store/auth.store";
 import { useCartStore } from "@/store/cart.store";
 import { toast } from "react-toastify";
 
-
 const NAV_LINKS = [
   { label: "Home", to: "/" },
-  { label: "Shop", to: "/books", },
-
+  { label: "Shop", to: "/books" },
 ];
 
 export function Navbar() {
@@ -22,6 +20,7 @@ export function Navbar() {
   const totalItems = useCartStore((s) => s.totalItems());
   const [menuOpen, setMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,6 +30,13 @@ export function Navbar() {
     };
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const handleLogout = () => {
@@ -48,7 +54,13 @@ export function Navbar() {
         : "/orders";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0f0d1a] text-white">
+    <header
+      className={`sticky top-0 z-50 border-b text-white transition-colors duration-300 ${
+        scrolled
+          ? "nav-glass border-white/[0.08]"
+          : "border-white/[0.07] bg-[#0f0d1a]"
+      }`}
+    >
       <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 sm:px-6">
 
         {/* Left: hamburger + logo */}
@@ -66,20 +78,23 @@ export function Navbar() {
 
         {/* Centre nav */}
         <nav className="hidden items-center gap-7 text-sm md:flex">
-          {NAV_LINKS.map(({ label, to, icon }) => {
+          {NAV_LINKS.map(({ label, to }) => {
             const active = pathname === to;
             return (
               <Link
                 key={label}
                 to={to}
-                className={`relative flex items-center gap-1 transition ${
-                  active
-                    ? "text-white after:absolute after:-bottom-[21px] after:left-0 after:h-[2px] after:w-full after:bg-amber-400"
-                    : "text-[#8b86a8] hover:text-white"
+                className={`relative flex items-center gap-1 py-1 transition ${
+                  active ? "text-white" : "text-[#8b86a8] hover:text-white"
                 }`}
               >
                 {label}
-                {icon && <FiChevronDown size={12} />}
+                {active && (
+                  <span
+                    className="absolute -bottom-[20px] left-0 h-[2px] w-full rounded-full"
+                    style={{ background: "linear-gradient(90deg,#f5a623,#ec4899)" }}
+                  />
+                )}
               </Link>
             );
           })}
@@ -95,7 +110,10 @@ export function Navbar() {
             >
               <FiShoppingCart size={17} />
               {totalItems > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full bg-amber-400 text-[9px] font-bold text-amber-900">
+                <span
+                  className="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full text-[9px] font-bold text-white shadow-[0_0_8px_rgba(236,72,153,0.7)]"
+                  style={{ background: "linear-gradient(135deg,#ec4899,#8b5cf6)" }}
+                >
                   {totalItems}
                 </span>
               )}
@@ -108,7 +126,10 @@ export function Navbar() {
                 onClick={() => setMenuOpen((o) => !o)}
                 className="flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.06] py-1.5 pl-1.5 pr-3 text-sm text-white transition hover:bg-white/[0.12]"
               >
-                <span className="grid h-[26px] w-[26px] place-items-center rounded-full bg-purple-600 text-[11px] font-medium text-white">
+                <span
+                  className="grid h-[26px] w-[26px] place-items-center rounded-full text-[11px] font-medium text-white"
+                  style={{ background: "linear-gradient(135deg,#8b5cf6,#ec4899)" }}
+                >
                   {user.name.charAt(0).toUpperCase()}
                 </span>
                 <span className="hidden max-w-[100px] truncate sm:block">
@@ -118,18 +139,18 @@ export function Navbar() {
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 mt-2 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white py-1 text-[#0f0d1a] shadow-xl">
+                <div className="glass-light absolute right-0 mt-2 w-48 overflow-hidden rounded-xl py-1 text-[#0f0d1a] shadow-xl">
                   <Link
                     to={dashboardPath}
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50"
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-black/5"
                   >
                     <FiUser size={14} />
                     {user.role === "CUSTOMER" ? "My Orders" : "Dashboard"}
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-gray-50"
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-black/5"
                   >
                     <FiLogOut size={14} /> Logout
                   </button>
@@ -139,7 +160,8 @@ export function Navbar() {
           ) : (
             <Button
               onClick={() => navigate("/register")}
-              className="h-[34px] rounded-lg bg-purple-600 px-5 text-sm font-medium hover:bg-purple-700"
+              className="h-[34px] rounded-lg border-0 px-5 text-sm font-medium text-white shadow-[0_0_18px_rgba(139,92,246,0.45)] transition hover:shadow-[0_0_24px_rgba(236,72,153,0.55)]"
+              style={{ background: "linear-gradient(135deg,#8b5cf6,#ec4899)" }}
             >
               Sign up
             </Button>
@@ -151,7 +173,5 @@ export function Navbar() {
     </header>
   );
 }
-
-
 
 

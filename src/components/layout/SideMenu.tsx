@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   FiX,
@@ -9,12 +9,12 @@ import {
   FiStar,
   FiClock,
   FiPackage,
-  FiShoppingCart, 
+  FiShoppingCart,
   FiLogOut,
   FiLogIn,
   FiGrid,
   FiHelpCircle,
-  FiBookOpen, 
+  FiBookOpen,
 } from "react-icons/fi";
 import { GiBookshelf, GiSpellBook, GiScrollQuill, GiPencilBrush, GiSun } from "react-icons/gi";
 import { MdStorefront } from "react-icons/md";
@@ -28,13 +28,14 @@ interface SideMenuProps {
   onClose: () => void;
 }
 
-const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  Fictions: GiSpellBook,
-  Biography: GiScrollQuill,
-  History: GiBookshelf,
-  "Graphic Design": GiPencilBrush,
-  "Self Help": GiSun,
+const CATEGORY_META: Record<string, { icon: React.ElementType; color: string }> = {
+  Fictions: { icon: GiSpellBook, color: "#8b5cf6" },
+  Biography: { icon: GiScrollQuill, color: "#ec4899" },
+  History: { icon: GiBookshelf, color: "#f59e0b" },
+  "Graphic Design": { icon: GiPencilBrush, color: "#06b6d4" },
+  "Self Help": { icon: GiSun, color: "#10b981" },
 };
+const FALLBACK_META = { icon: FiBookOpen, color: "#8b86a8" };
 
 /** Dark-themed left slide-in navigation drawer matching the navbar/hero palette. */
 export function SideMenu({ open, onClose }: SideMenuProps) {
@@ -47,7 +48,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     enabled: open,
   });
 
-  // lock body scroll + close on Escape
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
@@ -73,7 +73,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
   return (
     <>
-      {/* Overlay */}
       <div
         onClick={onClose}
         className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
@@ -82,7 +81,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
         aria-hidden="true"
       />
 
-      {/* Drawer — same dark navy as navbar */}
       <aside
         style={{ backgroundColor: "#13111f" }}
         className={`fixed inset-y-0 left-0 z-[70] flex w-[300px] max-w-[85vw] flex-col shadow-2xl transition-transform duration-300 ease-out ${
@@ -91,7 +89,6 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
         role="dialog"
         aria-label="Main menu"
       >
-        {/* Close button */}
         <button
           onClick={onClose}
           className={`absolute -right-12 top-3 grid h-10 w-10 place-items-center rounded-full text-white/80 transition hover:bg-white/10 ${
@@ -118,70 +115,41 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           style={{ backgroundColor: "#1e1b30" }}
           className="flex items-center gap-3 border-b border-white/10 px-5 py-4 text-left transition hover:brightness-110"
         >
-          {/* Avatar circle — gold on dark */}
           <span
-            style={{ backgroundColor: "#f5a623", color: "#13111f" }}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold text-white shadow-[0_0_16px_rgba(245,166,35,0.4)]"
+            style={{ background: "linear-gradient(135deg,#f5a623,#f97316)" }}
           >
-            {isAuthenticated ? (
-              user?.name.charAt(0).toUpperCase()
-            ) : (
-              <FiUser size={17} />
-            )}
+            {isAuthenticated ? user?.name.charAt(0).toUpperCase() : <FiUser size={17} />}
           </span>
           <div className="min-w-0">
             <p className="text-[13px] text-white/50">Welcome back</p>
             <p className="truncate text-[15px] font-bold text-white">
-              {isAuthenticated
-                ? `Hello, ${user?.name.split(" ")[0]}`
-                : "Hello, Sign in"}
+              {isAuthenticated ? `Hello, ${user?.name.split(" ")[0]}` : "Hello, Sign in"}
             </p>
           </div>
           <FiChevronRight size={16} className="ml-auto shrink-0 text-white/30" />
         </button>
 
-        {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto">
-
-          {/* Trending */}
           <Section title="Trending">
-            <Item
-              icon={FiTrendingUp}
-              label="Trending Now"
-              onClick={() => go("/books?sort=newest")}
-            />
-            <Item
-              icon={FiStar}
-              label="Bestsellers"
-              onClick={() => go("/books")}
-            />
-            <Item
-              icon={FiClock}
-              label="New Releases"
-              onClick={() => go("/books?sort=newest")}
-            />
+            <Item icon={FiTrendingUp} label="Trending Now" color="#ec4899" onClick={() => go("/books?sort=newest")} />
+            <Item icon={FiStar} label="Bestsellers" color="#f59e0b" onClick={() => go("/books")} />
+            <Item icon={FiClock} label="New Releases" color="#06b6d4" onClick={() => go("/books?sort=newest")} />
           </Section>
 
           <Divider />
 
-          {/* Shop by Category */}
           <Section title="Shop by Category">
-            <Item
-              icon={FiGrid}
-              label="All Books"
-              onClick={() => go("/books")}
-              chevron
-            />
+            <Item icon={FiGrid} label="All Books" color="#8b86a8" onClick={() => go("/books")} chevron />
             {(categories ?? []).map((c) => {
-              const Icon = CATEGORY_ICONS[c] ?? FiBookOpen;
+              const meta = CATEGORY_META[c] ?? FALLBACK_META;
               return (
                 <Item
                   key={c}
-                  icon={Icon}
+                  icon={meta.icon}
                   label={c}
-                  onClick={() =>
-                    go(`/books?category=${encodeURIComponent(c)}`)
-                  }
+                  color={meta.color}
+                  onClick={() => go(`/books?category=${encodeURIComponent(c)}`)}
                   chevron
                 />
               );
@@ -190,76 +158,41 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
           <Divider />
 
-          {/* Programs */}
           <Section title="Programs & Features">
-            <Item
-              icon={MdStorefront}
-              label="Sell on World Knowledge"
-              onClick={() => go("/seller/register")}
-              chevron
-            />
+            <Item icon={MdStorefront} label="Sell on World Knowledge" color="#10b981" onClick={() => go("/seller/register")} chevron />
             {user?.role === "SELLER" && (
-              <Item
-                icon={FiPackage}
-                label="Seller Dashboard"
-                onClick={() => go("/seller")}
-                chevron
-              />
+              <Item icon={FiPackage} label="Seller Dashboard" color="#8b86a8" onClick={() => go("/seller")} chevron />
             )}
             {user?.role === "ADMIN" && (
-              <Item
-                icon={FiGrid}
-                label="Admin Dashboard"
-                onClick={() => go("/admin")}
-                chevron
-              />
+              <Item icon={FiGrid} label="Admin Dashboard" color="#8b86a8" onClick={() => go("/admin")} chevron />
             )}
           </Section>
 
           <Divider />
 
-          {/* Help & Settings */}
           <Section title="Help & Settings">
             {(!user || user.role === "CUSTOMER") && (
               <>
-                <Item
-                  icon={FiShoppingCart}
-                  label="My Cart"
-                  onClick={() => go("/cart")}
-                />
-                <Item
-                  icon={FiPackage}
-                  label="My Orders"
-                  onClick={() => go("/orders")}
-                />
+                <Item icon={FiShoppingCart} label="My Cart" color="#8b86a8" onClick={() => go("/cart")} />
+                <Item icon={FiPackage} label="My Orders" color="#8b86a8" onClick={() => go("/orders")} />
               </>
             )}
             <Item
               icon={FiHelpCircle}
               label="Customer Service"
+              color="#8b86a8"
               onClick={() => {
                 onClose();
                 toast.info("Customer service is simulated in this demo.");
               }}
             />
             {isAuthenticated ? (
-              <Item
-                icon={FiLogOut}
-                label="Sign Out"
-                onClick={handleLogout}
-                danger
-              />
+              <Item icon={FiLogOut} label="Sign Out" onClick={handleLogout} danger />
             ) : (
-              <Item
-                icon={FiLogIn}
-                label="Sign In"
-                onClick={() => go("/login")}
-                highlight
-              />
+              <Item icon={FiLogIn} label="Sign In" onClick={() => go("/login")} highlight />
             )}
           </Section>
 
-          {/* Footer */}
           <p className="px-5 pb-6 pt-3 text-[11px] text-white/25">
             © 2026 World Knowledge — One book, many sellers.
           </p>
@@ -269,21 +202,12 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
   );
 }
 
-/* ─── Building blocks ─── */
-
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="py-1">
-      {/* Section label — purple accent like the hero badge */}
       <h3
-        style={{ color: "#f5a623" }}
         className="px-5 pb-1 pt-4 text-[10px] font-bold uppercase tracking-[.12em]"
+        style={{ background: "linear-gradient(90deg,#f5a623,#ec4899)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}
       >
         {title}
       </h3>
@@ -300,6 +224,7 @@ function Item({
   icon: Icon,
   label,
   onClick,
+  color,
   chevron = false,
   danger = false,
   highlight = false,
@@ -307,21 +232,12 @@ function Item({
   icon: React.ElementType;
   label: string;
   onClick: () => void;
+  color?: string;
   chevron?: boolean;
   danger?: boolean;
   highlight?: boolean;
 }) {
-  const textColor = danger
-    ? "text-red-400"
-    : highlight
-    ? "text-purple-400"
-    : "text-white/80";
-
-  const iconColor = danger
-    ? "text-red-500"
-    : highlight
-    ? "text-purple-400"
-    : "text-white/40";
+  const textColor = danger ? "text-red-400" : highlight ? "text-purple-400" : "text-white/80";
 
   return (
     <button
@@ -329,15 +245,15 @@ function Item({
       className={`flex w-full items-center justify-between px-5 py-2.5 text-left text-[13.5px] transition-colors hover:bg-white/5 ${textColor}`}
     >
       <span className="flex items-center gap-3.5">
-        <Icon size={16} className={iconColor} />
+        <Icon
+          size={16}
+          style={{ color: danger ? "#f87171" : highlight ? "#a78bfa" : color ?? "rgba(255,255,255,0.4)" }}
+        />
         {label}
       </span>
-      {chevron && (
-        <FiChevronRight size={14} className="text-white/20" />
-      )}
+      {chevron && <FiChevronRight size={14} className="text-white/20" />}
     </button>
   );
 }
-
 
 

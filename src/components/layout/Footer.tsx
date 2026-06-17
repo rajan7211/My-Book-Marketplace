@@ -50,41 +50,11 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[#0f0d1a] text-white">
-
-      {/* Newsletter */}
-      <div className="border-b border-white/[0.08]">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6">
-          <div className="max-w-xs">
-            <p className="mb-2 text-[11px] font-medium uppercase tracking-[.1em] text-purple-400">
-              Newsletter
-            </p>
-            <h3 className="font-serif text-[22px] font-semibold leading-snug text-[#f1f0f9]">
-              Fresh picks in your inbox every week
-            </h3>
-          </div>
-          <form onSubmit={subscribe} className="flex w-full max-w-sm gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your email address…"
-              className="h-10 flex-1 rounded-lg border border-[#3d3760] bg-[#1a1730] px-4 text-sm text-[#f1f0f9] placeholder:text-[#534f6e] focus:border-purple-500 focus:outline-none"
-            />
-            <Button
-              type="submit"
-              className="h-10 rounded-lg bg-purple-600 px-5 text-[12px] font-medium tracking-wide hover:bg-purple-700"
-            >
-              Subscribe
-            </Button>
-          </form>
-        </div>
-      </div>
-
+    <footer className="relative overflow-hidden bg-[#0f0d1a] text-white">
       {/* Main grid */}
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
 
-        {/* Brand */}
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+
         <div>
           <Logo />
           <p className="mt-4 text-sm leading-relaxed text-[#6b6888]">
@@ -97,15 +67,16 @@ export function Footer() {
                 key={label}
                 href="#"
                 aria-label={label}
-                className="grid h-8 w-8 place-items-center rounded-full border border-white/[0.12] text-[#6b6888] transition hover:border-purple-500 hover:text-purple-400"
+                className="group grid h-8 w-8 place-items-center rounded-full border border-white/[0.12] text-[#6b6888] transition hover:border-transparent"
               >
-                <Icon size={14} />
+                <span className="grid h-full w-full place-items-center rounded-full transition group-hover:shadow-[0_0_14px_rgba(236,72,153,0.5)]">
+                  <Icon size={14} className="transition group-hover:text-white" />
+                </span>
               </a>
             ))}
           </div>
         </div>
 
-        {/* Quick links */}
         <div>
           <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
             Quick links
@@ -113,10 +84,7 @@ export function Footer() {
           <ul className="space-y-2.5">
             {QUICK_LINKS.map(({ label, to }) => (
               <li key={label}>
-                <Link
-                  to={to}
-                  className="text-sm text-[#6b6888] transition hover:text-purple-400"
-                >
+                <Link to={to} className="text-sm text-[#6b6888] transition hover:text-pink-400">
                   {label}
                 </Link>
               </li>
@@ -124,7 +92,6 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Customer */}
         <div>
           <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
             Customer area
@@ -132,10 +99,7 @@ export function Footer() {
           <ul className="space-y-2.5">
             {CUSTOMER_LINKS.map(({ label, to }) => (
               <li key={label}>
-                <Link
-                  to={to}
-                  className="text-sm text-[#6b6888] transition hover:text-purple-400"
-                >
+                <Link to={to} className="text-sm text-[#6b6888] transition hover:text-cyan-400">
                   {label}
                 </Link>
               </li>
@@ -143,19 +107,18 @@ export function Footer() {
           </ul>
         </div>
 
-        {/* Sell CTA */}
         <div>
           <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
             Sell with us
           </h4>
-          <div className="rounded-xl border border-[#3d3760] bg-[#1a1730] p-5">
-            <p className="text-sm leading-relaxed text-[#6b6888]">
+          <div className="glass rounded-xl p-5">
+            <p className="text-sm leading-relaxed text-[#a8a4c2]">
               List your books and reach thousands of readers worldwide.
             </p>
             <Link to="/seller/register" className="mt-4 block">
               <Button
                 variant="outline"
-                className="w-full border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white"
+                className="w-full border-emerald-500/60 text-emerald-400 transition hover:bg-emerald-500 hover:text-white"
               >
                 Become a seller
               </Button>
@@ -165,7 +128,7 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/[0.08]">
+      <div className="relative border-t border-white/[0.08]">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-[#534f6e] sm:flex-row sm:px-6">
           <p>© 2026 Bookstore. All rights reserved.</p>
           <div className="flex gap-5">
