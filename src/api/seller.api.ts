@@ -70,7 +70,7 @@ export const sellerApi = {
 
     const { data } = await api.post<Book>("/books", {
       ...payload,
-      coverImage: "/covers/principles.svg", // placeholder cover (assumption)
+      coverImage: "https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg", // placeholder cover
       status: "PENDING_APPROVAL",
       tags: [],
       createdAt: new Date().toISOString(),
@@ -187,6 +187,8 @@ export const sellerApi = {
     return data;
   },
 };
+
+
 
 
 

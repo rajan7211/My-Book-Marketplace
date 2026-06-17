@@ -43,7 +43,7 @@ export function PromoBanners() {
           </Link>
         </div>
         <img
-          src="/covers/principles.svg"
+          src="https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg"
           alt="Deal of the day"
           className="h-36 w-24 rotate-6 rounded shadow-lg"
         />

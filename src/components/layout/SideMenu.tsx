@@ -9,12 +9,12 @@ import {
   FiStar,
   FiClock,
   FiPackage,
-  FiShoppingCart,
+  FiShoppingCart, 
   FiLogOut,
   FiLogIn,
   FiGrid,
   FiHelpCircle,
-  FiBookOpen,
+  FiBookOpen, 
 } from "react-icons/fi";
 import { GiBookshelf, GiSpellBook, GiScrollQuill, GiPencilBrush, GiSun } from "react-icons/gi";
 import { MdStorefront } from "react-icons/md";

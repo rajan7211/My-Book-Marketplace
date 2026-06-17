@@ -179,7 +179,7 @@
       "publisher": "Random House",
       "description": "An easy and proven way to build good habits and break bad ones. Tiny changes, remarkable results.",
       "category": "Self Help",
-      "coverImage": "/covers/atomic-habits.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
       "status": "APPROVED",
       "tags": [
         "bestseller",
@@ -195,7 +195,7 @@
       "publisher": "Bloomsbury",
       "description": "The sixth book in the Harry Potter series, where Voldemort's past is unveiled through memories.",
       "category": "Fictions",
-      "coverImage": "/covers/half-blood-prince.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780747581086-L.jpg",
       "status": "APPROVED",
       "tags": [
         "trending"
@@ -210,7 +210,7 @@
       "publisher": "Pegasus",
       "description": "An epic tale of warriors, conquest and survival in the brutal Viking age.",
       "category": "History",
-      "coverImage": "/covers/viking.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9786053435693-L.jpg",
       "status": "APPROVED",
       "tags": [
         "trending"
@@ -225,7 +225,7 @@
       "publisher": "Berkley",
       "description": "A woman goes head-to-head with the CEO of the company gentrifying her neighborhood in this fresh retelling.",
       "category": "Fictions",
-      "coverImage": "/covers/pride-protest.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780349436937-L.jpg",
       "status": "APPROVED",
       "tags": [
         "new-release",
@@ -241,7 +241,7 @@
       "publisher": "Harvard Business",
       "description": "In this powerful yet practical book, economist and thought leader shows why sponsors matter.",
       "category": "Biography",
-      "coverImage": "/covers/find-a-sponsor.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780446696982-L.jpg",
       "status": "APPROVED",
       "tags": [
         "new-release",
@@ -257,7 +257,7 @@
       "publisher": "Viking",
       "description": "Between life and death there is a library, and within that library, the shelves go on forever.",
       "category": "Fictions",
-      "coverImage": "/covers/midnight-library.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -272,7 +272,7 @@
       "publisher": "PublicAffairs",
       "description": "A 5000-year history of wealth, greed and endeavour across the African continent.",
       "category": "History",
-      "coverImage": "/covers/fortunes-africa.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781610396356-L.jpg",
       "status": "APPROVED",
       "tags": [
         "bestseller",
@@ -288,7 +288,7 @@
       "publisher": "Crown Business",
       "description": "Notes on startups, or how to build the future. Doing what we already know takes the world from 1 to n. Creating something new takes it from 0 to 1.",
       "category": "Graphic Design",
-      "coverImage": "/covers/zero-to-one.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg",
       "status": "APPROVED",
       "tags": [
         "created-for-you"
@@ -303,7 +303,7 @@
       "publisher": "PublicAffairs",
       "description": "Warlords, oligarchs, corporations, smugglers, and the theft of Africa's wealth.",
       "category": "History",
-      "coverImage": "/covers/looting-machine.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781610394390-L.jpg",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -318,7 +318,7 @@
       "publisher": "Harper & Brothers",
       "description": "The saga of Captain Ahab and his monomaniacal pursuit of the white whale.",
       "category": "Fictions",
-      "coverImage": "/covers/moby-dick.svg",
+      "coverImage": "https://covers.openlibrary.org/b/id/10410387-L.jpg",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-02-15T11:00:00.000Z"
@@ -331,7 +331,7 @@
       "publisher": "Premium Times",
       "description": "The life and times of one of Nigeria's most influential chiefs of staff.",
       "category": "Biography",
-      "coverImage": "/covers/abba-kyari.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9789785205800-L.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -346,7 +346,7 @@
       "publisher": "Crown Business",
       "description": "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
       "category": "Graphic Design",
-      "coverImage": "/covers/lean-startup.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780307887894-L.jpg",
       "status": "APPROVED",
       "tags": [
         "created-for-you"
@@ -359,9 +359,9 @@
       "title": "How to Invest",
       "author": "David M. Rubenstein",
       "publisher": "Simon & Schuster",
-      "description": "Masters on the craft — the world's greatest investors reveal their strategies.",
+      "description": "Masters on the craft \u2014 the world's greatest investors reveal their strategies.",
       "category": "Graphic Design",
-      "coverImage": "/covers/how-to-invest.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781982132798-L.jpg",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -376,7 +376,7 @@
       "publisher": "Tor Books",
       "description": "The long-awaited sequel to the dark academia sensation The Atlas Six.",
       "category": "Fictions",
-      "coverImage": "/covers/atlas-paradox.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781250854513-L.jpg",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -391,7 +391,7 @@
       "publisher": "Harper Perennial",
       "description": "The unforgettable novel of childhood in a sleepy Southern town and the crisis of conscience that rocked it.",
       "category": "Fictions",
-      "coverImage": "/covers/mockingbird.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780060935467-L.jpg",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -404,9 +404,9 @@
       "title": "King: A Life",
       "author": "Jonathan Eig",
       "publisher": "Farrar, Straus",
-      "description": "The first full biography of Martin Luther King Jr. in decades — a landmark work.",
+      "description": "The first full biography of Martin Luther King Jr. in decades \u2014 a landmark work.",
       "category": "Biography",
-      "coverImage": "/covers/king.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780374279295-L.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -419,9 +419,9 @@
       "title": "Shoe Dog",
       "author": "Phil Knight",
       "publisher": "Scribner",
-      "description": "A memoir by the creator of Nike — a candid and riveting story of the company's early days.",
+      "description": "A memoir by the creator of Nike \u2014 a candid and riveting story of the company's early days.",
       "category": "Biography",
-      "coverImage": "/covers/shoe-dog.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781501135910-L.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -436,7 +436,7 @@
       "publisher": "Macmillan",
       "description": "The struggle for freedom and democracy in Uganda.",
       "category": "Biography",
-      "coverImage": "/covers/sowing-seed.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780333642344-L.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -449,9 +449,9 @@
       "title": "Long Walk to Freedom",
       "author": "Nelson Mandela",
       "publisher": "Little, Brown",
-      "description": "The autobiography of Nelson Mandela — one of the great moral and political leaders of our time.",
+      "description": "The autobiography of Nelson Mandela \u2014 one of the great moral and political leaders of our time.",
       "category": "Biography",
-      "coverImage": "/covers/long-walk.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780316548182-L.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -464,9 +464,9 @@
       "title": "Palestine: The Story",
       "author": "Rashid Khalidi",
       "publisher": "Metropolitan",
-      "description": "A hundred years' history on Palestine — settler colonialism and resistance.",
+      "description": "A hundred years' history on Palestine \u2014 settler colonialism and resistance.",
       "category": "History",
-      "coverImage": "/covers/palestine-story.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781250787651-L.jpg",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -481,7 +481,7 @@
       "publisher": "Spiegel & Grau",
       "description": "Stories from a South African childhood by the comedian and host.",
       "category": "Biography",
-      "coverImage": "/covers/born-a-crime.svg",
+      "coverImage": "https://covers.openlibrary.org/b/id/8294078-L.jpg",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -490,13 +490,13 @@
     },
     {
       "id": 22,
-      "isbn": "9781682451234",
+      "isbn": "978168245123",
       "title": "Against the Run of Play",
       "author": "Olusegun Adeniyi",
       "publisher": "Kachifo",
       "description": "How an incumbent president was defeated in Nigeria.",
       "category": "History",
-      "coverImage": "/covers/against-run-play.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781682451234-L.jpg",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -511,7 +511,11 @@
       "publisher": "Simon & Schuster",
       "description": "Life and work principles from the founder of Bridgewater Associates.",
       "category": "Graphic Design",
+<<<<<<< HEAD
       "coverImage": "/covers/principles.svg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-03-02T11:00:00.000Z"
@@ -523,7 +527,7 @@
       "publisher": "Harriman House",
       "category": "Self Help",
       "description": "A personal finance book that argues doing well with money has less to do with intelligence and everything to do with behavior",
-      "coverImage": "/covers/book.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/10389354-L.jpg",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-06-12T07:49:05.968Z",
@@ -535,9 +539,15 @@
       "title": "The 7 Habits of Highly Effective People",
       "author": "Stephen R. Covey",
       "publisher": "Free Press",
+<<<<<<< HEAD
       "description": "Powerful lessons in personal change — timeless principles for effectiveness in life and work.",
       "category": "Self Help",
       "coverImage": "/covers/7-habits.jpg",
+=======
+      "description": "Powerful lessons in personal change \u2014 timeless principles for effectiveness in life and work.",
+      "category": "Self Help",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781451639612-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -550,9 +560,15 @@
       "title": "Sapiens: A Brief History of Humankind",
       "author": "Yuval Noah Harari",
       "publisher": "Harper",
+<<<<<<< HEAD
       "description": "A sweeping account of the history of our species — from the Cognitive Revolution to the present.",
       "category": "History",
       "coverImage": "/covers/sapiens.jpg",
+=======
+      "description": "A sweeping account of the history of our species \u2014 from the Cognitive Revolution to the present.",
+      "category": "History",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -565,9 +581,15 @@
       "title": "The Alchemist",
       "author": "Paulo Coelho",
       "publisher": "HarperOne",
+<<<<<<< HEAD
       "description": "A young Andalusian shepherd embarks on a journey to find a worldly treasure — and discovers the treasure within.",
       "category": "Fictions",
       "coverImage": "/covers/alchemist.jpg",
+=======
+      "description": "A young Andalusian shepherd embarks on a journey to find a worldly treasure \u2014 and discovers the treasure within.",
+      "category": "Fictions",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -582,7 +604,11 @@
       "publisher": "Crown",
       "description": "An intimate, powerful, and inspiring memoir by the former First Lady of the United States.",
       "category": "Biography",
+<<<<<<< HEAD
       "coverImage": "/covers/becoming.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -597,7 +623,11 @@
       "publisher": "Farrar, Straus and Giroux",
       "description": "Engaging the reader in a lively conversation about how we think, make choices, and arrive at judgments.",
       "category": "Self Help",
+<<<<<<< HEAD
       "coverImage": "/covers/thinking-fast-slow.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -612,7 +642,11 @@
       "publisher": "Random House",
       "description": "An unforgettable memoir about a young woman who, kept out of school, leaves her survivalist family and goes on to earn a PhD.",
       "category": "Biography",
+<<<<<<< HEAD
       "coverImage": "/covers/educated.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780399590504-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -625,9 +659,15 @@
       "title": "The Power of Now",
       "author": "Eckhart Tolle",
       "publisher": "New World Library",
+<<<<<<< HEAD
       "description": "A guide to spiritual enlightenment — living in the present moment and finding inner peace.",
       "category": "Self Help",
       "coverImage": "/covers/power-of-now.jpg",
+=======
+      "description": "A guide to spiritual enlightenment \u2014 living in the present moment and finding inner peace.",
+      "category": "Self Help",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781577314806-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -642,7 +682,11 @@
       "publisher": "Verso",
       "description": "The story of the Palestinian national movement and its struggle against settler colonialism.",
       "category": "History",
+<<<<<<< HEAD
       "coverImage": "/covers/iron-cage.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/id/587665-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -655,9 +699,15 @@
       "title": "I Shall Not Hate",
       "author": "Izzeldin Abuelaish",
       "publisher": "Bloomsbury",
+<<<<<<< HEAD
       "description": "A Palestinian doctor's journey from grief to hope — turning pain into a force for reconciliation.",
       "category": "Biography",
       "coverImage": "/covers/i-shall-not-hate.jpg",
+=======
+      "description": "A Palestinian doctor's journey from grief to hope \u2014 turning pain into a force for reconciliation.",
+      "category": "Biography",
+      "coverImage": "https://covers.openlibrary.org/b/id/6676944-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -672,7 +722,11 @@
       "publisher": "Bloomsbury",
       "description": "A poignant, multigenerational story of a Palestinian family caught in the conflict of the Middle East.",
       "category": "Fictions",
+<<<<<<< HEAD
       "coverImage": "/covers/mornings-jenin.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/id/6935052-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -686,7 +740,11 @@
       "publisher": "Rajan",
       "category": "History",
       "description": "One nation one earth",
+<<<<<<< HEAD
       "coverImage": "/covers/principles.svg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/id/10108744-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-06-16T08:08:08.648Z",
@@ -1201,7 +1259,7 @@
       "listingId": 5,
       "bookId": 4,
       "title": "Pride and Protest",
-      "coverImage": "/covers/pride-protest.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780349436937-L.jpg",
       "price": 1265,
       "quantity": 11,
       "id": 1
@@ -1211,7 +1269,7 @@
       "listingId": 2,
       "bookId": 1,
       "title": "Atomic Habits",
-      "coverImage": "/covers/atomic-habits.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
       "price": 380,
       "quantity": 1,
       "id": 2
@@ -1221,7 +1279,7 @@
       "listingId": 2,
       "bookId": 1,
       "title": "Atomic Habits",
-      "coverImage": "/covers/atomic-habits.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
       "price": 380,
       "quantity": 1,
       "id": 3
@@ -1231,7 +1289,7 @@
       "listingId": 26,
       "bookId": 24,
       "title": "The Psychology of Money ",
-      "coverImage": "/covers/MoneyBook.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/10389354-L.jpg",
       "price": 499,
       "quantity": 1,
       "id": 4
@@ -1241,7 +1299,7 @@
       "listingId": 28,
       "bookId": 13,
       "title": "How to Invest",
-      "coverImage": "/covers/how-to-invest.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781982132798-L.jpg",
       "price": 999,
       "quantity": 1,
       "id": 5
@@ -1251,7 +1309,7 @@
       "listingId": 28,
       "bookId": 13,
       "title": "How to Invest",
-      "coverImage": "/covers/how-to-invest.svg",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781982132798-L.jpg",
       "price": 999,
       "quantity": 1,
       "id": 6
@@ -1261,7 +1319,11 @@
       "listingId": 39,
       "bookId": 35,
       "title": "One Earth",
+<<<<<<< HEAD
       "coverImage": "/covers/principles.svg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/id/10108744-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "price": 399,
       "quantity": 1,
       "id": 7
@@ -1271,7 +1333,11 @@
       "listingId": 2,
       "bookId": 1,
       "title": "Atomic Habits",
+<<<<<<< HEAD
       "coverImage": "/covers/atomic-habits.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "price": 380,
       "quantity": 1,
       "id": 8
@@ -1281,10 +1347,17 @@
       "listingId": 30,
       "bookId": 26,
       "title": "Sapiens: A Brief History of Humankind",
+<<<<<<< HEAD
       "coverImage": "/covers/sapiens.jpg",
+=======
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+>>>>>>> d42d8a4 (dbjson)
       "price": 480,
       "quantity": 1,
       "id": 9
     }
   ]
 }
+
+
+
