@@ -490,7 +490,7 @@
     },
     {
       "id": 22,
-      "isbn": "978168245123",
+      "isbn": "9781682451234",
       "title": "Against the Run of Play",
       "author": "Olusegun Adeniyi",
       "publisher": "Kachifo",
@@ -511,11 +511,7 @@
       "publisher": "Simon & Schuster",
       "description": "Life and work principles from the founder of Bridgewater Associates.",
       "category": "Graphic Design",
-<<<<<<< HEAD
-      "coverImage": "/covers/principles.svg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-03-02T11:00:00.000Z"
@@ -539,15 +535,9 @@
       "title": "The 7 Habits of Highly Effective People",
       "author": "Stephen R. Covey",
       "publisher": "Free Press",
-<<<<<<< HEAD
-      "description": "Powerful lessons in personal change — timeless principles for effectiveness in life and work.",
-      "category": "Self Help",
-      "coverImage": "/covers/7-habits.jpg",
-=======
       "description": "Powerful lessons in personal change \u2014 timeless principles for effectiveness in life and work.",
       "category": "Self Help",
       "coverImage": "https://covers.openlibrary.org/b/isbn/9781451639612-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -560,15 +550,9 @@
       "title": "Sapiens: A Brief History of Humankind",
       "author": "Yuval Noah Harari",
       "publisher": "Harper",
-<<<<<<< HEAD
-      "description": "A sweeping account of the history of our species — from the Cognitive Revolution to the present.",
-      "category": "History",
-      "coverImage": "/covers/sapiens.jpg",
-=======
       "description": "A sweeping account of the history of our species \u2014 from the Cognitive Revolution to the present.",
       "category": "History",
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -581,15 +565,9 @@
       "title": "The Alchemist",
       "author": "Paulo Coelho",
       "publisher": "HarperOne",
-<<<<<<< HEAD
-      "description": "A young Andalusian shepherd embarks on a journey to find a worldly treasure — and discovers the treasure within.",
-      "category": "Fictions",
-      "coverImage": "/covers/alchemist.jpg",
-=======
       "description": "A young Andalusian shepherd embarks on a journey to find a worldly treasure \u2014 and discovers the treasure within.",
       "category": "Fictions",
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -604,11 +582,7 @@
       "publisher": "Crown",
       "description": "An intimate, powerful, and inspiring memoir by the former First Lady of the United States.",
       "category": "Biography",
-<<<<<<< HEAD
-      "coverImage": "/covers/becoming.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -623,11 +597,7 @@
       "publisher": "Farrar, Straus and Giroux",
       "description": "Engaging the reader in a lively conversation about how we think, make choices, and arrive at judgments.",
       "category": "Self Help",
-<<<<<<< HEAD
-      "coverImage": "/covers/thinking-fast-slow.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -642,11 +612,7 @@
       "publisher": "Random House",
       "description": "An unforgettable memoir about a young woman who, kept out of school, leaves her survivalist family and goes on to earn a PhD.",
       "category": "Biography",
-<<<<<<< HEAD
-      "coverImage": "/covers/educated.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780399590504-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -659,15 +625,9 @@
       "title": "The Power of Now",
       "author": "Eckhart Tolle",
       "publisher": "New World Library",
-<<<<<<< HEAD
-      "description": "A guide to spiritual enlightenment — living in the present moment and finding inner peace.",
-      "category": "Self Help",
-      "coverImage": "/covers/power-of-now.jpg",
-=======
       "description": "A guide to spiritual enlightenment \u2014 living in the present moment and finding inner peace.",
       "category": "Self Help",
       "coverImage": "https://covers.openlibrary.org/b/isbn/9781577314806-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -682,11 +642,7 @@
       "publisher": "Verso",
       "description": "The story of the Palestinian national movement and its struggle against settler colonialism.",
       "category": "History",
-<<<<<<< HEAD
-      "coverImage": "/covers/iron-cage.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/id/587665-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -699,15 +655,9 @@
       "title": "I Shall Not Hate",
       "author": "Izzeldin Abuelaish",
       "publisher": "Bloomsbury",
-<<<<<<< HEAD
-      "description": "A Palestinian doctor's journey from grief to hope — turning pain into a force for reconciliation.",
-      "category": "Biography",
-      "coverImage": "/covers/i-shall-not-hate.jpg",
-=======
       "description": "A Palestinian doctor's journey from grief to hope \u2014 turning pain into a force for reconciliation.",
       "category": "Biography",
       "coverImage": "https://covers.openlibrary.org/b/id/6676944-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -722,11 +672,7 @@
       "publisher": "Bloomsbury",
       "description": "A poignant, multigenerational story of a Palestinian family caught in the conflict of the Middle East.",
       "category": "Fictions",
-<<<<<<< HEAD
-      "coverImage": "/covers/mornings-jenin.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/id/6935052-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -740,11 +686,7 @@
       "publisher": "Rajan",
       "category": "History",
       "description": "One nation one earth",
-<<<<<<< HEAD
-      "coverImage": "/covers/principles.svg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/id/10108744-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-06-16T08:08:08.648Z",
@@ -1319,11 +1261,7 @@
       "listingId": 39,
       "bookId": 35,
       "title": "One Earth",
-<<<<<<< HEAD
-      "coverImage": "/covers/principles.svg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/id/10108744-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "price": 399,
       "quantity": 1,
       "id": 7
@@ -1333,11 +1271,7 @@
       "listingId": 2,
       "bookId": 1,
       "title": "Atomic Habits",
-<<<<<<< HEAD
-      "coverImage": "/covers/atomic-habits.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "price": 380,
       "quantity": 1,
       "id": 8
@@ -1347,17 +1281,14 @@
       "listingId": 30,
       "bookId": 26,
       "title": "Sapiens: A Brief History of Humankind",
-<<<<<<< HEAD
-      "coverImage": "/covers/sapiens.jpg",
-=======
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
->>>>>>> d42d8a4 (dbjson)
       "price": 480,
       "quantity": 1,
       "id": 9
     }
   ]
 }
+
 
 
 
