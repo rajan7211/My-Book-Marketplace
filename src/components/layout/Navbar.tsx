@@ -13,6 +13,9 @@ const NAV_LINKS = [
   { label: "Shop", to: "/books" },
 ];
 
+
+
+
 export function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
