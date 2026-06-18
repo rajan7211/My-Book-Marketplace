@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { booksApi } from "@/api/books.api";
 import { BookCard } from "@/components/books/BookCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fadeUpItem, stagger, revealViewport } from "@/lib/motion";
+import { fadeUpItem, stagger } from "@/lib/motion";
 
 interface CategoryRowProps {
   title: string;
@@ -82,21 +82,20 @@ export function CategoryRow({
         <motion.div
           ref={railRef}
           initial="hidden"
-          whileInView="show"
-          viewport={revealViewport}
+          animate="show"
           variants={stagger(0.06)}
-          className="no-scrollbar flex gap-8 overflow-x-auto scroll-smooth pb-1"
+          className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth pb-1"
         >
           {isLoading
-            ? Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="w-[180px] shrink-0">
-                  <Skeleton className="aspect-[2/3] w-full rounded-lg" />
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="w-[240px] shrink-0 sm:w-[286px]">
+                  <Skeleton className="h-[258px] w-full rounded-2xl" />
                   <Skeleton className="mt-2 h-3 w-3/4 rounded" />
                   <Skeleton className="mt-1 h-3 w-1/2 rounded" />
                 </div>
               ))
-            : data?.slice(0, 5).map((book) => (
-                <motion.div key={book.id} variants={fadeUpItem} className="w-[180px] shrink-0">
+            : data?.slice(0, 4).map((book) => (
+                <motion.div key={book.id} variants={fadeUpItem} className="w-[240px] shrink-0 sm:w-[286px]">
                   <BookCard book={book} compact />
                 </motion.div>
               ))}
@@ -119,6 +118,8 @@ export function CategoryRow({
     </section>
   );
 }
+
+
 
 
 

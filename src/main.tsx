@@ -5,12 +5,15 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import "./index.css";
+import "./styles/homepage-effects.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
-      retry: 1,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
+      refetchOnMount: "always",
       refetchOnWindowFocus: false,
     },
   },
@@ -32,6 +35,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </React.StrictMode>
 );
+
+
 
 
 

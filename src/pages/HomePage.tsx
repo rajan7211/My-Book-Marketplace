@@ -17,8 +17,8 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
-        {/* <FeatureStrip /> */}
-        <CategoryTiles />
+        <FeatureStrip />
+        {/* <CategoryTiles /> */}
         <NewReleases />
         <Bestsellers />
         <PromoBanners />
@@ -47,6 +47,23 @@ export default function HomePage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

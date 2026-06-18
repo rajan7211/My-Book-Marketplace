@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCartStore } from "@/store/cart.store";
 import { useAuthStore } from "@/store/auth.store";
 import { toast } from "react-toastify";
-import { fadeUpItem, stagger, revealViewport } from "@/lib/motion";
+import { fadeUpItem, stagger } from "@/lib/motion";
 import type { BookWithListings } from "@/types";
 
 function ReleaseCard({ book }: { book: BookWithListings }) {
@@ -122,8 +122,7 @@ export function NewReleases() {
 
       <motion.div
         initial="hidden"
-        whileInView="show"
-        viewport={revealViewport}
+        animate="show"
         variants={stagger(0.08)}
         className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
       >
@@ -134,6 +133,8 @@ export function NewReleases() {
     </section>
   );
 }
+
+
 
 
 

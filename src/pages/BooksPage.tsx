@@ -155,9 +155,9 @@ export default function BooksPage() {
 
         {/* Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-              <Skeleton key={i} className="aspect-[2/3] rounded-lg" />
+              <Skeleton key={i} className="h-[258px] rounded-2xl" />
             ))}
           </div>
         ) : data?.data.length === 0 ? (
@@ -171,7 +171,7 @@ export default function BooksPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {data?.data.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
@@ -191,6 +191,8 @@ export default function BooksPage() {
     </div>
   );
 }
+
+
 
 
 

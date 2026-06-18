@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fadeUp, fadeUpItem, stagger } from "@/lib/motion";
 
+
 export function Hero() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -27,14 +28,14 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-[#0f0d1a] py-14 text-white">
-      {/* Ambient glow blobs — kept soft, color does the work */}
+      {/* Ambient glow blobs kept soft, color does the work */}
       <div className="blob-drift pointer-events-none absolute -top-20 -right-16 h-96 w-96 rounded-full bg-purple-600/15 blur-3xl" />
       <div className="blob-drift pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl" style={{ animationDelay: "3s" }} />
       <div className="blob-drift pointer-events-none absolute top-1/3 left-10 h-56 w-56 rounded-full bg-cyan-500/8 blur-3xl" style={{ animationDelay: "6s" }} />
 
       <div className="relative z-10 mx-auto grid max-w-6xl gap-16 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
 
-        {/* ── Left: copy + search ── */}
+        {/*  Left side  */}
         <motion.div
           initial="hidden"
           animate="show"
@@ -69,7 +70,7 @@ export function Hero() {
             classics to today's bestsellers — find your next obsession.
           </motion.p>
 
-          {/* Search — glass card */}
+          {/* Search glass card */}
           <motion.form
             variants={fadeUpItem}
             onSubmit={onSearch}
@@ -108,7 +109,7 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* ── Right: book mosaic with drifting page accents ── */}
+        {/*Right: book mosaic*/}
         <motion.div
           initial="hidden"
           animate="show"
@@ -116,16 +117,6 @@ export function Hero() {
           transition={{ delay: 0.2 }}
           className="relative"
         >
-          {/* drifting page shapes — signature motif, grounded in the subject */}
-          <span
-            className="page-float pointer-events-none absolute -left-6 -top-6 hidden h-14 w-10 rounded-sm border border-amber-400/30 bg-gradient-to-br from-amber-400/20 to-transparent sm:block"
-            style={{ "--rot": "-12deg" } as React.CSSProperties}
-          />
-          <span
-            className="page-float pointer-events-none absolute -bottom-8 right-10 hidden h-12 w-9 rounded-sm border border-pink-400/30 bg-gradient-to-br from-pink-400/20 to-transparent sm:block"
-            style={{ "--rot": "10deg", animationDelay: "1.5s" } as React.CSSProperties}
-          />
-
           <div className="grid grid-cols-3 gap-3">
             <div className="group relative row-span-2 overflow-hidden rounded-xl bg-[#1e1b2e] ring-1 ring-white/[0.06]">
               {isLoading ? (
@@ -181,6 +172,10 @@ export function Hero() {
     </section>
   );
 }
+
+
+
+
 
 
 

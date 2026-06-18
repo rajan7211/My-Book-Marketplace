@@ -122,7 +122,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* ────────── Main ────────── */}
+      {/* Main */}
       <div className="ml-60 flex-1">
         {/* Top header */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-8">

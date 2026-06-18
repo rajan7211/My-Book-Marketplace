@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { api } from "@/api/client";
 import type { Book } from "@/types";
-import { fadeUpItem, stagger, revealViewport } from "@/lib/motion";
+import { fadeUpItem, stagger } from "@/lib/motion";
 
 interface TileMeta {
   icon: React.ElementType;
@@ -58,8 +58,7 @@ export function CategoryTiles() {
 
       <motion.div
         initial="hidden"
-        whileInView="show"
-        viewport={revealViewport}
+        animate="show"
         variants={stagger(0.06)}
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
       >
@@ -95,6 +94,7 @@ export function CategoryTiles() {
     </section>
   );
 }
+
 
 
 

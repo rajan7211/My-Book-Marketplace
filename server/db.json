@@ -195,7 +195,7 @@
       "publisher": "Bloomsbury",
       "description": "The sixth book in the Harry Potter series, where Voldemort's past is unveiled through memories.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780747581086-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/13222714-M.jpg",
       "status": "APPROVED",
       "tags": [
         "trending"
@@ -241,7 +241,7 @@
       "publisher": "Harvard Business",
       "description": "In this powerful yet practical book, economist and thought leader shows why sponsors matter.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780446696982-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/13069105-M.jpg",
       "status": "APPROVED",
       "tags": [
         "new-release",
@@ -326,12 +326,12 @@
     {
       "id": 11,
       "isbn": "9789785205800",
-      "title": "Abba Kyari",
+      "title": "The Long Rope",
       "author": "Yashau Adamu",
       "publisher": "Premium Times",
       "description": "The life and times of one of Nigeria's most influential chiefs of staff.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9789785205800-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/11402968-M.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -391,7 +391,7 @@
       "publisher": "Harper Perennial",
       "description": "The unforgettable novel of childhood in a sleepy Southern town and the crisis of conscience that rocked it.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780060935467-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/13008678-M.jpg",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -431,12 +431,12 @@
     {
       "id": 18,
       "isbn": "9780333642344",
-      "title": "Sowing the Mustard Seed",
+      "title": "Phantom rustlers",
       "author": "Yoweri Museveni",
       "publisher": "Macmillan",
       "description": "The struggle for freedom and democracy in Uganda.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780333642344-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/10795906-M.jpg",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -496,7 +496,7 @@
       "publisher": "Kachifo",
       "description": "How an incumbent president was defeated in Nigeria.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781682451234-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/15230833-M.jpg",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -642,7 +642,7 @@
       "publisher": "Verso",
       "description": "The story of the Palestinian national movement and its struggle against settler colonialism.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/id/587665-L.jpg",
+      "coverImage": "https://covers.openlibrary.org/b/id/320696-M.jpg",
       "status": "APPROVED",
       "tags": [
         "palestine"
