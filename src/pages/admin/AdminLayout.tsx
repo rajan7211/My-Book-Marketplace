@@ -57,7 +57,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex min-h-screen bg-brand-gray">
+    <div className="portal-luxury flex min-h-screen bg-brand-gray">
       {/* side menu bar  */}
       <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-brand-dark text-white">
         {/* Brand */}
@@ -66,7 +66,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <GiBookmarklet size={22} />
           </span>
           <div className="leading-tight">
-            <p className="font-serif text-[15px] font-bold">Marketplace Admin</p>
+            <p className="font-serif text-[15px] font-bold lux-text-gradient">Marketplace Admin</p>
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">
               ADMIN
             </p>
@@ -86,8 +86,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                   cn(
                     "flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition",
                     isActive
-                      ? "bg-[#3a2a18] font-semibold text-brand-yellow"
-                      : "text-gray-300 hover:bg-white/5 hover:text-white"
+                      ? "bg-gradient-to-r from-amber-400/25 to-pink-500/10 font-semibold text-amber-200 shadow-[inset_0_0_0_1px_rgba(245,166,35,0.3)]"
+                      : "text-gray-400 hover:bg-white/5 hover:text-white"
                   )
                 }
               >
@@ -123,28 +123,28 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main */}
-      <div className="ml-60 flex-1">
+      <div className="relative ml-60 flex-1">
         {/* Top header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-[#0f0d1a] px-8">
           {/* Brand */}
           <div className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-yellow text-brand-dark">
               <GiBookmarklet size={18} />
             </span>
             <div className="leading-tight">
-              <p className="font-serif text-[15px] font-bold">My Book Store</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+              <p className="font-serif text-[15px] font-bold lux-text-gradient">My Book Store</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-[#8b86a8]">
                 BUY • EXPLORE • DISCOVER
               </p>
             </div>
           </div>
 
           {/* Center links */}
-          <nav className="flex items-center gap-6 text-sm font-medium text-gray-700">
-            <NavLink to="/" className="hover:text-brand-dark">
+          <nav className="flex items-center gap-6 text-sm font-medium text-[#b0aac8]">
+            <NavLink to="/" className="transition hover:text-amber-200">
               Home
             </NavLink>
-            <NavLink to="/books" className="hover:text-brand-dark">
+            <NavLink to="/books" className="transition hover:text-amber-200">
               Browse Books
             </NavLink>
           </nav>

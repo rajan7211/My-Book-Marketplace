@@ -1,0 +1,85 @@
+/* ============================================================
+   PORTAL LUXURY THEME
+   Mirrors the Home page recipe — a deliberate mix of:
+     • DARK chrome   → sidebar, top header, welcome panels  (#0f0d1a)
+     • WHITE cards   → content cards on a soft light body
+     • LUXURY        → gold + gradient + signature purple hover glow
+   Scoped to .portal-luxury — the customer storefront is untouched.
+   ============================================================ */
+
+.portal-luxury {
+  --lx-gold: #f5a623;
+  --lx-pink: #ec4899;
+  --lx-purple: #8b5cf6;
+  --lx-cyan: #06b6d4;
+
+  /* soft luxury body — home-page gray with a faint warm/violet depth,
+     the same feeling the Hero's glow gives the rest of the page */
+  background-color: #f4f3f8;
+  background-image:
+    radial-gradient(44rem 24rem at 84% -6%, rgba(139, 92, 246, 0.07), transparent 60%),
+    radial-gradient(40rem 22rem at 0% -2%, rgba(245, 166, 35, 0.06), transparent 62%);
+  background-attachment: fixed;
+  color: #0e0e0e;
+}
+
+/* Gradient text helper — gold → pink → purple (same gradient as the Hero) */
+.lux-text-gradient {
+  background: linear-gradient(90deg, #f5a623, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+   DARK CHROME — sidebar + welcome panels take the Hero's deep tone
+   (targets only <aside>/<section> so small chips & buttons keep their
+    hover states intact)
+   ============================================================ */
+.portal-luxury aside.bg-brand-dark,
+.portal-luxury section.bg-brand-dark {
+  background: linear-gradient(180deg, #16121f 0%, #0c0a14 100%);
+}
+.portal-luxury aside.bg-brand-dark {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   WHITE CONTENT CARDS — the home-page signature:
+   subtle ring + a soft purple glow that blooms on hover
+   (matches NewReleases / Bestsellers product cards)
+   ============================================================ */
+.portal-luxury .bg-white.shadow-sm {
+  border-color: rgba(15, 13, 26, 0.06);
+  box-shadow: 0 1px 2px rgba(15, 13, 26, 0.04), 0 0 0 1px rgba(15, 13, 26, 0.03);
+  transition: box-shadow 0.28s ease, transform 0.28s ease, border-color 0.28s ease;
+}
+.portal-luxury .bg-white.shadow-sm:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 18px 34px -16px rgba(139, 92, 246, 0.34);
+}
+
+/* ============================================================
+   FORM CONTROLS — keep crisp white so data stays readable
+   ============================================================ */
+.portal-luxury input,
+.portal-luxury select,
+.portal-luxury textarea {
+  background-color: #ffffff;
+}
+
+/* ============================================================
+   SCROLLBARS — light, violet-tinted
+   ============================================================ */
+.portal-luxury ::-webkit-scrollbar { width: 10px; height: 10px; }
+.portal-luxury ::-webkit-scrollbar-track { background: transparent; }
+.portal-luxury ::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.28);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.portal-luxury ::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.45);
+  background-clip: padding-box;
+}

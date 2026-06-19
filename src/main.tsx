@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import "./index.css";
 import "./styles/homepage-effects.css";
+import "./styles/portal-luxury.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

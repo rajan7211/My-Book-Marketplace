@@ -193,7 +193,7 @@ export default function SellerDashboardPage() {
               <Badge className="mb-3 bg-brand-yellow text-brand-dark">
                 Seller Dashboard
               </Badge>
-              <h1 className="font-serif text-2xl font-bold sm:text-3xl">
+              <h1 className="font-serif text-2xl font-bold sm:text-3xl lux-text-gradient">
                 Welcome back, {user?.name ?? "Seller"}
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-gray-300">

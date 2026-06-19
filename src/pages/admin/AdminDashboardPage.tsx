@@ -77,10 +77,15 @@ export default function AdminDashboardPage() {
   return (
     <AdminLayout>
       {/* Intro */}
-      <p className="mb-6 text-sm text-gray-500">
-        Overview of sellers, customers, books, and order activity across the
-        marketplace.
-      </p>
+      <div className="mb-6">
+        <h1 className="font-serif text-2xl font-bold sm:text-3xl lux-text-gradient">
+          Marketplace Overview
+        </h1>
+        <p className="mt-2 text-sm text-gray-500">
+          Overview of sellers, customers, books, and order activity across the
+          marketplace.
+        </p>
+      </div>
 
       {/* ── Stat cards ── */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
