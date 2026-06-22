@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Shop", to: "/books" },
+  { label: "Best Sellers", to: "/best-sellers" },   
+  { label: "Categories", to: "/categories" },       
 ];
 
 

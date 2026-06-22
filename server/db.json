@@ -710,7 +710,7 @@
       "sellerId": 2,
       "price": 380,
       "mrp": 499,
-      "stock": 17,
+      "stock": 16,
       "status": "ACTIVE",
       "createdAt": "2026-02-20T10:05:00.000Z"
     },
@@ -1110,7 +1110,7 @@
       "sellerName": "BookHub Traders",
       "shippingAddress": "aezdhxfjcgvhgjj",
       "totalAmount": 13915,
-      "status": "CREATED",
+      "status": "DELIVERED",
       "createdAt": "2026-06-12T06:10:58.186Z",
       "id": 1
     },
@@ -1190,9 +1190,19 @@
       "sellerName": "BookHub Traders",
       "shippingAddress": "Ronak Thakur, 9845436272, 1324 , sector 80, mohali, punjab, 149004",
       "totalAmount": 480,
-      "status": "CREATED",
+      "status": "SHIPPED",
       "createdAt": "2026-06-16T09:40:32.383Z",
       "id": 9
+    },
+    {
+      "customerId": 2,
+      "sellerId": 2,
+      "sellerName": "Readers Paradise",
+      "shippingAddress": "Ronak Thakur, 8580432871, 1324 , sector 80, mohali, punjab, 149004",
+      "totalAmount": 380,
+      "status": "CREATED",
+      "createdAt": "2026-06-22T08:22:31.887Z",
+      "id": 10
     }
   ],
   "orderItems": [
@@ -1285,6 +1295,16 @@
       "price": 480,
       "quantity": 1,
       "id": 9
+    },
+    {
+      "orderId": 10,
+      "listingId": 2,
+      "bookId": 1,
+      "title": "Atomic Habits",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
+      "price": 380,
+      "quantity": 1,
+      "id": 10
     }
   ]
 }

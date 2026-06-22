@@ -128,113 +128,111 @@ export default function AdminSellersPage() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-48 rounded-2xl" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <Card>
-          <CardContent className="py-16 text-center text-sm text-gray-500">
-            No sellers in this state.
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-dashed py-20 text-center">
+          <p className="text-lg font-medium">No sellers found</p>
+          <p className="text-sm text-gray-500 mt-1">Try changing the filter or search term.</p>
+        </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filtered.map((s) => (
-            <Card key={s.id} className="hover:shadow-sm">
-              <CardContent className="flex items-center justify-between gap-4 p-5">
+            <div
+              key={s.id}
+              className="rounded-2xl border border-gray-200 bg-white p-6 transition hover:shadow-md"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-amber-100 text-base font-bold text-amber-700">
+                  <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-lg font-bold text-white shadow-md">
                     {s.businessName
                       .split(" ")
                       .map((w) => w[0])
                       .slice(0, 2)
                       .join("")}
-                  </span>
-                  <div className="leading-tight">
-                    <p className="font-bold text-brand-dark">
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-brand-dark group-hover:text-amber-600 transition">
                       {s.businessName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {s.contactPerson} · {s.email} · +91 {s.mobile}
-                    </p>
-                    <p className="mt-1 text-[11px] text-gray-400">
-                      Joined{" "}
-                      {new Date(s.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}
-                    </p>
+                    </h3>
+                    <p className="text-sm text-gray-500">{s.contactPerson}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase",
-                      BADGE[s.status]
-                    )}
+                <span
+                  className={cn(
+                    "rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+                    BADGE[s.status]
+                  )}
+                >
+                  {s.status.replace("_", " ").toLowerCase()}
+                </span>
+              </div>
+
+              {/* Info */}
+              <div className="mt-5 space-y-1.5 text-sm">
+                <p className="text-gray-600 flex items-center gap-2">
+                  <span className="text-gray-400">📧</span> {s.email}
+                </p>
+                <p className="text-gray-600 flex items-center gap-2">
+                  <span className="text-gray-400">📱</span> +91 {s.mobile}
+                </p>
+                <p className="text-xs text-gray-400 pt-1">
+                  Joined {new Date(s.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+
+              {/* Actions */}
+                <div className="mt-6 pt-5 border-t flex flex-wrap gap-3">
+                {s.status !== "APPROVED" && (
+                  <Button
+                    size="sm"
+                    onClick={() => update.mutate({ id: s.id, status: "APPROVED" })}
+                    disabled={update.isPending}
+                    className="flex-1 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
                   >
-                    {s.status.replace("_", " ").toLowerCase()}
-                  </span>
+                    <FiCheck size={15} /> {s.status === "REJECTED" ? "Re-approve" : "Approve"}
+                  </Button>
+                )}
 
-                  {/* ── Actions — consistent pattern, all visible ── */}
-                  <div className="flex gap-2">
-                    {/* Approve / Re-approve (visible when NOT approved) */}
-                    {s.status !== "APPROVED" && (
-                      <Button
-                        size="sm"
-                        onClick={() =>
-                          update.mutate({ id: s.id, status: "APPROVED" })
-                        }
-                        disabled={update.isPending}
-                        className="gap-1"
-                      >
-                        {s.status === "REJECTED" ? (
-                          <>
-                            <FiRefreshCw size={11} /> Re-approve
-                          </>
-                        ) : (
-                          <>
-                            <FiCheck size={11} /> Approve
-                          </>
-                        )}
-                      </Button>
-                    )}
-
-                    {/* Reject / Revoke — ALWAYS visible with perfect hover */}
-                    {s.status !== "REJECTED" ? (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() =>
-                          update.mutate({ id: s.id, status: "REJECTED" })
-                        }
-                        disabled={update.isPending}
-                        className="gap-1"
-                      >
-                        <FiX size={11} />{" "}
-                        {s.status === "APPROVED" ? "Revoke" : "Reject"}
-                      </Button>
-                    ) : (
-                      // Already rejected — visible red pill (NOT hidden)
-                      <div
-                        className="flex h-8 items-center justify-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700"
-                        title="This seller has already been rejected"
-                      >
-                        <FiX size={11} /> Already rejected
-                      </div>
-                    )}
+                {s.status !== "REJECTED" ? (
+                  <Button
+                    size="sm"
+                    onClick={() => update.mutate({ id: s.id, status: "REJECTED" })}
+                    disabled={update.isPending}
+                    className="flex-1 gap-2 bg-black text-white hover:bg-gray-900"
+                  >
+                    <FiX size={15} /> {s.status === "APPROVED" ? "Revoke" : "Reject"}
+                  </Button>
+                ) : (
+                  <div className="flex-1 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-600">
+                    Already Rejected
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       )}
     </AdminLayout>
   );
 }
+
+
+
+
+
+
+
+
+
+
 

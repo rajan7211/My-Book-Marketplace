@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { FiPlus, FiX } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { SellerLayout } from "./SellerLayout";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -120,77 +119,81 @@ export default function SellerListingsPage() {
         </div>
       </div>
 
-      {/* Listing table */}
-      <Card>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="space-y-3 p-6">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-14" />
-              ))}
+      {/* Listings - Interactive Cards */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-52 rounded-2xl" />
+          ))}
+        </div>
+      ) : !listings?.length ? (
+        <div className="rounded-2xl border border-dashed py-20 text-center">
+          <p className="text-lg font-medium">No listings yet</p>
+          <p className="text-sm text-gray-500 mt-1">Create your first listing to start selling!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {listings.map((listing) => (
+            <div
+              key={listing.id}
+              className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+            >
+              <div className="flex gap-4">
+                <img
+                  src={listing.book?.coverImage}
+                  alt={listing.book?.title}
+                  className="h-20 w-14 rounded-lg object-cover ring-1 ring-gray-100"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-base leading-tight line-clamp-2">
+                    {listing.book?.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-0.5">{listing.book?.author}</p>
+
+                  <div className="mt-3 flex items-center gap-2 text-xs text-gray-400 font-mono">
+                    {listing.book?.isbn}
+                  </div>
+                </div>
+              </div>
+
+              {/* Price & Stock Info */}
+              <div className="mt-5 grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-400">Price</p>
+                  <p className="font-semibold text-lg">{formatPrice(listing.price)}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-400">MRP</p>
+                  <p className="font-medium text-gray-400 line-through">
+                    {formatPrice(listing.mrp)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-400">Stock</p>
+                  <Badge
+                    variant={
+                      listing.stock === 0
+                        ? "destructive"
+                        : listing.stock <= 5
+                          ? "warning"
+                          : "success"
+                    }
+                  >
+                    {listing.stock} left
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Status */}
+              <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                <Badge variant={listing.status === "ACTIVE" ? "success" : "outline"}>
+                  {listing.status.toLowerCase()}
+                </Badge>
+              </div>
             </div>
-          ) : !listings?.length ? (
-            <p className="py-16 text-center text-sm text-gray-500">
-              No listings yet. Create your first listing!
-            </p>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
-                  <th className="px-6 py-4">Book</th>
-                  <th className="px-4 py-4">ISBN</th>
-                  <th className="px-4 py-4">Price</th>
-                  <th className="px-4 py-4">MRP</th>
-                  <th className="px-4 py-4">Stock</th>
-                  <th className="px-6 py-4">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {listings.map((l) => (
-                  <tr key={l.id} className="hover:bg-gray-50/50">
-                    <td className="px-6 py-3">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={l.book?.coverImage}
-                          alt=""
-                          className="h-12 w-9 rounded object-cover"
-                        />
-                        <div>
-                          <p className="font-semibold">{l.book?.title}</p>
-                          <p className="text-xs text-gray-500">{l.book?.author}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs">{l.book?.isbn}</td>
-                    <td className="px-4 py-3 font-semibold">{formatPrice(l.price)}</td>
-                    <td className="px-4 py-3 text-gray-400 line-through">
-                      {formatPrice(l.mrp)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge
-                        variant={
-                          l.stock === 0
-                            ? "destructive"
-                            : l.stock <= 5
-                              ? "warning"
-                              : "success"
-                        }
-                      >
-                        {l.stock}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-3">
-                      <Badge variant={l.status === "ACTIVE" ? "success" : "outline"}>
-                        {l.status.toLowerCase()}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      )}
 
       {/* ---------- Create Listing modal (Scenario A) ---------- */}
       {modal === "listing" && (

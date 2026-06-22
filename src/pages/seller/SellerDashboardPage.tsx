@@ -597,23 +597,26 @@ function SellerSectionCard({
   meta: string;
 }) {
   return (
-    <Card className="h-full">
-      <CardContent className="flex h-full flex-col p-5">
+    <Card className="h-full transition-all hover:shadow-lg group">
+      <CardContent className="flex h-full flex-col p-6">
         <div className="mb-4 flex items-start justify-between">
           <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-yellow/20 text-brand-yellow-dark">
             <Icon size={20} />
           </span>
           <Badge variant="outline">{meta}</Badge>
         </div>
-        <h3 className="font-bold text-brand-dark">{title}</h3>
+
+        <h3 className="font-bold text-xl text-brand-dark">{title}</h3>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-500">
           {description}
         </p>
+
+        {/* Luxury Black Button - Interactive */}
         <Link
           to={to}
-          className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-brand-dark px-4 text-sm font-semibold text-white transition hover:bg-brand-dark-2"
+          className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#111111] px-5 text-sm font-semibold text-white transition-all hover:bg-black active:scale-[0.985]"
         >
-          {primary} <FiArrowRight size={14} />
+          {primary} <span className="text-lg leading-none">→</span>
         </Link>
       </CardContent>
     </Card>

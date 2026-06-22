@@ -174,76 +174,103 @@ export default function AdminCatalogPage() {
         </Button>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="space-y-3 p-6">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12" />
-              ))}
-            </div>
-          ) : filtered.length === 0 ? (
-            <p className="py-16 text-center text-sm text-gray-500">
-              No books in the catalog match these filters.
-            </p>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 text-left text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                  <th className="w-10 px-3 py-4" />
-                  <th className="px-3 py-4">Book</th>
-                  <th className="px-3 py-4">Status</th>
-                  <th className="px-3 py-4">Listings</th>
-                  <th className="px-3 py-4">Updated</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {pageItems.map((book) => {
-                  const bookListings = (listings ?? []).filter(
-                    (l) => l.bookId === book.id
-                  );
-                  const minPrice = bookListings.length
-                    ? Math.min(...bookListings.map((l) => l.price))
-                    : null;
-                  const isOpen = expanded[book.id];
-                  return (
-                    <BookRow
-                      key={book.id}
-                      book={book}
-                      listings={bookListings}
-                      minPrice={minPrice}
-                      sellerById={sellerById}
-                      isOpen={isOpen}
-                      onToggle={() =>
-                        setExpanded((p) => ({ ...p, [book.id]: !p[book.id] }))
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-56 rounded-2xl" />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-2xl border border-dashed py-20 text-center">
+          <p className="text-lg font-medium">No books found</p>
+          <p className="text-sm text-gray-500 mt-1">Try changing the filter or search term.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {pageItems.map((book) => {
+            const bookListings = (listings ?? []).filter(
+              (l) => l.bookId === book.id
+            );
+            const minPrice = bookListings.length
+              ? Math.min(...bookListings.map((l) => l.price))
+              : null;
+
+            return (
+              <div
+                key={book.id}
+                className="rounded-2xl border border-gray-200 bg-white p-6 transition hover:shadow-md"
+              >
+                <div className="flex gap-4">
+                  <img
+                    src={book.coverImage}
+                    alt={book.title}
+                    className="h-20 w-14 rounded-lg object-cover ring-1 ring-gray-100"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-lg text-brand-dark line-clamp-2">
+                      {book.title}
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-0.5">{book.author}</p>
+                    <p className="text-xs text-gray-400 font-mono mt-1">
+                      {book.isbn}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex items-center justify-between">
+                  <span
+                    className={cn(
+                      "rounded-full px-3 py-0.5 text-[10px] font-bold uppercase",
+                      STATUS_BADGE[book.status]
+                    )}
+                  >
+                    {book.status.replace("_", " ").toLowerCase()}
+                  </span>
+
+                  <div className="text-right">
+                    <p className="text-xs text-gray-400">Listings</p>
+                    <p className="font-semibold">
+                      {bookListings.length} • {minPrice ? formatPrice(minPrice) : "—"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 pt-5 border-t flex gap-3">
+                  {book.status !== "APPROVED" && (
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        updateStatus.mutate({ id: book.id, status: "APPROVED" })
                       }
-                      onApprove={() =>
-                        updateStatus.mutate({
-                          id: book.id,
-                          status: "APPROVED",
-                        })
+                      disabled={updateStatus.isPending}
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      <FiCheck size={15} /> Approve
+                    </Button>
+                  )}
+
+                  {book.status !== "REJECTED" ? (
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        updateStatus.mutate({ id: book.id, status: "REJECTED" })
                       }
-                      onReject={() =>
-                        updateStatus.mutate({
-                          id: book.id,
-                          status: "REJECTED",
-                        })
-                      }
-                      onDelete={() =>
-                        toast.info(
-                          `Delete "${book.title}" — hook into admin API to remove.`
-                        )
-                      }
-                      updatePending={updateStatus.isPending}
-                    />
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </CardContent>
-      </Card>
+                      disabled={updateStatus.isPending}
+                      className="flex-1 bg-black text-white hover:bg-gray-900"
+                    >
+                      <FiX size={15} /> Reject
+                    </Button>
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-600">
+                      Already Rejected
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {filtered.length > PAGE_SIZE && (
         <div className="mt-4 flex items-center justify-center gap-2 text-sm">

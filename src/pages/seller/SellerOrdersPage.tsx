@@ -63,28 +63,32 @@ export default function SellerOrdersPage() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 rounded-xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-72 rounded-2xl" />
           ))}
         </div>
       ) : !orders?.length ? (
-        <Card>
-          <CardContent className="py-16 text-center text-sm text-gray-500">
-            No orders yet. They'll appear here when customers buy from your
-            listings.
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-dashed py-20 text-center">
+          <p className="text-lg font-medium">No orders yet</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Orders will appear here when customers buy from your listings.
+          </p>
+        </div>
       ) : (
-        <div className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {orders.map((order) => {
             const nextStates = SELLER_TRANSITIONS[order.status];
             return (
-              <Card key={order.id}>
-                <CardHeader className="flex-row items-center justify-between space-y-0 border-b border-gray-100 pb-4">
+              <div
+                key={order.id}
+                className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-bold">Order #{order.id}</p>
-                    <p className="mt-0.5 text-xs text-gray-500">
+                    <p className="font-semibold text-lg">Order #{order.id}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">
                       {new Date(order.createdAt).toLocaleString("en-IN", {
                         dateStyle: "medium",
                         timeStyle: "short",
@@ -94,38 +98,45 @@ export default function SellerOrdersPage() {
                   <Badge variant={BADGE[order.status]}>
                     {order.status.toLowerCase()}
                   </Badge>
-                </CardHeader>
+                </div>
 
-                <CardContent className="pt-5">
-                  <div className="space-y-3">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4">
-                        <img
-                          src={item.coverImage}
-                          alt=""
-                          className="h-14 w-10 rounded object-cover"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-semibold">{item.title}</p>
-                          <p className="text-xs text-gray-500">
-                            Qty: {item.quantity} × {formatPrice(item.price)}
-                          </p>
-                        </div>
-                        <span className="text-sm font-bold">
-                          {formatPrice(item.price * item.quantity)}
-                        </span>
+                {/* Items */}
+                <div className="mt-5 space-y-3">
+                  {order.items.map((item) => (
+                    <div key={item.id} className="flex items-center gap-3">
+                      <img
+                        src={item.coverImage}
+                        alt=""
+                        className="h-12 w-9 rounded object-cover ring-1 ring-gray-100"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold truncate">{item.title}</p>
+                        <p className="text-xs text-gray-500">
+                          {item.quantity} × {formatPrice(item.price)}
+                        </p>
                       </div>
-                    ))}
+                      <div className="font-semibold text-sm">
+                        {formatPrice(item.price * item.quantity)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer */}
+                <div className="mt-5 pt-4 border-t flex flex-col gap-4">
+                  <div className="text-xs text-gray-500 flex items-center gap-1">
+                    📍 {order.shippingAddress}
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4">
-                    <p className="max-w-[50%] truncate text-xs text-gray-500">
-                      📍 {order.shippingAddress}
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold">
-                        Total: {formatPrice(order.totalAmount)}
-                      </span>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xs text-gray-500">Total</span>
+                      <p className="font-bold text-lg">
+                        {formatPrice(order.totalAmount)}
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2 flex-wrap justify-end">
                       {nextStates
                         .filter((s) => s !== "CANCELLED")
                         .map((next) => (
@@ -140,6 +151,7 @@ export default function SellerOrdersPage() {
                             {ACTION_LABEL[next]}
                           </Button>
                         ))}
+
                       {nextStates.includes("CANCELLED") && (
                         <Button
                           size="sm"
@@ -163,8 +175,8 @@ export default function SellerOrdersPage() {
                       )}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             );
           })}
         </div>

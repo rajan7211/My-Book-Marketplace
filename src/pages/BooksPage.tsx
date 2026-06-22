@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FiSearch, FiX } from "react-icons/fi";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BookCard } from "@/components/books/BookCard";
@@ -71,29 +72,80 @@ export default function BooksPage() {
     <div className="min-h-screen bg-brand-gray">
       <Navbar />
 
-      {/* Page header */}
-      <div className="bg-brand-dark py-10 text-center text-white">
-        <h1 className="font-serif text-3xl font-bold">Browse Books</h1>
-        <p className="mt-2 text-sm text-gray-400">
-          One book, many sellers — always the best price
-        </p>
+      {/* Interactive Hero-style Header */}
+      <div className="relative overflow-hidden bg-[#0f0d1a] py-14 text-white">
+        {/* Ambient glow blobs (same as Hero) */}
+        <div className="blob-drift pointer-events-none absolute -top-20 -right-16 h-96 w-96 rounded-full bg-purple-600/15 blur-3xl" />
+        <div
+          className="blob-drift pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl"
+          style={{ animationDelay: "3s" }}
+        />
+        <div
+          className="blob-drift pointer-events-none absolute top-1/3 left-10 h-56 w-56 rounded-full bg-cyan-500/8 blur-3xl"
+          style={{ animationDelay: "6s" }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-purple-300">
+              <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
+              35+ curated titles • Updated daily
+            </div>
+
+            <h1 className="font-serif text-[42px] font-semibold leading-tight tracking-tight text-[#f1f0f9] sm:text-5xl">
+              Discover your next{" "}
+              <span
+                style={{
+                  background: "linear-gradient(90deg,#f5a623,#ec4899,#8b5cf6)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                great story
+              </span>
+            </h1>
+
+            <p className="mx-auto mt-4 max-w-md text-[#8b86a8]">
+              One book, many sellers — always the best price
+            </p>
+          </motion.div>
+
+          {/* Quick Stats */}
+          <div className="mt-8 flex justify-center gap-10 text-sm">
+            {[
+              { num: "35+", label: "Books" },
+              { num: "6", label: "Sellers" },
+              { num: "4.8★", label: "Avg Rating" },
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-xl font-semibold text-white">{stat.num}</div>
+                <div className="text-[11px] tracking-widest text-[#6b6888]">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <main className="mx-auto max-w-8xl px-6 py-10 sm:px-8">
         {/* Toolbar: search + sort */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:max-w-sm">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8b86a8]" size={16} />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search by title or author..."
-              className="h-11 w-full rounded-lg border border-gray-200 bg-white pl-10 pr-9 text-sm focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/50"
+              className="h-11 w-full rounded-lg border border-white/10 bg-[#1a1625] pl-10 pr-9 text-sm text-white placeholder:text-[#8b86a8] focus:border-[#ec4899] focus:outline-none focus:ring-2 focus:ring-[#ec4899]/30"
             />
             {searchInput && (
               <button
                 onClick={() => setSearchInput("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8b86a8] hover:text-white"
                 aria-label="Clear search"
               >
                 <FiX size={15} />
@@ -102,14 +154,14 @@ export default function BooksPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="text-sm text-gray-500">
+            <label htmlFor="sort" className="text-sm text-[#8b86a8]">
               Sort by:
             </label>
             <select
               id="sort"
               value={sort}
               onChange={(e) => setParam("sort", e.target.value)}
-              className="h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/50"
+              className="h-11 rounded-lg border border-white/10 bg-[#1a1625] px-3 text-sm text-white focus:border-[#ec4899] focus:outline-none focus:ring-2 focus:ring-[#ec4899]/30"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -120,7 +172,7 @@ export default function BooksPage() {
           </div>
         </div>
 
-        {/* Category filter pills */}
+        {/* Category filter pills - Dark theme */}
         <div className="no-scrollbar mb-8 flex gap-2.5 overflow-x-auto">
           {["All", ...(categories ?? [])].map((c) => (
             <button
@@ -129,8 +181,8 @@ export default function BooksPage() {
               className={cn(
                 "whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition",
                 category === c
-                  ? "border-brand-dark bg-brand-dark text-white"
-                  : "border-gray-300 bg-white text-gray-600 hover:border-brand-dark"
+                  ? "border-[#ec4899] bg-[#ec4899] text-white"
+                  : "border-white/10 bg-[#1a1625] text-[#b0aac8] hover:border-[#ec4899] hover:text-white"
               )}
             >
               {c}
@@ -139,7 +191,7 @@ export default function BooksPage() {
         </div>
 
         {/* Results meta */}
-        <p className="mb-5 text-sm text-gray-500">
+        <p className="mb-5 text-sm text-[#8b86a8]">
           {isLoading
             ? "Loading books..."
             : `Showing ${data?.data.length ?? 0} of ${data?.total ?? 0} books`}
@@ -153,25 +205,25 @@ export default function BooksPage() {
           )}
         </p>
 
-        {/* Grid */}
+        {/* Grid - 5 books per row (matching screenshot) */}
         {isLoading ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
             {Array.from({ length: PAGE_SIZE }).map((_, i) => (
               <Skeleton key={i} className="h-[258px] rounded-2xl" />
             ))}
           </div>
         ) : data?.data.length === 0 ? (
-          <div className="rounded-xl bg-white py-20 text-center">
+          <div className="rounded-xl bg-[#1a1625] py-20 text-center border border-white/10">
             <p className="text-4xl">📚</p>
-            <h3 className="mt-3 font-semibold text-brand-dark">
+            <h3 className="mt-3 font-semibold text-white">
               No books found
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-[#8b86a8]">
               Try a different search term or category.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
             {data?.data.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}

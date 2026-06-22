@@ -50,7 +50,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-[#0f0d1a] text-white">
+    <footer className="relative overflow-hidden bg-[#0f0d1a] py-4 text-white">
       {/* Main grid */}
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1.2fr]">

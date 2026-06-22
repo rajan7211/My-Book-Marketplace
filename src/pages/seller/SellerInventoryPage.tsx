@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FiEdit2, FiCheck, FiX } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { SellerLayout } from "./SellerLayout";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sellerApi, type ListingWithBook } from "@/api/seller.api";
@@ -42,65 +42,76 @@ function InventoryRow({
   });
 
   return (
-    <tr className="hover:bg-gray-50/50">
-      <td className="px-6 py-3">
-        <div className="flex items-center gap-3">
-          <img
-            src={listing.book?.coverImage}
-            alt=""
-            className="h-12 w-9 rounded object-cover"
-          />
-          <div>
-            <p className="font-semibold">{listing.book?.title}</p>
-            <p className="text-xs text-gray-500">{listing.book?.author}</p>
+    <div className="group rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+      <div className="flex gap-4">
+        {/* Book Cover */}
+        <img
+          src={listing.book?.coverImage}
+          alt={listing.book?.title}
+          className="h-20 w-14 rounded-lg object-cover ring-1 ring-gray-100"
+        />
+
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-base leading-tight line-clamp-2">
+            {listing.book?.title}
+          </h3>
+          <p className="text-sm text-gray-500 mt-0.5">{listing.book?.author}</p>
+
+          {/* Price & Stock */}
+          <div className="mt-4 flex items-center gap-4">
+            {/* Price */}
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-0.5">Price</p>
+              {editing ? (
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="h-9 w-24 rounded-lg border border-gray-300 px-3 text-sm focus:border-purple-500 focus:outline-none"
+                />
+              ) : (
+                <p className="font-semibold text-lg">{formatPrice(listing.price)}</p>
+              )}
+            </div>
+
+            {/* Stock */}
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-0.5">Stock</p>
+              {editing ? (
+                <input
+                  type="number"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
+                  className="h-9 w-20 rounded-lg border border-gray-300 px-3 text-sm focus:border-purple-500 focus:outline-none"
+                />
+              ) : (
+                <Badge
+                  variant={
+                    listing.stock === 0
+                      ? "destructive"
+                      : listing.stock <= 5
+                        ? "warning"
+                        : "success"
+                  }
+                >
+                  {listing.stock === 0 ? "Out of stock" : `${listing.stock} left`}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
-      </td>
+      </div>
 
-      <td className="px-4 py-3">
+      {/* Actions */}
+      <div className="mt-5 flex justify-end border-t pt-4">
         {editing ? (
-          <input
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="h-9 w-24 rounded-lg border border-gray-300 px-2 text-sm focus:border-brand-yellow focus:outline-none"
-          />
-        ) : (
-          <span className="font-semibold">{formatPrice(listing.price)}</span>
-        )}
-      </td>
-
-      <td className="px-4 py-3">
-        {editing ? (
-          <input
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            className="h-9 w-20 rounded-lg border border-gray-300 px-2 text-sm focus:border-brand-yellow focus:outline-none"
-          />
-        ) : (
-          <Badge
-            variant={
-              listing.stock === 0
-                ? "destructive"
-                : listing.stock <= 5
-                  ? "warning"
-                  : "success"
-            }
-          >
-            {listing.stock === 0 ? "Out of stock" : `${listing.stock} in stock`}
-          </Badge>
-        )}
-      </td>
-
-      <td className="px-6 py-3 text-right">
-        {editing ? (
-          <div className="flex justify-end gap-2">
+          <div className="flex gap-2">
             <button
               onClick={() => update.mutate()}
               disabled={update.isPending}
-              className="grid h-8 w-8 place-items-center rounded-lg bg-green-100 text-green-600 hover:bg-green-200"
-              aria-label="Save"
+              className="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition"
             >
-              <FiCheck size={15} />
+              <FiCheck size={16} /> Save
             </button>
             <button
               onClick={() => {
@@ -108,22 +119,21 @@ function InventoryRow({
                 setPrice(String(listing.price));
                 setStock(String(listing.stock));
               }}
-              className="grid h-8 w-8 place-items-center rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200"
-              aria-label="Cancel"
+              className="flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
             >
-              <FiX size={15} />
+              <FiX size={16} /> Cancel
             </button>
           </div>
         ) : (
           <button
             onClick={() => setEditing(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-600 transition hover:border-brand-dark hover:text-brand-dark"
+            className="flex items-center justify-center gap-2 rounded-xl bg-[#111111] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-black active:scale-[0.985]"
           >
-            <FiEdit2 size={12} /> Edit
+            Edit Price & Stock <span className="text-lg leading-none">→</span>
           </button>
         )}
-      </td>
-    </tr>
+      </div>
+    </div>
   );
 }
 
@@ -146,37 +156,24 @@ export default function SellerInventoryPage() {
         </p>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="space-y-3 p-6">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-14" />
-              ))}
-            </div>
-          ) : !listings?.length ? (
-            <p className="py-16 text-center text-sm text-gray-500">
-              No listings to manage yet.
-            </p>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
-                  <th className="px-6 py-4">Book</th>
-                  <th className="px-4 py-4">Price</th>
-                  <th className="px-4 py-4">Stock</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {listings.map((l) => (
-                  <InventoryRow key={l.id} listing={l} sellerId={sellerId} />
-                ))}
-              </tbody>
-            </table>
-          )}
-        </CardContent>
-      </Card>
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-44 rounded-2xl" />
+          ))}
+        </div>
+      ) : !listings?.length ? (
+        <div className="rounded-2xl border border-dashed py-20 text-center">
+          <p className="text-lg font-medium">No listings yet</p>
+          <p className="text-sm text-gray-500 mt-1">Start adding books to your inventory.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {listings.map((listing) => (
+            <InventoryRow key={listing.id} listing={listing} sellerId={sellerId} />
+          ))}
+        </div>
+      )}
     </SellerLayout>
   );
 }
