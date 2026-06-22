@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fadeUp, fadeUpItem, stagger } from "@/lib/motion";
 
-
 export function Hero() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -20,7 +19,11 @@ export function Hero() {
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(search.trim() ? `/books?search=${encodeURIComponent(search.trim())}` : "/books");
+    navigate(
+      search.trim()
+        ? `/books?search=${encodeURIComponent(search.trim())}`
+        : "/books",
+    );
   };
 
   const featured = trending?.[0];
@@ -30,11 +33,16 @@ export function Hero() {
     <section className="relative overflow-hidden bg-[#0f0d1a] py-14 text-white">
       {/* Ambient glow blobs kept soft, color does the work */}
       <div className="blob-drift pointer-events-none absolute -top-20 -right-16 h-96 w-96 rounded-full bg-purple-600/15 blur-3xl" />
-      <div className="blob-drift pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl" style={{ animationDelay: "3s" }} />
-      <div className="blob-drift pointer-events-none absolute top-1/3 left-10 h-56 w-56 rounded-full bg-cyan-500/8 blur-3xl" style={{ animationDelay: "6s" }} />
+      <div
+        className="blob-drift pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl"
+        style={{ animationDelay: "3s" }}
+      />
+      <div
+        className="blob-drift pointer-events-none absolute top-1/3 left-10 h-56 w-56 rounded-full bg-cyan-500/8 blur-3xl"
+        style={{ animationDelay: "6s" }}
+      />
 
-      <div className="relative z-10 mx-auto grid max-w-6xl gap-16 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
-
+      <div className="relative z-10 mx-auto grid max-w-[1400px] gap-14 px-6 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:px-10">
         {/*  Left side  */}
         <motion.div
           initial="hidden"
@@ -52,11 +60,16 @@ export function Hero() {
 
           <motion.h1
             variants={fadeUpItem}
-            className="font-serif text-[38px] font-semibold leading-[1.15] tracking-tight text-[#f1f0f9] sm:text-5xl"
+            className="font-serif text-[38px] font-semibold leading-[1.15] tracking-tight text-[#f1f0f9] sm:text-5xl xl:text-[54px]"
           >
             Your next great{" "}
             <span
-              style={{ background: "linear-gradient(90deg,#f5a623,#ec4899,#8b5cf6)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}
+              style={{
+                background: "linear-gradient(90deg,#f5a623,#ec4899,#8b5cf6)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
             >
               story
             </span>{" "}
@@ -65,7 +78,10 @@ export function Hero() {
             waiting for you
           </motion.h1>
 
-          <motion.p variants={fadeUpItem} className="mt-5 max-w-sm text-sm leading-relaxed text-[#8b86a8]">
+          <motion.p
+            variants={fadeUpItem}
+            className="mt-5 max-w-xl text-sm leading-relaxed text-[#8b86a8]"
+          >
             Discover curated collections across every genre. From timeless
             classics to today's bestsellers — find your next obsession.
           </motion.p>
@@ -74,10 +90,13 @@ export function Hero() {
           <motion.form
             variants={fadeUpItem}
             onSubmit={onSearch}
-            className="glass mt-7 flex max-w-sm gap-2 rounded-xl p-1.5"
+            className="glass mt-7 flex max-w-xl gap-2 rounded-xl p-1.5"
           >
             <div className="relative flex-1">
-              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8b86a8]" size={15} />
+              <FiSearch
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8b86a8]"
+                size={15}
+              />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -102,8 +121,12 @@ export function Hero() {
               { num: "4.9★", lbl: "Avg rating", color: "#ec4899" },
             ].map(({ num, lbl, color }) => (
               <div key={lbl} className="flex flex-col gap-0.5">
-                <span className="text-lg font-semibold" style={{ color }}>{num}</span>
-                <span className="text-[11px] uppercase tracking-widest text-[#6b6888]">{lbl}</span>
+                <span className="text-lg font-semibold" style={{ color }}>
+                  {num}
+                </span>
+                <span className="text-[11px] uppercase tracking-widest text-[#6b6888]">
+                  {lbl}
+                </span>
               </div>
             ))}
           </motion.div>
@@ -115,7 +138,7 @@ export function Hero() {
           animate="show"
           variants={fadeUp}
           transition={{ delay: 0.2 }}
-          className="relative"
+          className="relative mx-auto w-full max-w-[500px] lg:ml-auto lg:mr-4"
         >
           <div className="grid grid-cols-3 gap-3">
             <div className="group relative row-span-2 overflow-hidden rounded-xl bg-[#1e1b2e] ring-1 ring-white/[0.06]">
@@ -131,7 +154,9 @@ export function Hero() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
                   <span
                     className="absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-[10px] font-medium text-white shadow-[0_0_10px_rgba(139,92,246,0.5)]"
-                    style={{ background: "linear-gradient(135deg,#8b5cf6,#ec4899)" }}
+                    style={{
+                      background: "linear-gradient(135deg,#8b5cf6,#ec4899)",
+                    }}
                   >
                     Trending
                   </span>
@@ -141,7 +166,10 @@ export function Hero() {
 
             {isLoading
               ? Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="aspect-[2/3] w-full rounded-xl bg-white/10" />
+                  <Skeleton
+                    key={i}
+                    className="aspect-[2/3] w-full rounded-xl bg-white/10"
+                  />
                 ))
               : rest.map((book) => (
                   <Link
@@ -164,19 +192,12 @@ export function Hero() {
             className="absolute -bottom-3 -right-3 rounded-xl px-4 py-2 text-center text-xs font-semibold leading-snug text-amber-900 shadow-lg"
             style={{ background: "linear-gradient(135deg,#fde68a,#f5a623)" }}
           >
-            50,000+<br />readers
+            50,000+
+            <br />
+            readers
           </div>
         </motion.div>
-
       </div>
     </section>
   );
 }
-
-
-
-
-
-
-
-

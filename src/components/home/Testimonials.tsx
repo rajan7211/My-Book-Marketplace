@@ -45,7 +45,8 @@ const TESTIMONIALS: Testimonial[] = [
 export function Testimonials() {
   return (
     <section className="py-16">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      {/* <div className="mx-auto max-w-4xl px-4 sm:px-6"> */}
+      <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-10">
         <div className="mb-9 text-center">
           <p
             className="glow-ribbon mx-auto mb-2.5 inline-block text-[11px] font-medium uppercase tracking-[.1em] text-purple-600"

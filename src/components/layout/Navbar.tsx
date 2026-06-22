@@ -14,8 +14,6 @@ const NAV_LINKS = [
 ];
 
 
-
-
 export function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -75,7 +73,7 @@ export function Navbar() {
           : "border-white/[0.07] bg-[#0f0d1a]"
       }`}
     >
-      <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-[60px] max-w-[1400px] items-center justify-between px-6 sm:px-8 lg:px-10">
 
         {/* Left: hamburger + logo */}
         <div className="flex items-center gap-3">

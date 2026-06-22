@@ -104,7 +104,8 @@ export function NewReleases() {
   });
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+    // <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+    <section className="mx-auto max-w-[1400px] px-6 py-14 sm:px-8 lg:px-10">
       <div className="mb-2 flex items-end justify-between">
         <h2
           className="glow-ribbon font-serif text-2xl font-bold sm:text-3xl"
