@@ -11,8 +11,9 @@ import { toast } from "react-toastify";
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Shop", to: "/books" },
-   { label: "Best Sellers", to: "/books" },
-  { label: "Contact", to: "/contact" },
+   { label: "Category", to: "/books" },
+    { label: "Contact", to: "/Contact" },
+
 ];
 
 
@@ -170,6 +171,20 @@ export function Navbar() {
 
               {menuOpen && (
                 <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-white/10 bg-[#1a1625] py-1 text-white shadow-2xl">
+                  
+                  {/* Profile Link */}
+                  <Link
+                    to="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition hover:bg-white/5"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+                      <FiUser size={15} />
+                    </div>
+                    <span>Profile</span>
+                  </Link>
+
+                  {/* Dashboard / My Orders */}
                   <Link
                     to={dashboardPath}
                     onClick={() => setMenuOpen(false)}

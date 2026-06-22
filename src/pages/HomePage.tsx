@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
 import { FeatureStrip } from "@/components/home/FeatureStrip";
-import { CategoryTiles } from "@/components/home/CategoryTiles";
+// import { CategoryTiles } from "@/components/home/CategoryTiles";
 import { NewReleases } from "@/components/home/NewReleases";
 import { Bestsellers } from "@/components/home/Bestsellers";
 import { PromoBanners, CreatedForYou } from "@/components/home/PromoBanners";

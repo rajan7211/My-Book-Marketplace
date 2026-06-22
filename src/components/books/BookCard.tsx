@@ -105,7 +105,7 @@ export function BookCard({ book, compact = false }: BookCardProps) {
               className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow"
               style={{ background: "linear-gradient(135deg,#ef4444,#be123c)" }}
             >
-              Out of stock
+              Out of stockOption A: One Smart Profile Page (Recommended)
             </span>
           )}
           {best && discountPct > 0 && (

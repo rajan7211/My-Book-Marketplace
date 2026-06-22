@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "@/pages/HomePage";
 import BooksPage from "@/pages/BooksPage";
+// import BestSellersPage from "@/pages/BestSellersPage";
+// import CategoriesPage from "@/pages/CategoriesPage";
 import BookDetailsPage from "@/pages/BookDetailsPage";
 import CartPage from "@/pages/CartPage";
 import OrdersPage from "@/pages/OrdersPage";
@@ -18,6 +20,7 @@ import AdminBooksPage from "@/pages/admin/AdminBooksPage";
 import AdminCatalogPage from "@/pages/admin/AdminCatalogPage";
 import AdminCustomersPage from "@/pages/admin/AdminCustomersPage";
 import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
+import ProfilePage from "@/pages/profile/ProfilePage";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 
 export default function App() {
@@ -27,6 +30,8 @@ export default function App() {
         {/* Public */}
         <Route path="/" element={<HomePage />} />
         <Route path="/books" element={<BooksPage />} />
+        {/* <Route path="/best-sellers" element={<BestSellersPage />} />
+        <Route path="/categories" element={<CategoriesPage />} /> */}
         <Route path="/books/:id" element={<BookDetailsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -58,6 +63,9 @@ export default function App() {
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
+
+        {/* Profile Page */}
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
