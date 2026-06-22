@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiSearch, FiCheck, FiX, FiRefreshCw } from "react-icons/fi";
+import { FiSearch, FiCheck, FiX, FiRefreshCw, FiLogIn } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { AdminLayout } from "./AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminApi } from "@/api/admin.api";
+import { useAuthStore } from "@/store/auth.store";
 import { cn } from "@/lib/utils";
 import type { SellerStatus } from "@/types";
 
@@ -26,6 +28,8 @@ const BADGE: Record<SellerStatus, string> = {
 
 export default function AdminSellersPage() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
+  const { impersonate } = useAuthStore();
   const [tab, setTab] = useState<Tab>("PENDING_APPROVAL");
   const [q, setQ] = useState("");
 
@@ -190,34 +194,55 @@ export default function AdminSellersPage() {
                 </p>
               </div>
 
-              {/* Actions */}
+                {/* Actions */}
                 <div className="mt-6 pt-5 border-t flex flex-wrap gap-3">
-                {s.status !== "APPROVED" && (
-                  <Button
-                    size="sm"
-                    onClick={() => update.mutate({ id: s.id, status: "APPROVED" })}
-                    disabled={update.isPending}
-                    className="flex-1 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-                  >
-                    <FiCheck size={15} /> {s.status === "REJECTED" ? "Re-approve" : "Approve"}
-                  </Button>
-                )}
+                  {s.status === "APPROVED" && (
+                    <Button
+                      size="sm"
+                    onClick={() => {
+                      const impersonatedUser = {
+                        id: s.id,
+                        email: s.email,
+                        name: s.businessName,
+                        role: "SELLER" as const,
+                        sellerId: s.id,
+                        sellerStatus: "APPROVED" as const,
+                      };
+                      impersonate(impersonatedUser);
+                      navigate("/seller");
+                    }}
+                      className="flex-1 gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <FiLogIn size={15} /> Login as Seller
+                    </Button>
+                  )}
 
-                {s.status !== "REJECTED" ? (
-                  <Button
-                    size="sm"
-                    onClick={() => update.mutate({ id: s.id, status: "REJECTED" })}
-                    disabled={update.isPending}
-                    className="flex-1 gap-2 bg-black text-white hover:bg-gray-900"
-                  >
-                    <FiX size={15} /> {s.status === "APPROVED" ? "Revoke" : "Reject"}
-                  </Button>
-                ) : (
-                  <div className="flex-1 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-600">
-                    Already Rejected
-                  </div>
-                )}
-              </div>
+                  {s.status !== "APPROVED" && (
+                    <Button
+                      size="sm"
+                      onClick={() => update.mutate({ id: s.id, status: "APPROVED" })}
+                      disabled={update.isPending}
+                      className="flex-1 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      <FiCheck size={15} /> {s.status === "REJECTED" ? "Re-approve" : "Approve"}
+                    </Button>
+                  )}
+
+                  {s.status !== "REJECTED" ? (
+                    <Button
+                      size="sm"
+                      onClick={() => update.mutate({ id: s.id, status: "REJECTED" })}
+                      disabled={update.isPending}
+                      className="flex-1 gap-2 bg-black text-white hover:bg-gray-900"
+                    >
+                      <FiX size={15} /> {s.status === "APPROVED" ? "Revoke" : "Reject"}
+                    </Button>
+                  ) : (
+                    <div className="flex-1 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-600">
+                      Already Rejected
+                    </div>
+                  )}
+                </div>
             </div>
           ))}
         </div>
@@ -225,7 +250,6 @@ export default function AdminSellersPage() {
     </AdminLayout>
   );
 }
-
 
 
 

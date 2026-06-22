@@ -7,7 +7,7 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 import { useAuthStore } from "@/store/auth.store";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { AdminLayout } from "./AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,11 +67,28 @@ export default function AdminDashboardPage() {
     (s) => s.status === "APPROVED"
   );
 
-  //  in a real app, this would create an admin session token for the user.
-  const handleLoginAs = (kind: "seller" | "customer", name: string) => {
-    toast.info(
-      `Login-as-${kind}: "${name}" — backend hook needed to swap sessions.`
-    );
+  const { impersonate } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLoginAs = (kind: "seller" | "customer", user: any) => {
+    // Create a proper AuthUser object for impersonation
+    const impersonatedUser = {
+      id: user.id,
+      email: kind === "seller" ? user.email : `user${user.id}@bookhub.com`,
+      name: kind === "seller" ? user.businessName : `${user.firstName} ${user.lastName}`,
+      role: kind === "seller" ? "SELLER" : "CUSTOMER",
+      sellerId: kind === "seller" ? user.id : undefined,
+      customerId: kind === "customer" ? user.id : undefined,
+    };
+
+    impersonate(impersonatedUser);
+
+    // Redirect based on role
+    if (kind === "seller") {
+      navigate("/seller");
+    } else {
+      navigate("/orders");
+    }
   };
 
   return (
@@ -87,12 +104,15 @@ export default function AdminDashboardPage() {
         </p>
       </div>
 
-      {/* ── Stat cards ── */}
+      {/* ── Interactive Stat cards ── */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {STAT_CARDS.map(({ label, key, sub, icon: Icon, bg, fg }) => (
-          <Card key={label}>
+          <Card 
+            key={label} 
+            className="transition-all hover:shadow-lg hover:-translate-y-0.5 cursor-pointer group"
+          >
             <CardContent className="flex items-start gap-4 p-5">
-              <span className={`grid h-12 w-12 place-items-center rounded-xl ${bg} ${fg}`}>
+              <span className={`grid h-12 w-12 place-items-center rounded-xl ${bg} ${fg} transition group-hover:scale-110`}>
                 <Icon size={22} />
               </span>
               <div className="leading-tight">
@@ -109,13 +129,13 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* ── Pending approvals ── */}
+      {/* ── Interactive Pending Approvals ── */}
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        <Card>
+        <Card className="transition-all hover:shadow-lg group">
           <CardContent className="p-6">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-amber-100 text-amber-600">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-amber-100 text-amber-600 transition group-hover:scale-110">
                   <FiUsers size={20} />
                 </span>
                 <div>
@@ -129,7 +149,7 @@ export default function AdminDashboardPage() {
               </div>
               <a
                 href="/admin/sellers"
-                className="flex items-center gap-1 text-sm font-medium text-brand-dark hover:underline"
+                className="flex items-center gap-1 text-sm font-medium text-brand-dark hover:text-amber-600 transition"
               >
                 Review <FiArrowRight size={14} />
               </a>
@@ -145,11 +165,11 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all hover:shadow-lg group">
           <CardContent className="p-6">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-100 text-emerald-600">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-emerald-100 text-emerald-600 transition group-hover:scale-110">
                   <FiBookOpen size={20} />
                 </span>
                 <div>
@@ -163,7 +183,7 @@ export default function AdminDashboardPage() {
               </div>
               <a
                 href="/admin/books"
-                className="flex items-center gap-1 text-sm font-medium text-brand-dark hover:underline"
+                className="flex items-center gap-1 text-sm font-medium text-brand-dark hover:text-emerald-600 transition"
               >
                 Review <FiArrowRight size={14} />
               </a>
@@ -215,10 +235,10 @@ export default function AdminDashboardPage() {
                 {approvedSellers.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50"
+                    className="group flex items-center justify-between rounded-xl border border-gray-100 bg-white px-4 py-3 transition-all hover:border-amber-200 hover:shadow-md"
                   >
                     <div className="leading-tight">
-                      <p className="font-semibold text-brand-dark">
+                      <p className="font-semibold text-brand-dark group-hover:text-amber-600 transition">
                         {s.businessName}
                       </p>
                       <p className="text-[11px] text-gray-500">{s.email}</p>
@@ -226,7 +246,8 @@ export default function AdminDashboardPage() {
                     <Button
                       size="sm"
                       variant="dark"
-                      onClick={() => handleLoginAs("seller", s.businessName)}
+                      onClick={() => handleLoginAs("seller", s)}
+                      className="transition group-hover:bg-black"
                     >
                       Login as
                     </Button>
@@ -247,10 +268,10 @@ export default function AdminDashboardPage() {
                 {(customers ?? []).map((c) => (
                   <div
                     key={c.id}
-                    className="flex items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50"
+                    className="group flex items-center justify-between rounded-xl border border-gray-100 bg-white px-4 py-3 transition-all hover:border-purple-200 hover:shadow-md"
                   >
                     <div className="leading-tight">
-                      <p className="font-semibold text-brand-dark">
+                      <p className="font-semibold text-brand-dark group-hover:text-purple-600 transition">
                         {c.firstName} {c.lastName}
                       </p>
                       <p className="text-[11px] text-gray-500">
@@ -260,12 +281,8 @@ export default function AdminDashboardPage() {
                     <Button
                       size="sm"
                       variant="dark"
-                      onClick={() =>
-                        handleLoginAs(
-                          "customer",
-                          `${c.firstName} ${c.lastName}`
-                        )
-                      }
+                      onClick={() => handleLoginAs("customer", c)}
+                      className="transition group-hover:bg-black"
                     >
                       Login as
                     </Button>

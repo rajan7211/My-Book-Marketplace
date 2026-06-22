@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { SellerLayout } from "./SellerLayout";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+// import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

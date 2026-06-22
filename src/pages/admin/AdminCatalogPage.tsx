@@ -297,7 +297,8 @@ export default function AdminCatalogPage() {
   );
 }
 
-/* ─────────────────── BookRow (expandable) ─────────────────── */
+
+  // BookRow (expandable)
 
 function BookRow({
   book,
@@ -397,7 +398,7 @@ function BookRow({
           })}
         </td>
         <td className="px-6 py-3 text-right">
-          {/* ── Actions — Reject always visible with perfect hover ── */}
+          {/*  Actions — Reject always visible with perfect hover */}
           <div className="flex justify-end gap-2">
             {/* Approve / Re-approve (only when not already approved) */}
             {book.status !== "APPROVED" && (
@@ -432,7 +433,7 @@ function BookRow({
                 <FiX size={11} /> Reject
               </Button>
             ) : (
-              // Already rejected — visible pill, NOT hidden
+              // Already rejected -visible pill, NOT hidden
               <div
                 className="flex h-8 items-center justify-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700"
                 title="This book has already been rejected"
@@ -512,5 +513,10 @@ function BookRow({
     </>
   );
 }
+
+
+
+
+
 
 

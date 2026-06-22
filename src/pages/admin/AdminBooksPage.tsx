@@ -247,19 +247,18 @@ export default function AdminBooksPage() {
                       </Button>
                     )}
 
-                    {/* Reject button — ALWAYS visible with perfect hover */}
+                    {/* Reject button — Black + White text */}
                     {b.status !== "REJECTED" ? (
                       <Button
                         size="sm"
-                        variant="destructive"
-                        className={cn(
-                          "flex-1 gap-1",
-                          b.status === "APPROVED" && "w-full"
-                        )}
                         onClick={() =>
                           update.mutate({ id: b.id, status: "REJECTED" })
                         }
                         disabled={update.isPending}
+                        className={cn(
+                          "flex-1 gap-1 bg-black text-white hover:bg-gray-900",
+                          b.status === "APPROVED" && "w-full"
+                        )}
                       >
                         <FiX size={11} /> Reject
                       </Button>

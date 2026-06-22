@@ -11,15 +11,15 @@ import { toast } from "react-toastify";
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Shop", to: "/books" },
-  { label: "Best Sellers", to: "/best-sellers" },   
-  { label: "Categories", to: "/categories" },       
+   { label: "Best Sellers", to: "/books" },
+  { label: "Contact", to: "/contact" },
 ];
 
 
 export function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, isImpersonating, exitImpersonation } = useAuthStore();
   const totalItems = useCartStore((s) => s.totalItems());
   const [menuOpen, setMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -68,13 +68,29 @@ export function Navbar() {
         : "/orders";
 
   return (
-    <header
-      className={`sticky top-0 z-50 border-b text-white transition-colors duration-300 ${
-        scrolled
-          ? "nav-glass border-white/[0.08]"
-          : "border-white/[0.07] bg-[#0f0d1a]"
-      }`}
-    >
+    <>
+      {/* Impersonation Banner */}
+      {isImpersonating && user && (
+        <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-2 px-4 text-center text-sm font-medium flex items-center justify-center gap-4">
+          <span>
+            🔒 You are impersonating <strong>{user.name}</strong> ({user.role})
+          </span>
+          <button
+            onClick={exitImpersonation}
+            className="px-4 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-semibold transition"
+          >
+            Exit Impersonation
+          </button>
+        </div>
+      )}
+
+      <header
+        className={`sticky top-0 z-50 border-b text-white transition-colors duration-300 ${
+          scrolled
+            ? "nav-glass border-white/[0.08]"
+            : "border-white/[0.07] bg-[#0f0d1a]"
+        }`}
+      >
       <div className="mx-auto flex h-[60px] max-w-[1400px] items-center justify-between px-6 sm:px-8 lg:px-10">
 
         {/* Left: hamburger + logo */}
@@ -138,35 +154,45 @@ export function Navbar() {
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setMenuOpen((o) => !o)}
-                className="flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.06] py-1.5 pl-1.5 pr-3 text-sm text-white transition hover:bg-white/[0.12]"
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 py-1.5 pl-1.5 pr-4 text-sm text-white transition hover:bg-white/10"
               >
                 <span
-                  className="grid h-[26px] w-[26px] place-items-center rounded-full text-[11px] font-medium text-white"
+                  className="grid h-8 w-8 place-items-center rounded-full text-sm font-semibold text-white"
                   style={{ background: "linear-gradient(135deg,#8b5cf6,#ec4899)" }}
                 >
                   {user.name.charAt(0).toUpperCase()}
                 </span>
-                <span className="hidden max-w-[100px] truncate sm:block">
+                <span className="hidden max-w-[110px] truncate font-medium sm:block">
                   {user.name}
                 </span>
-                <FiChevronDown size={12} className="text-[#8b86a8]" />
+                <FiChevronDown size={14} className="text-[#8b86a8]" />
               </button>
 
               {menuOpen && (
-                <div className="glass-light absolute right-0 mt-2 w-48 overflow-hidden rounded-xl py-1 text-[#0f0d1a] shadow-xl">
+                <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-white/10 bg-[#1a1625] py-1 text-white shadow-2xl">
                   <Link
                     to={dashboardPath}
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-black/5"
+                    className="flex items-center gap-3 px-4 py-3 text-sm transition hover:bg-white/5"
                   >
-                    <FiUser size={14} />
-                    {user.role === "CUSTOMER" ? "My Orders" : "Dashboard"}
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+                      <FiUser size={15} />
+                    </div>
+                    <span>
+                      {user.role === "CUSTOMER" ? "My Orders" : "Dashboard"}
+                    </span>
                   </Link>
+
+                  <div className="mx-3 my-1 h-px bg-white/10" />
+
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-black/5"
+                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
                   >
-                    <FiLogOut size={14} /> Logout
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/10">
+                      <FiLogOut size={15} />
+                    </div>
+                    <span>Logout</span>
                   </button>
                 </div>
               )}
@@ -184,7 +210,8 @@ export function Navbar() {
       </div>
 
       <SideMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-    </header>
+      </header>
+    </>
   );
 }
 
