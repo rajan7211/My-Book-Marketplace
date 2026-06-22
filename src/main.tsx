@@ -20,6 +20,7 @@ const queryClient = new QueryClient({
   },
 });
 
+
 // connected 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

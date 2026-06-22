@@ -89,12 +89,12 @@ export function BookCard({ book, compact = false }: BookCardProps) {
       {/* Cover image: wider shelf-style spacing like the reference layout */}
       <Link
         to={`/books/${book.id}`}
-        className="relative grid h-[230px] place-items-center overflow-hidden rounded-2xl bg-white/70 shadow-sm ring-1 ring-black/[0.03] transition-shadow duration-300 group-hover:shadow-[0_18px_38px_-16px_rgba(139,92,246,0.38)] sm:h-[258px]"
+        className="relative grid h-[230px] place-items-center overflow-hidden rounded-2xl bg-white/70 shadow-sm ring-1 ring-black/[0.03] transition-shadow duration-300 group-hover:shadow-[0_18px_38px_-16px_rgba(139,92,246,0.38)] sm:h-[285px]"
       >
         <img
           src={book.coverImage}
           alt={book.title}
-          className="h-[205px] max-w-[72%] object-contain drop-shadow-xl transition duration-300 group-hover:scale-105 sm:h-[238px]"
+          className="h-[205px] max-w-[72%] object-contain drop-shadow-xl transition duration-300 group-hover:scale-105 sm:h-[262px]"
           loading="lazy"
         />
 

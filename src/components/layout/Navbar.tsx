@@ -42,6 +42,17 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
+    const closeDrawerOnDesktop = () => {
+      if (desktopQuery.matches) setDrawerOpen(false);
+    };
+
+    closeDrawerOnDesktop();
+    desktopQuery.addEventListener("change", closeDrawerOnDesktop);
+    return () => desktopQuery.removeEventListener("change", closeDrawerOnDesktop);
+  }, []);
+
   const handleLogout = () => {
     logout();
     useCartStore.getState().clear();
@@ -70,7 +81,7 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setDrawerOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-[#b0aac8] transition hover:bg-white/[0.07] hover:text-white"
+            className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-[#b0aac8] transition hover:bg-white/[0.07] hover:text-white md:hidden"
             aria-label="Open menu"
           >
             <FiMenu size={20} />

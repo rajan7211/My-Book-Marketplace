@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -41,6 +42,11 @@ const FALLBACK_META = { icon: FiBookOpen, color: "#8b86a8" };
 export function SideMenu({ open, onClose }: SideMenuProps) {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -50,12 +56,34 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
   useEffect(() => {
     if (!open) return;
+
+    const scrollY = window.scrollY;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyPosition = document.body.style.position;
+    const originalBodyTop = document.body.style.top;
+    const originalBodyWidth = document.body.style.width;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    // Lock the page behind the drawer. Using fixed body positioning keeps the
+    // current scroll position stable and prevents mobile browsers from scrolling
+    // the background while the menu is open.
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
+
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.position = originalBodyPosition;
+      document.body.style.top = originalBodyTop;
+      document.body.style.width = originalBodyWidth;
       window.removeEventListener("keydown", onKey);
+      window.scrollTo(0, scrollY);
     };
   }, [open, onClose]);
 
@@ -71,7 +99,9 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
     go("/");
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       <div
         onClick={onClose}
@@ -83,7 +113,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
 
       <aside
         style={{ backgroundColor: "#13111f" }}
-        className={`fixed inset-y-0 left-0 z-[70] flex w-[300px] max-w-[85vw] flex-col shadow-2xl transition-transform duration-300 ease-out ${
+        className={`fixed left-0 top-0 z-[70] flex h-screen h-dvh w-[300px] max-w-[85vw] flex-col shadow-2xl transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"
@@ -130,7 +160,7 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           <FiChevronRight size={16} className="ml-auto shrink-0 text-white/30" />
         </button>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overscroll-contain overflow-y-auto">
           <Section title="Trending">
             <Item icon={FiTrendingUp} label="Trending Now" color="#ec4899" onClick={() => go("/books?sort=newest")} />
             <Item icon={FiStar} label="Bestsellers" color="#f59e0b" onClick={() => go("/books")} />
@@ -198,7 +228,8 @@ export function SideMenu({ open, onClose }: SideMenuProps) {
           </p>
         </div>
       </aside>
-    </>
+    </>,
+    document.body
   );
 }
 

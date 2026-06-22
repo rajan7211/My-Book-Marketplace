@@ -45,7 +45,7 @@ export function CategoryRow({
   const scroll = (dir: number) => railRef.current?.scrollBy({ left: dir * 400, behavior: "smooth" });
 
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
+    <section className="mx-auto max-w-[1760px] px-6 pb-14 sm:px-10">
       <div className="mb-1.5 flex items-end justify-between border-b border-gray-200 pb-5">
         <div>
           {label && (
@@ -71,7 +71,7 @@ export function CategoryRow({
       <div className="relative">
         <button
           onClick={() => scroll(-1)}
-          className="absolute -left-4 top-1/3 z-10 hidden h-[36px] w-[36px] -translate-y-1/2 place-items-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition hover:text-white lg:grid"
+          className="hidden"
           onMouseEnter={(e) => (e.currentTarget.style.background = `linear-gradient(135deg,${a.from},${a.to})`)}
           onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
           aria-label="Previous"
@@ -84,18 +84,18 @@ export function CategoryRow({
           initial="hidden"
           animate="show"
           variants={stagger(0.06)}
-          className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth pb-1"
+          className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth pb-1 lg:grid lg:grid-cols-5 lg:overflow-visible"
         >
           {isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="w-[240px] shrink-0 sm:w-[286px]">
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="w-[240px] shrink-0 sm:w-[316px] lg:w-full">
                   <Skeleton className="h-[258px] w-full rounded-2xl" />
                   <Skeleton className="mt-2 h-3 w-3/4 rounded" />
                   <Skeleton className="mt-1 h-3 w-1/2 rounded" />
                 </div>
               ))
-            : data?.slice(0, 4).map((book) => (
-                <motion.div key={book.id} variants={fadeUpItem} className="w-[240px] shrink-0 sm:w-[286px]">
+            : data?.slice(0, 5).map((book) => (
+                <motion.div key={book.id} variants={fadeUpItem} className="w-[240px] shrink-0 sm:w-[316px] lg:w-full">
                   <BookCard book={book} compact />
                 </motion.div>
               ))}
@@ -103,7 +103,7 @@ export function CategoryRow({
 
         <button
           onClick={() => scroll(1)}
-          className="absolute -right-4 top-1/3 z-10 hidden h-[36px] w-[36px] -translate-y-1/2 place-items-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition hover:text-white lg:grid"
+          className="hidden"
           onMouseEnter={(e) => (e.currentTarget.style.background = `linear-gradient(135deg,${a.from},${a.to})`)}
           onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
           aria-label="Next"
