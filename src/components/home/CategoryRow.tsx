@@ -45,7 +45,7 @@ export function CategoryRow({
   const scroll = (dir: number) => railRef.current?.scrollBy({ left: dir * 400, behavior: "smooth" });
 
   return (
-    <section className="mx-auto max-w-[1760px] px-6 pb-14 sm:px-10">
+    <section className="mx-auto max-w-[1760px] px-6 pb-14 sm:px-20">
       <div className="mb-1.5 flex items-end justify-between border-b border-gray-200 pb-5">
         <div>
           {label && (

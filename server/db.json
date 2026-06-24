@@ -750,7 +750,7 @@
       "sellerId": 2,
       "price": 2100,
       "mrp": 2950,
-      "stock": 12,
+      "stock": 11,
       "status": "ACTIVE",
       "createdAt": "2026-02-20T10:25:00.000Z"
     },
@@ -1203,6 +1203,16 @@
       "status": "CREATED",
       "createdAt": "2026-06-22T08:22:31.887Z",
       "id": 10
+    },
+    {
+      "customerId": 2,
+      "sellerId": 2,
+      "sellerName": "Readers Paradise",
+      "shippingAddress": "Ronak Thakur, 8580432871, 3B2, Mohali, Chandigarh, mohali, punjab, 149004",
+      "totalAmount": 2100,
+      "status": "CREATED",
+      "createdAt": "2026-06-23T12:58:05.031Z",
+      "id": 11
     }
   ],
   "orderItems": [
@@ -1305,6 +1315,16 @@
       "price": 380,
       "quantity": 1,
       "id": 10
+    },
+    {
+      "orderId": 11,
+      "listingId": 6,
+      "bookId": 5,
+      "title": "Forget a Mentor, Find a Sponsor",
+      "coverImage": "https://covers.openlibrary.org/b/id/13069105-M.jpg",
+      "price": 2100,
+      "quantity": 1,
+      "id": 11
     }
   ]
 }

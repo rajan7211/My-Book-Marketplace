@@ -25,7 +25,7 @@ export function Bestsellers() {
   const scroll = (dir: number) => railRef.current?.scrollBy({ left: dir * 400, behavior: "smooth" });
 
   return (
-    <section className="mx-auto max-w-[1760px] px-6 pb-14 sm:px-10">
+    <section className="mx-auto max-w-[1760px] px-6 pb-14 sm:px-20">
       <h2
         className="glow-ribbon mb-6 inline-block font-serif text-2xl font-bold sm:text-3xl"
         style={{ ["--ribbon-from" as string]: "#f59e0b", ["--ribbon-to" as string]: "#ec4899", ["--ribbon-glow" as string]: "rgba(245,158,11,0.5)" }}
