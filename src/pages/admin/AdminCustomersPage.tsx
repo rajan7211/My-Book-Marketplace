@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FiSearch, FiUser } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import { AdminLayout } from "./AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminApi } from "@/api/admin.api";
-import { toast } from "react-toastify";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function AdminCustomersPage() {
+  const navigate = useNavigate();
+  const { impersonate } = useAuthStore();
   const [q, setQ] = useState("");
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "customers"],
@@ -103,11 +106,16 @@ export default function AdminCustomersPage() {
                       <Button
                         size="sm"
                         variant="dark"
-                        onClick={() =>
-                          toast.info(
-                            `Login as ${c.firstName} ${c.lastName} — backend hook needed.`
-                          )
-                        }
+                        onClick={() => {
+                          impersonate({
+                            userId: c.userId,
+                            email: c.email,
+                            name: `${c.firstName} ${c.lastName}`,
+                            role: "CUSTOMER",
+                            customerId: c.id,
+                          });
+                          navigate("/orders");
+                        }}
                       >
                         Login as
                       </Button>

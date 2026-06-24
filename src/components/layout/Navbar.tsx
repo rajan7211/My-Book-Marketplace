@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Shop", to: "/books" },
    { label: "Category", to: "/books" },
-    { label: "Contact", to: "/Contact" },
+    { label: "Contact", to: "/books" },
 
 ];
 

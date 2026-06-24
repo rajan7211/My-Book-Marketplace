@@ -79,9 +79,11 @@ export function BookCard({ book, compact = false }: BookCardProps) {
       quantity: 1,
       stock: best.stock,
     });
-    res.ok
-      ? toast.success(`"${book.title}" added to cart`)
-      : toast.error(res.message);
+    if (res.ok) {
+      toast.success(`"${book.title}" added to cart`);
+    } else {
+      toast.error(res.message);
+    }
   };
 
   return (

@@ -62,7 +62,11 @@ export default function RegisterPage() {
           confirmPassword: "",
         }}
         validationSchema={registerSchema}
-        onSubmit={({ confirmPassword, ...values }) => mutation.mutate(values)}
+        onSubmit={(raw) => {
+          const { confirmPassword, ...values } = raw;
+          void confirmPassword;
+          mutation.mutate(values);
+        }}
       >
         {() => (
           <Form className="space-y-4">

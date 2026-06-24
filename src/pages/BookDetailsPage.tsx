@@ -67,9 +67,11 @@ export default function BookDetailsPage() {
       quantity,
       stock: selected.stock,
     });
-    res.ok
-      ? toast.success(`Added ${quantity} × "${book.title}" to cart`)
-      : toast.error(res.message);
+    if (res.ok) {
+      toast.success(`Added ${quantity} × "${book.title}" to cart`);
+    } else {
+      toast.error(res.message);
+    }
   };
 
   return (
@@ -88,7 +90,7 @@ export default function BookDetailsPage() {
           </span>
         </nav>
 
-        {isLoading || !book ? (
+        {isLoading ? (
           <div className="grid gap-10 lg:grid-cols-[320px_1fr]">
             <Skeleton className="aspect-[2/3] rounded-xl" />
             <div className="space-y-4">
@@ -96,6 +98,12 @@ export default function BookDetailsPage() {
               <Skeleton className="h-5 w-1/3" />
               <Skeleton className="h-32" />
             </div>
+          </div>
+        ) : !book ? (
+          <div className="py-20 text-center rounded-xl bg-white shadow-sm">
+            <p className="text-xl font-bold">Book Not Found</p>
+            <p className="text-sm text-gray-500 mt-2">The book you are looking for does not exist or has been removed.</p>
+            <Link to="/books"><Button className="mt-6">Browse Books</Button></Link>
           </div>
         ) : (
           <div className="grid gap-10 lg:grid-cols-[320px_1fr]">

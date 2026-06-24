@@ -1,5 +1,5 @@
 import { api } from "./client";
-import type { AuthUser, Customer, Role, Seller, User } from "@/types";
+import type { AuthUser, Customer, Seller, User } from "@/types";
 
 export interface RegisterPayload {
   firstName: string;

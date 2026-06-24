@@ -4,11 +4,9 @@ import type { CartItem } from "@/types";
 
 interface CartState {
   items: CartItem[];
-  /**
-   * Rule 4: cart stores LISTING information (seller-specific offer),
-   * never just the book. The same book from two different sellers
-   * is two separate cart lines.
-   */
+  activeUserId: number | null;
+  userCarts: Record<number, CartItem[]>;
+  switchUser: (userId: number | null) => void;
   addItem: (item: CartItem) => { ok: boolean; message: string };
   updateQuantity: (listingId: number, quantity: number) => void;
   removeItem: (listingId: number) => void;
@@ -21,6 +19,16 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      activeUserId: null,
+      userCarts: {},
+
+      switchUser: (userId) => {
+        const carts = get().userCarts;
+        set({
+          activeUserId: userId,
+          items: userId ? (carts[userId] ?? []) : [],
+        });
+      },
 
       addItem: (item) => {
         const existing = get().items.find(
@@ -28,7 +36,6 @@ export const useCartStore = create<CartState>()(
         );
         const newQty = (existing?.quantity ?? 0) + item.quantity;
 
-        // Rule 5: never allow more than available stock
         if (newQty > item.stock) {
           return {
             ok: false,
@@ -36,31 +43,50 @@ export const useCartStore = create<CartState>()(
           };
         }
 
-        if (existing) {
-          set({
-            items: get().items.map((i) =>
+        const newItems = existing
+          ? get().items.map((i) =>
               i.listingId === item.listingId ? { ...i, quantity: newQty } : i
-            ),
-          });
-        } else {
-          set({ items: [...get().items, item] });
-        }
+            )
+          : [...get().items, item];
+
+        const uid = get().activeUserId;
+        const newUserCarts = uid
+          ? { ...get().userCarts, [uid]: newItems }
+          : get().userCarts;
+
+        set({ items: newItems, userCarts: newUserCarts });
         return { ok: true, message: "Added to cart" };
       },
 
-      updateQuantity: (listingId, quantity) =>
-        set({
-          items: get().items.map((i) =>
-            i.listingId === listingId
-              ? { ...i, quantity: Math.max(1, Math.min(quantity, i.stock)) }
-              : i
-          ),
-        }),
+      updateQuantity: (listingId, quantity) => {
+        const newItems = get().items.map((i) =>
+          i.listingId === listingId
+            ? { ...i, quantity: Math.max(1, Math.min(quantity, i.stock)) }
+            : i
+        );
+        const uid = get().activeUserId;
+        const newUserCarts = uid
+          ? { ...get().userCarts, [uid]: newItems }
+          : get().userCarts;
+        set({ items: newItems, userCarts: newUserCarts });
+      },
 
-      removeItem: (listingId) =>
-        set({ items: get().items.filter((i) => i.listingId !== listingId) }),
+      removeItem: (listingId) => {
+        const newItems = get().items.filter((i) => i.listingId !== listingId);
+        const uid = get().activeUserId;
+        const newUserCarts = uid
+          ? { ...get().userCarts, [uid]: newItems }
+          : get().userCarts;
+        set({ items: newItems, userCarts: newUserCarts });
+      },
 
-      clear: () => set({ items: [] }),
+      clear: () => {
+        const uid = get().activeUserId;
+        const newUserCarts = uid
+          ? { ...get().userCarts, [uid]: [] }
+          : get().userCarts;
+        set({ items: [], userCarts: newUserCarts });
+      },
 
       totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
 
@@ -70,7 +96,3 @@ export const useCartStore = create<CartState>()(
     { name: "wk-cart" }
   )
 );
-
-
-
-

@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiSearch, FiCheck, FiX, FiRefreshCw, FiLogIn } from "react-icons/fi";
+import { FiSearch, FiCheck, FiX, FiLogIn } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AdminLayout } from "./AdminLayout";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminApi } from "@/api/admin.api";
@@ -65,7 +64,7 @@ export default function AdminSellersPage() {
     });
 
   const update = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: SellerStatus }) =>
+    mutationFn: ({ id, status }: { id: number; status: "APPROVED" | "REJECTED" }) =>
       adminApi.updateSellerStatus(id, status),
     onSuccess: (s) => {
       qc.invalidateQueries({ queryKey: ["admin"] });
@@ -201,7 +200,7 @@ export default function AdminSellersPage() {
                       size="sm"
                     onClick={() => {
                       const impersonatedUser = {
-                        id: s.id,
+                        userId: s.userId ?? s.id,
                         email: s.email,
                         name: s.businessName,
                         role: "SELLER" as const,

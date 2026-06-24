@@ -65,7 +65,7 @@ export function Bestsellers() {
       <div className="relative">
         <button
           onClick={() => scroll(-1)}
-          className="hidden"
+          className="hidden lg:grid absolute -left-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 place-items-center rounded-full bg-white shadow-md border border-gray-200"
           style={{ ["--hb" as string]: "1" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "linear-gradient(135deg,#f59e0b,#ec4899)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
@@ -98,7 +98,7 @@ export function Bestsellers() {
 
         <button
           onClick={() => scroll(1)}
-          className="hidden"
+          className="hidden lg:grid absolute -right-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 place-items-center rounded-full bg-white shadow-md border border-gray-200"
           onMouseEnter={(e) => (e.currentTarget.style.background = "linear-gradient(135deg,#f59e0b,#ec4899)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
           aria-label="Next"

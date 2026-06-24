@@ -13,8 +13,8 @@ import { toast } from "react-toastify";
 
 const QUICK_LINKS = [
   { label: "Home", to: "/" },
-  { label: "About us", to: "/about" },
-  { label: "Contact", to: "/contact" },
+  { label: "About us", to: "/books" },
+  { label: "Contact", to: "/books" },
   { label: "Categories", to: "/books" },
   { label: "Sign in", to: "/login" },
 ];
@@ -109,13 +109,13 @@ export function Footer() {
 
         <div>
           <h4 className="mb-4 text-[11px] font-medium uppercase tracking-[.1em] text-[#f1f0f9]">
-            Sell with us
+            Sell with us & Newsletter
           </h4>
-          <div className="glass rounded-xl p-5">
+          <div className="glass rounded-xl p-5 space-y-4">
             <p className="text-sm leading-relaxed text-[#a8a4c2]">
               List your books and reach thousands of readers worldwide.
             </p>
-            <Link to="/seller/register" className="mt-4 block">
+            <Link to="/seller/register" className="block">
               <Button
                 variant="outline"
                 className="w-full border-emerald-500/60 text-emerald-400 transition hover:bg-emerald-500 hover:text-white"
@@ -123,6 +123,16 @@ export function Footer() {
                 Become a seller
               </Button>
             </Link>
+            <form onSubmit={subscribe} className="flex gap-2 pt-2 border-t border-white/10">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email..."
+                className="bg-black/30 border border-white/15 text-xs px-3 py-2 rounded-lg w-full text-white focus:outline-none focus:border-pink-500"
+              />
+              <Button type="submit" size="sm" className="bg-pink-600 hover:bg-pink-700 text-white shrink-0">Join</Button>
+            </form>
           </div>
         </div>
       </div>

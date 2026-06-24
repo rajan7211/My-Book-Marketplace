@@ -42,11 +42,8 @@ const FALLBACK_META = { icon: FiBookOpen, color: "#8b86a8" };
 export function SideMenu({ open, onClose }: SideMenuProps) {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Fixed 
+  const [mounted] = useState(typeof window !== "undefined");
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],

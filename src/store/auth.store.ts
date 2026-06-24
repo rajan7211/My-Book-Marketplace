@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { AuthUser } from "@/types";
+import { useCartStore } from "./cart.store";
 
 interface AuthState {
   user: AuthUser | null;
@@ -21,19 +22,25 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isImpersonating: false,
 
-      login: (user) => set({ user, isAuthenticated: true }),
+      login: (user) => {
+        useCartStore.getState().switchUser(user.userId);
+        set({ user, isAuthenticated: true });
+      },
 
-      logout: () =>
+      logout: () => {
+        useCartStore.getState().switchUser(null);
         set({
           user: null,
           originalUser: null,
           isAuthenticated: false,
           isImpersonating: false,
-        }),
+        });
+      },
 
       impersonate: (user) => {
         const current = get().user;
         if (current && current.role === "ADMIN") {
+          useCartStore.getState().switchUser(user.userId);
           set({
             originalUser: current,
             user: { ...user, sellerStatus: "APPROVED" },
@@ -45,6 +52,7 @@ export const useAuthStore = create<AuthState>()(
       exitImpersonation: () => {
         const original = get().originalUser;
         if (original) {
+          useCartStore.getState().switchUser(original.userId);
           set({
             user: original,
             originalUser: null,
@@ -56,6 +64,3 @@ export const useAuthStore = create<AuthState>()(
     { name: "wk-auth" }
   )
 );
-
-
-

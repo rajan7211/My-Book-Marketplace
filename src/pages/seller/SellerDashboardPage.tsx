@@ -86,8 +86,8 @@ export default function SellerDashboardPage() {
   });
 
   const isLoading = loadingListings || loadingOrders;
-  const sellerListings = listings ?? [];
-  const sellerOrders = orders ?? [];
+  const sellerListings = useMemo(() => listings ?? [], [listings]);
+  const sellerOrders = useMemo(() => orders ?? [], [orders]);
 
   const activeListings = sellerListings.filter((l) => l.status === "ACTIVE");
   const inactiveListings = sellerListings.filter((l) => l.status === "INACTIVE");

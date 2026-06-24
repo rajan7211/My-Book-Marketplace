@@ -13,7 +13,7 @@ import { sellerApi } from "@/api/seller.api";
 import { useAuthStore } from "@/store/auth.store";
 import { formatPrice, cn } from "@/lib/utils";
 
-/* ---------- validation ---------- */
+// validation 
 
 const listingSchema = Yup.object({
   bookId: Yup.number().min(1, "Please select a book").required("Please select a book"),
@@ -49,7 +49,7 @@ const newBookSchema = Yup.object({
 
 const CATEGORIES = ["Fictions", "Biography", "History", "Graphic Design", "Self Help"];
 
-/* ---------- page ---------- */
+//  page 
 
 export default function SellerListingsPage() {
   const { user } = useAuthStore();
@@ -195,7 +195,6 @@ export default function SellerListingsPage() {
         </div>
       )}
 
-      {/* ---------- Create Listing modal (Scenario A) ---------- */}
       {modal === "listing" && (
         <Modal title="Create Listing" onClose={() => setModal("closed")}>
           <p className="mb-4 text-xs text-gray-500">
@@ -261,7 +260,6 @@ export default function SellerListingsPage() {
         </Modal>
       )}
 
-      {/* ---------- Submit New Book modal (Scenario B) ---------- */}
       {modal === "book" && (
         <Modal title="Submit New Book" onClose={() => setModal("closed")}>
           <p className="mb-4 text-xs text-gray-500">
@@ -345,7 +343,6 @@ export default function SellerListingsPage() {
   );
 }
 
-/* ---------- shared modal shell ---------- */
 
 function Modal({
   title,

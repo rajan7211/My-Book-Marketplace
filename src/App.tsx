@@ -61,11 +61,11 @@ export default function App() {
           <Route path="/admin/catalog" element={<AdminCatalogPage />} />
           <Route path="/admin/customers" element={<AdminCustomersPage />} />
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
-          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
 
         {/* Profile Page */}
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

@@ -6,7 +6,6 @@ import {
   FiList,
   FiUserCheck,
   FiPackage,
-  FiHome,
   FiLogOut,
   FiArrowLeft,
   FiMenu,
@@ -20,33 +19,42 @@ import { useAuthStore } from "@/store/auth.store";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { to: "/admin", label: "Dashboard", icon: FiGrid, end: true, badge: null as const },
+// fixed 
+interface NavItem {
+  to: string;
+  label: string;
+  icon: React.ElementType;
+  end?: boolean;
+  badge: "pendingSellers" | "pendingBooks" | null;
+}
+
+const NAV: NavItem[] = [
+  { to: "/admin", label: "Dashboard", icon: FiGrid, end: true, badge: null },
   {
     to: "/admin/sellers",
     label: "Seller Approval",
     icon: FiUsers,
-    badge: "pendingSellers" as const,
+    badge: "pendingSellers",
   },
   {
     to: "/admin/books",
     label: "Book Approval",
     icon: FiBookOpen,
-    badge: "pendingBooks" as const,
+    badge: "pendingBooks",
   },
-  { to: "/admin/catalog", label: "Catalog", icon: FiList, badge: null as const },
+  { to: "/admin/catalog", label: "Catalog", icon: FiList, badge: null },
   {
     to: "/admin/customers",
     label: "Customers",
     icon: FiUserCheck,
-    badge: null as const,
+    badge: null,
   },
-  { to: "/admin/orders", label: "Orders", icon: FiPackage, badge: null as const },
+  { to: "/admin/orders", label: "Orders", icon: FiPackage, badge: null },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: stats } = useQuery({

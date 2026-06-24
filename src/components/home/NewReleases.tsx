@@ -45,7 +45,11 @@ function ReleaseCard({ book }: { book: BookWithListings }) {
       quantity: 1,
       stock: best.stock,
     });
-    res.ok ? toast.success(`"${book.title}" added to basket`) : toast.error(res.message);
+    if (res.ok) {
+      toast.success(`"${book.title}" added to basket`);
+    } else {
+      toast.error(res.message);
+    }
   };
 
   return (

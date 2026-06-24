@@ -1,22 +1,13 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  FiSearch,
-  FiChevronDown,
-  FiEye,
-  FiTrash2,
-  FiX,
-  FiRefreshCw,
-  FiCheck,
-} from "react-icons/fi";
+import { FiSearch, FiX, FiCheck } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { AdminLayout } from "./AdminLayout";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminApi } from "@/api/admin.api";
 import { api } from "@/api/client";
-import type { Book, BookStatus, Listing, Seller } from "@/types";
+import type { BookStatus, Listing } from "@/types";
 import { cn } from "@/lib/utils";
 
 type Tab = BookStatus | "ALL";
@@ -41,7 +32,6 @@ export default function AdminCatalogPage() {
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>("ALL");
   const [q, setQ] = useState("");
-  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
@@ -56,11 +46,6 @@ export default function AdminCatalogPage() {
       const { data } = await api.get<Listing[]>("/listings");
       return data;
     },
-  });
-
-  const { data: sellers } = useQuery({
-    queryKey: ["admin", "sellers"],
-    queryFn: adminApi.getSellers,
   });
 
   const counts = useMemo(() => {
@@ -98,7 +83,7 @@ export default function AdminCatalogPage() {
   );
 
   const updateStatus = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: BookStatus }) =>
+    mutationFn: ({ id, status }: { id: number; status: "APPROVED" | "REJECTED" }) =>
       adminApi.updateBookStatus(id, status),
     onSuccess: (b) => {
       qc.invalidateQueries({ queryKey: ["admin"] });
@@ -109,8 +94,6 @@ export default function AdminCatalogPage() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
-
-  const sellerById = (id: number) => sellers?.find((s) => s.id === id);
 
   return (
     <AdminLayout>
@@ -169,7 +152,11 @@ export default function AdminCatalogPage() {
       </div>
 
       <div className="mb-4 flex justify-end">
-        <Button variant="dark" size="sm">
+        <Button
+          variant="dark"
+          size="sm"
+          onClick={() => toast.info("New book creation is simulated from Seller Dashboard.")}
+        >
           + Add book to catalog
         </Button>
       </div>
@@ -296,227 +283,3 @@ export default function AdminCatalogPage() {
     </AdminLayout>
   );
 }
-
-
-  // BookRow (expandable)
-
-function BookRow({
-  book,
-  listings,
-  minPrice,
-  sellerById,
-  isOpen,
-  onToggle,
-  onApprove,
-  onReject,
-  onDelete,
-  updatePending,
-}: {
-  book: Book;
-  listings: Listing[];
-  minPrice: number | null;
-  sellerById: (id: number) => Seller | undefined;
-  isOpen: boolean;
-  onToggle: () => void;
-  onApprove: () => void;
-  onReject: () => void;
-  onDelete: () => void;
-  updatePending: boolean;
-}) {
-  return (
-    <>
-      <tr className="hover:bg-gray-50/50">
-        <td className="px-3 py-3 align-top">
-          <button
-            onClick={onToggle}
-            className={cn(
-              "grid h-6 w-6 place-items-center rounded-md border border-gray-200 bg-white text-gray-500 transition hover:bg-gray-100",
-              isOpen && "bg-brand-dark text-white border-brand-dark"
-            )}
-            aria-label={isOpen ? "Collapse" : "Expand"}
-          >
-            <FiChevronDown
-              size={12}
-              className={cn("transition-transform", isOpen && "rotate-180")}
-            />
-          </button>
-        </td>
-        <td className="px-3 py-3">
-          <div className="flex items-center gap-3">
-            <img
-              src={book.coverImage}
-              alt=""
-              className="h-10 w-7 shrink-0 rounded object-cover ring-1 ring-black/5"
-            />
-            <div className="min-w-0 leading-tight">
-              <p className="truncate font-semibold text-brand-dark">
-                {book.title}
-              </p>
-              <p className="font-mono text-[10px] text-gray-500">{book.isbn}</p>
-              <button
-                onClick={onToggle}
-                className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 hover:underline"
-              >
-                <FiEye size={11} /> View
-              </button>
-            </div>
-          </div>
-        </td>
-        <td className="px-3 py-3">
-          <span
-            className={cn(
-              "inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase",
-              STATUS_BADGE[book.status]
-            )}
-          >
-            {book.status === "PENDING_APPROVAL"
-              ? "Pending"
-              : book.status === "APPROVED"
-                ? "Approved"
-                : "Rejected"}
-          </span>
-        </td>
-        <td className="px-3 py-3">
-          {listings.length === 0 ? (
-            <span className="text-xs text-gray-400">No listings</span>
-          ) : (
-            <div className="leading-tight">
-              <p className="font-semibold text-brand-dark">
-                {listings.length} listing{listings.length !== 1 ? "s" : ""}
-              </p>
-              <p className="text-[11px] text-gray-500">
-                of listings – from {formatPrice(minPrice ?? 0)}
-              </p>
-            </div>
-          )}
-        </td>
-        <td className="px-3 py-3 text-xs text-gray-500">
-          {new Date(book.createdAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          })}
-        </td>
-        <td className="px-6 py-3 text-right">
-          {/*  Actions — Reject always visible with perfect hover */}
-          <div className="flex justify-end gap-2">
-            {/* Approve / Re-approve (only when not already approved) */}
-            {book.status !== "APPROVED" && (
-              <Button
-                size="sm"
-                variant="default"
-                onClick={onApprove}
-                disabled={updatePending}
-                className="gap-1"
-              >
-                {book.status === "REJECTED" ? (
-                  <>
-                    <FiRefreshCw size={11} /> Re-approve
-                  </>
-                ) : (
-                  <>
-                    <FiCheck size={11} /> Approve
-                  </>
-                )}
-              </Button>
-            )}
-
-            {/* Reject — ALWAYS visible */}
-            {book.status !== "REJECTED" ? (
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={onReject}
-                disabled={updatePending}
-                className="gap-1"
-              >
-                <FiX size={11} /> Reject
-              </Button>
-            ) : (
-              // Already rejected -visible pill, NOT hidden
-              <div
-                className="flex h-8 items-center justify-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700"
-                title="This book has already been rejected"
-              >
-                <FiX size={11} /> Already rejected
-              </div>
-            )}
-
-            {/* Delete (always available) */}
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onDelete}
-              className="gap-1"
-            >
-              <FiTrash2 size={11} /> Delete
-            </Button>
-          </div>
-        </td>
-      </tr>
-
-      {/* Expanded seller listings */}
-      {isOpen && (
-        <tr className="bg-gray-50/50">
-          <td colSpan={6} className="px-6 pb-4 pt-1">
-            <div className="ml-9 rounded-lg border border-gray-100 bg-white p-4">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                Seller listings for this book
-              </p>
-              {listings.length === 0 ? (
-                <p className="py-3 text-sm text-gray-500">
-                  No seller listings yet.
-                </p>
-              ) : (
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="text-left text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                      <th className="pb-2">Seller</th>
-                      <th className="pb-2">Price</th>
-                      <th className="pb-2">Stock</th>
-                      <th className="pb-2">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {listings.map((l) => {
-                      const seller = sellerById(l.sellerId);
-                      return (
-                        <tr key={l.id}>
-                          <td className="py-2.5 font-semibold text-brand-dark">
-                            {seller?.businessName ?? `Seller #${l.sellerId}`}
-                          </td>
-                          <td className="py-2.5 font-bold">
-                            {formatPrice(l.price)}
-                          </td>
-                          <td className="py-2.5">{l.stock}</td>
-                          <td className="py-2.5">
-                            {l.stock > 0 ? (
-                              <span className="font-semibold text-emerald-600">
-                                In stock
-                              </span>
-                            ) : (
-                              <span className="font-semibold text-red-600">
-                                Out of stock
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </td>
-        </tr>
-      )}
-    </>
-  );
-}
-
-
-
-
-
-
-

@@ -18,7 +18,7 @@ const BADGE: Record<OrderStatus, "warning" | "default" | "dark" | "success" | "d
   CANCELLED: "destructive",
 };
 
-const ACTION_LABEL: Record<OrderStatus, string> = {
+const NEXT_STATE_BUTTON_LABEL: Record<OrderStatus, string> = {
   CREATED: "—",
   ACCEPTED: "Accept Order",
   SHIPPED: "Mark as Shipped",
@@ -148,7 +148,7 @@ export default function SellerOrdersPage() {
                             }
                             disabled={updateStatus.isPending}
                           >
-                            {ACTION_LABEL[next]}
+                            {NEXT_STATE_BUTTON_LABEL[next]}
                           </Button>
                         ))}
 

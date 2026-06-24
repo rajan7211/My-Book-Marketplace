@@ -1,326 +1,570 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  FiHome, FiBook, FiPackage, FiHeart, FiBarChart2, 
+  FiSettings, FiHelpCircle, FiMenu, FiBell, FiSearch,
+  FiChevronDown, FiLogOut, FiUser, FiEdit3, FiCheck,
+  FiX, FiPlus, FiMinus, FiTrash2, FiShoppingCart,
+  FiArrowRight, FiTrendingUp, FiCalendar, FiClock,
+  FiStar, FiMessageCircle, FiSend, FiChevronRight,
+  FiMoreHorizontal, FiFilter, FiDownload, FiShare2,
+  FiEye, FiEyeOff, FiMoon, FiSun, FiMonitor
+} from "react-icons/fi";
 
 // ═══════════════════════════════════════════════════════════
-//  MOCK DATA
+//  TYPES & MOCK DATA
 // ═══════════════════════════════════════════════════════════
-const mockUser = {
-  name: "Arjun Sharma",
-  email: "arjun.sharma@example.com",
-  role: "Customer",
-  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-  memberSince: "Jun 2026",
-  tier: "Gold Reader",
-};
-
-const useAuthStore = () => ({ user: mockUser, isImpersonating: false });
-
-const SIDEBAR_ITEMS = [
-  { id: "Dashboard", label: "Dashboard", icon: "🏠" },
-  { id: "MyBooks",   label: "My Books",   icon: "📚" },
-  { id: "Orders",    label: "My Orders",  icon: "📦" },
-  { id: "Wishlist",  label: "Wishlist",   icon: "❤️" },
-  { id: "Analytics", label: "Analytics",  icon: "📊" },
-  { id: "Settings",  label: "Settings",   icon: "⚙️" },
-  { id: "Support",   label: "Support",    icon: "💬" },
-];
-
-const MY_BOOKS = [
-  { id: 1, title: "The Alchemist", author: "Paulo Coelho", category: "Fiction", progress: 75, totalPages: 208, currentPage: 156, cover: "🌟", status: "Reading", lastRead: "2 hours ago" },
-  { id: 2, title: "Atomic Habits", author: "James Clear", category: "Self-Help", progress: 32, totalPages: 320, currentPage: 102, cover: "⚛️", status: "Reading", lastRead: "1 day ago" },
-  { id: 3, title: "Sapiens", author: "Yuval Noah Harari", category: "History", progress: 100, totalPages: 443, currentPage: 443, cover: "🌍", status: "Completed", lastRead: "Completed" },
-  { id: 4, title: "Deep Work", author: "Cal Newport", category: "Productivity", progress: 0, totalPages: 304, currentPage: 0, cover: "🧠", status: "Not Started", lastRead: "—" },
-];
-
-const ORDERS = [
-  { id: "#ORD-4821", title: "The Alchemist", date: "12 Jun 2026", status: "Delivered", amount: "₹349", items: 1 },
-  { id: "#ORD-4790", title: "Atomic Habits", date: "5 Jun 2026", status: "In Transit", amount: "₹499", items: 1 },
-  { id: "#ORD-4755", title: "Deep Work", date: "28 May 2026", status: "Processing", amount: "₹399", items: 2 },
-  { id: "#ORD-4731", title: "Sapiens", date: "20 May 2026", status: "Delivered", amount: "₹599", items: 1 },
-  { id: "#ORD-4700", title: "Ikigai", date: "15 May 2026", status: "Delivered", amount: "₹299", items: 3 },
-];
-
-const WISHLIST_DATA = [
-  { id: 1, title: "The Psychology of Money", author: "Morgan Housel", price: "₹399", rating: 4.8, reviews: 1240, category: "Finance", liked: true },
-  { id: 2, title: "Thinking, Fast and Slow", author: "Daniel Kahneman", price: "₹549", rating: 4.6, reviews: 890, category: "Psychology", liked: true },
-  { id: 3, title: "Zero to One", author: "Peter Thiel", price: "₹449", rating: 4.5, reviews: 670, category: "Business", liked: true },
-  { id: 4, title: "The Lean Startup", author: "Eric Ries", price: "₹379", rating: 4.4, reviews: 520, category: "Business", liked: false },
-];
-
-const RECENT_ACTIVITY = [
-  { id: 1, action: "Started reading", target: "The Alchemist", time: "2 hours ago", icon: "📖" },
-  { id: 2, action: "Purchased", target: "Atomic Habits", time: "1 day ago", icon: "💳" },
-  { id: 3, action: "Added to wishlist", target: "The Psychology of Money", time: "2 days ago", icon: "❤️" },
-  { id: 4, action: "Completed", target: "Sapiens", time: "3 days ago", icon: "✅" },
-  { id: 5, action: "Reviewed", target: "Deep Work", time: "5 days ago", icon: "⭐" },
-];
-
-const MONTHLY_STATS = [
-  { month: "Jan", books: 2, pages: 340 },
-  { month: "Feb", books: 3, pages: 520 },
-  { month: "Mar", books: 1, pages: 280 },
-  { month: "Apr", books: 4, pages: 680 },
-  { month: "May", books: 2, pages: 410 },
-  { month: "Jun", books: 3, pages: 590 },
-];
-
-const STATUS_STYLE = {
-  Delivered:   { bg: "#ecfdf5", text: "#059669", dot: "#10b981", border: "#a7f3d0" },
-  "In Transit":{ bg: "#fffbeb", text: "#d97706", dot: "#f59e0b", border: "#fde68a" },
-  Processing:  { bg: "#f5f3ff", text: "#7c3aed", dot: "#8b5cf6", border: "#ddd6fe" },
-};
-
-const BOOK_STATUS = {
-  Reading:     { bg: "#fef3c7", text: "#d97706", label: "In Progress" },
-  Completed:   { bg: "#d1fae5", text: "#059669", label: "Completed" },
-  "Not Started":{ bg: "#f3f4f6", text: "#6b7280", label: "Not Started" },
-};
-
-// ═══════════════════════════════════════════════════════════
-//  UTILITY COMPONENTS
-// ═══════════════════════════════════════════════════════════
-
-function AnimatedCounter({ value, suffix = "" }) {
-  const [display, setDisplay] = useState(0);
-  useEffect(() => {
-    const num = parseInt(value.toString().replace(/,/g, ""), 10);
-    let cur = 0;
-    const step = Math.ceil(num / 30);
-    const timer = setInterval(() => {
-      cur = Math.min(cur + step, num);
-      setDisplay(cur);
-      if (cur >= num) clearInterval(timer);
-    }, 25);
-    return () => clearInterval(timer);
-  }, [value]);
-  return <span>{display.toLocaleString("en-IN")}{suffix}</span>;
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  role: string;
+  memberSince: string;
+  tier: string;
+  bio: string;
+  phone: string;
+  location: string;
 }
 
-function ProgressBar({ progress, color = "#f5a623", height = 8 }) {
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  category: string;
+  progress: number;
+  totalPages: number;
+  currentPage: number;
+  cover: string;
+  status: "Reading" | "Completed" | "Not Started";
+  lastRead: string;
+  rating: number;
+  coverColor: string;
+}
+
+interface Order {
+  id: string;
+  title: string;
+  date: string;
+  status: "Delivered" | "In Transit" | "Processing" | "Cancelled";
+  amount: string;
+  items: number;
+  seller: string;
+  cover: string;
+}
+
+interface WishlistItem {
+  id: number;
+  title: string;
+  author: string;
+  price: string;
+  rating: number;
+  reviews: number;
+  category: string;
+  liked: boolean;
+  cover: string;
+  inStock: boolean;
+}
+
+interface Activity {
+  id: number;
+  action: string;
+  target: string;
+  time: string;
+  icon: string;
+  type: "read" | "purchase" | "wishlist" | "review" | "milestone";
+}
+
+interface MonthlyStat {
+  month: string;
+  books: number;
+  pages: number;
+  hours: number;
+}
+
+const MOCK_USER: User = {
+  id: "usr_001",
+  name: "Arjun Sharma",
+  email: "arjun.sharma@example.com",
+  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+  role: "Premium Member",
+  memberSince: "Jun 2024",
+  tier: "Gold Reader",
+  bio: "Avid reader and book collector. Passionate about philosophy, sci-fi, and self-improvement. Always looking for the next great story.",
+  phone: "+91 98765 43210",
+  location: "Mumbai, India",
+};
+
+const MY_BOOKS: Book[] = [
+  { id: 1, title: "The Alchemist", author: "Paulo Coelho", category: "Fiction", progress: 75, totalPages: 208, currentPage: 156, cover: "🌟", status: "Reading", lastRead: "2 hours ago", rating: 4.5, coverColor: "from-amber-400/20 to-orange-500/20" },
+  { id: 2, title: "Atomic Habits", author: "James Clear", category: "Self-Help", progress: 32, totalPages: 320, currentPage: 102, cover: "⚛️", status: "Reading", lastRead: "1 day ago", rating: 4.8, coverColor: "from-blue-400/20 to-cyan-500/20" },
+  { id: 3, title: "Sapiens", author: "Yuval Noah Harari", category: "History", progress: 100, totalPages: 443, currentPage: 443, cover: "🌍", status: "Completed", lastRead: "Completed", rating: 4.7, coverColor: "from-emerald-400/20 to-teal-500/20" },
+  { id: 4, title: "Deep Work", author: "Cal Newport", category: "Productivity", progress: 0, totalPages: 304, currentPage: 0, cover: "🧠", status: "Not Started", lastRead: "—", rating: 4.4, coverColor: "from-violet-400/20 to-purple-500/20" },
+  { id: 5, title: "Ikigai", author: "Héctor García", category: "Philosophy", progress: 60, totalPages: 208, currentPage: 125, cover: "🌸", status: "Reading", lastRead: "3 days ago", rating: 4.2, coverColor: "from-pink-400/20 to-rose-500/20" },
+];
+
+const ORDERS: Order[] = [
+  { id: "#ORD-4821", title: "The Alchemist", date: "12 Jun 2026", status: "Delivered", amount: "₹349", items: 1, seller: "BookWorm Store", cover: "🌟" },
+  { id: "#ORD-4790", title: "Atomic Habits", date: "5 Jun 2026", status: "In Transit", amount: "₹499", items: 1, seller: "ReadMore Hub", cover: "⚛️" },
+  { id: "#ORD-4755", title: "Deep Work", date: "28 May 2026", status: "Processing", amount: "₹399", items: 2, seller: "PageTurner", cover: "🧠" },
+  { id: "#ORD-4731", title: "Sapiens", date: "20 May 2026", status: "Delivered", amount: "₹599", items: 1, seller: "BookWorm Store", cover: "🌍" },
+  { id: "#ORD-4700", title: "Ikigai", date: "15 May 2026", status: "Delivered", amount: "₹299", items: 3, seller: "Literary Lane", cover: "🌸" },
+  { id: "#ORD-4680", title: "The Psychology of Money", date: "8 May 2026", status: "Cancelled", amount: "₹399", items: 1, seller: "ReadMore Hub", cover: "💰" },
+];
+
+const WISHLIST_DATA: WishlistItem[] = [
+  { id: 1, title: "The Psychology of Money", author: "Morgan Housel", price: "₹399", rating: 4.8, reviews: 1240, category: "Finance", liked: true, cover: "💰", inStock: true },
+  { id: 2, title: "Thinking, Fast and Slow", author: "Daniel Kahneman", price: "₹549", rating: 4.6, reviews: 890, category: "Psychology", liked: true, cover: "🧠", inStock: true },
+  { id: 3, title: "Zero to One", author: "Peter Thiel", price: "₹449", rating: 4.5, reviews: 670, category: "Business", liked: true, cover: "🚀", inStock: false },
+  { id: 4, title: "The Lean Startup", author: "Eric Ries", price: "₹379", rating: 4.4, reviews: 520, category: "Business", liked: false, cover: "💡", inStock: true },
+  { id: 5, title: "Rich Dad Poor Dad", author: "Robert Kiyosaki", price: "₹299", rating: 4.3, reviews: 2100, category: "Finance", liked: true, cover: "💵", inStock: true },
+];
+
+const RECENT_ACTIVITY: Activity[] = [
+  { id: 1, action: "Started reading", target: "The Alchemist", time: "2 hours ago", icon: "📖", type: "read" },
+  { id: 2, action: "Purchased", target: "Atomic Habits", time: "1 day ago", icon: "💳", type: "purchase" },
+  { id: 3, action: "Added to wishlist", target: "The Psychology of Money", time: "2 days ago", icon: "❤️", type: "wishlist" },
+  { id: 4, action: "Completed", target: "Sapiens", time: "3 days ago", icon: "🏆", type: "milestone" },
+  { id: 5, action: "Reviewed", target: "Deep Work", time: "5 days ago", icon: "⭐", type: "review" },
+  { id: 6, action: "Reading streak", target: "12 days", time: "Ongoing", icon: "🔥", type: "milestone" },
+];
+
+const MONTHLY_STATS: MonthlyStat[] = [
+  { month: "Jan", books: 2, pages: 340, hours: 12 },
+  { month: "Feb", books: 3, pages: 520, hours: 18 },
+  { month: "Mar", books: 1, pages: 280, hours: 9 },
+  { month: "Apr", books: 4, pages: 680, hours: 24 },
+  { month: "May", books: 2, pages: 410, hours: 15 },
+  { month: "Jun", books: 3, pages: 590, hours: 20 },
+];
+
+const SIDEBAR_ITEMS = [
+  { id: "Dashboard", label: "Dashboard", icon: FiHome },
+  { id: "MyBooks", label: "My Books", icon: FiBook },
+  { id: "Orders", label: "My Orders", icon: FiPackage },
+  { id: "Wishlist", label: "Wishlist", icon: FiHeart },
+  { id: "Analytics", label: "Analytics", icon: FiBarChart2 },
+  { id: "Settings", label: "Settings", icon: FiSettings },
+  { id: "Support", label: "Support", icon: FiHelpCircle },
+];
+
+const STATUS_CONFIG = {
+  Delivered:   { bg: "bg-emerald-500/10", text: "text-emerald-600", dot: "bg-emerald-500", border: "border-emerald-500/20" },
+  "In Transit":{ bg: "bg-amber-500/10", text: "text-amber-600", dot: "bg-amber-500", border: "border-amber-500/20" },
+  Processing:  { bg: "bg-violet-500/10", text: "text-violet-600", dot: "bg-violet-500", border: "border-violet-500/20" },
+  Cancelled:   { bg: "bg-red-500/10", text: "text-red-600", dot: "bg-red-500", border: "border-red-500/20" },
+};
+
+const BOOK_STATUS_CONFIG = {
+  Reading:     { bg: "bg-amber-500/10", text: "text-amber-600", label: "In Progress", bar: "#f59e0b" },
+  Completed:   { bg: "bg-emerald-500/10", text: "text-emerald-600", label: "Completed", bar: "#10b981" },
+  "Not Started":{ bg: "bg-gray-500/10", text: "text-gray-600", label: "Not Started", bar: "#6b7280" },
+};
+
+// ═══════════════════════════════════════════════════════════
+//  UTILITY HOOKS & COMPONENTS
+// ═══════════════════════════════════════════════════════════
+
+function useAnimatedCounter(value: number, duration = 1500) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    const num = value;
+    let start = 0;
+    const step = Math.max(1, Math.ceil(num / (duration / 16)));
+    let raf: number;
+    const animate = () => {
+      start = Math.min(start + step, num);
+      setDisplay(start);
+      if (start < num) raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+  return display;
+}
+
+function useClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+  useEffect(() => {
+    const listener = (e: MouseEvent) => {
+      if (!ref.current || ref.current.contains(e.target as Node)) return;
+      handler();
+    };
+    document.addEventListener("mousedown", listener);
+    return () => document.removeEventListener("mousedown", listener);
+  }, [ref, handler]);
+}
+
+function ProgressBar({ progress, color = "#f59e0b", height = 6, animated = true }: { progress: number; color?: string; height?: number; animated?: boolean }) {
   return (
     <div className="w-full bg-gray-200 rounded-full overflow-hidden" style={{ height }}>
-      <div
-        className="h-full rounded-full transition-all duration-1000 ease-out"
-        style={{ width: `${progress}%`, background: color }}
+      <motion.div
+        className="h-full rounded-full"
+        style={{ background: color }}
+        initial={animated ? { width: 0 } : false}
+        animate={{ width: `${progress}%` }}
+        transition={{ duration: 1, ease: "easeOut" }}
       />
     </div>
   );
 }
 
-function StarRating({ rating }) {
-  const fullStars = Math.floor(rating);
-  const hasHalf = rating % 1 >= 0.5;
+function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  const sizeClass = size === "md" ? "text-base" : "text-xs";
   return (
     <div className="flex items-center gap-0.5">
       {[...Array(5)].map((_, i) => (
-        <span key={i} className="text-xs">
-          {i < fullStars ? "⭐" : i === fullStars && hasHalf ? "⯪" : "☆"}
-        </span>
+        <FiStar
+          key={i}
+          className={`${sizeClass} ${i < full ? "text-amber-500 fill-amber-500" : i === full && half ? "text-amber-500 fill-amber-500/50" : "text-gray-300"}`}
+        />
       ))}
-      <span className="text-xs text-gray-500 ml-1 font-medium">{rating}</span>
+      <span className={`${size === "md" ? "text-sm" : "text-xs"} text-gray-500 ml-1 font-medium`}>{rating}</span>
     </div>
   );
 }
 
+function Badge({ children, variant = "default" }: { children: React.ReactNode; variant?: "default" | "success" | "warning" | "danger" | "info" }) {
+  const variants = {
+    default: "bg-gray-100 text-gray-700 border-gray-200",
+    success: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    warning: "bg-amber-100 text-amber-700 border-amber-200",
+    danger: "bg-red-100 text-red-700 border-red-200",
+    info: "bg-violet-100 text-violet-700 border-violet-200",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${variants[variant]}`}>
+      {children}
+    </span>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════
-//  SIDEBAR
+//  SIDEBAR COMPONENT - STICKY
 // ═══════════════════════════════════════════════════════════
-function Sidebar({ activeTab, setActiveTab, isCollapsed, isMobileOpen, setIsMobileOpen, user }) {
-  const sidebarRef = useRef(null);
+function Sidebar({ 
+  activeTab, 
+  setActiveTab, 
+  isCollapsed, 
+  isMobileOpen, 
+  setIsMobileOpen, 
+  user 
+}: {
+  activeTab: string;
+  setActiveTab: (id: string) => void;
+  isCollapsed: boolean;
+  isMobileOpen: boolean;
+  setIsMobileOpen: (v: boolean) => void;
+  user: User;
+}) {
+  const sidebarRef = useRef<HTMLElement>(null);
+  useClickOutside(sidebarRef, () => setIsMobileOpen(false));
 
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (isMobileOpen && sidebarRef.current && !sidebarRef.current.contains(e.target)) {
-        setIsMobileOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMobileOpen, setIsMobileOpen]);
-
-  useEffect(() => {
-    function handleEscape(e) { if (e.key === "Escape" && isMobileOpen) setIsMobileOpen(false); }
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isMobileOpen) setIsMobileOpen(false);
+    };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isMobileOpen, setIsMobileOpen]);
 
-  const handleNav = (id) => { setActiveTab(id); setIsMobileOpen(false); };
+  const handleNav = (id: string) => {
+    setActiveTab(id);
+    setIsMobileOpen(false);
+  };
 
   return (
     <>
-      <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300 ${
-          isMobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setIsMobileOpen(false)}
-      />
-      <aside
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setIsMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar - STICKY */}
+      <motion.aside
         ref={sidebarRef}
-        className={`fixed lg:static top-0 left-0 h-full z-50 bg-[#1a1a2e] text-white transition-all duration-300 ease-out flex flex-col
+        className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-white border-r border-gray-200 flex flex-col
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          ${isCollapsed ? "lg:w-20" : "lg:w-64"}
-          w-[260px]
+          ${isCollapsed ? "lg:w-20" : "lg:w-72"}
+          w-[280px]
         `}
+        initial={false}
       >
-        <div className={`p-6 border-b border-white/10 flex items-center gap-3 ${isCollapsed ? "lg:justify-center" : ""}`}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-gradient-to-br from-[#f5a623] to-[#ec4899] flex-shrink-0">
-            📖
+        {/* Logo */}
+        <div className={`p-6 border-b border-gray-200 flex items-center gap-3 ${isCollapsed ? "lg:justify-center" : ""}`}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-orange-500 to-pink-600">
+            <FiBook className="text-white text-lg" />
           </div>
-          <span className={`font-bold text-lg transition-opacity duration-200 ${isCollapsed ? "lg:hidden" : ""}`}>
-            BookHaven
-          </span>
+          <AnimatePresence>
+            {!isCollapsed && (
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                className="overflow-hidden"
+              >
+                <h2 className="font-bold text-lg text-gray-900 whitespace-nowrap">BookHaven</h2>
+                <p className="text-[10px] text-gray-500 whitespace-nowrap">Your reading journey</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+
+        {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          <p className={`px-3 text-[10px] font-bold tracking-widest text-white/40 uppercase mb-3 ${isCollapsed ? "lg:hidden" : ""}`}>
-            Menu
-          </p>
+          <AnimatePresence>
+            {!isCollapsed && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="px-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-3"
+              >
+                Menu
+              </motion.p>
+            )}
+          </AnimatePresence>
           {SIDEBAR_ITEMS.map((item) => {
             const isActive = activeTab === item.id;
+            const Icon = item.icon;
             return (
               <button
                 key={item.id}
                 onClick={() => handleNav(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
                   isActive
-                    ? "bg-[#f5a623] text-[#1a1a2e] shadow-lg shadow-[#f5a623]/20"
-                    : "text-white/70 hover:bg-white/10 hover:text-white"
+                    ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg shadow-orange-500/20"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 } ${isCollapsed ? "lg:justify-center lg:px-2" : ""}`}
               >
-                <span className="text-lg flex-shrink-0">{item.icon}</span>
-                <span className={`transition-opacity duration-200 ${isCollapsed ? "lg:hidden" : ""}`}>
-                  {item.label}
-                </span>
-                {isActive && (
-                  <span className={`absolute right-3 w-1.5 h-1.5 rounded-full bg-white ${isCollapsed ? "lg:hidden" : ""}`} />
+                <Icon className={`flex-shrink-0 ${isActive ? "text-white" : "text-gray-600 group-hover:text-gray-900"}`} size={20} />
+                <AnimatePresence>
+                  {!isCollapsed && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "auto" }}
+                      exit={{ opacity: 0, width: 0 }}
+                      className="whitespace-nowrap overflow-hidden"
+                    >
+                      {item.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+                {isActive && !isCollapsed && (
+                  <motion.span
+                    layoutId="activeIndicator"
+                    className="absolute right-3 w-1.5 h-1.5 rounded-full bg-white"
+                  />
                 )}
               </button>
             );
           })}
         </nav>
-        <div className={`p-4 border-t border-white/10 ${isCollapsed ? "lg:hidden" : ""}`}>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-            <img src={user.avatar} alt="" className="w-10 h-10 rounded-full object-cover border-2 border-[#f5a623]/50" />
-            <div className="min-w-0">
-              <p className="text-sm font-semibold truncate">{user.name}</p>
-              <p className="text-[10px] text-white/50 truncate">{user.email}</p>
-            </div>
-          </div>
-          <button className="w-full mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all">
-            <span>🚪</span>
-            <span>Log Out</span>
-          </button>
-        </div>
-      </aside>
+
+        {/* User Card */}
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="p-4 border-t border-gray-200 overflow-hidden"
+            >
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200">
+                <img src={user.avatar} alt="" className="w-10 h-10 rounded-full object-cover border-2 border-orange-500/30" />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                  <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
+                </div>
+              </div>
+              <button className="w-full mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-all">
+                <FiLogOut size={16} />
+                <span>Log Out</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.aside>
     </>
   );
 }
 
 // ═══════════════════════════════════════════════════════════
-//  TOP HEADER
+//  TOP HEADER - STICKY
 // ═══════════════════════════════════════════════════════════
-function TopHeader({ user, onMenuToggle, onCollapseToggle, isCollapsed, searchQuery, setSearchQuery, notifications }) {
+function TopHeader({
+  user,
+  onMenuToggle,
+  onCollapseToggle,
+  isCollapsed,
+  searchQuery,
+  setSearchQuery,
+  notifications,
+}: {
+  user: User;
+  onMenuToggle: () => void;
+  onCollapseToggle: () => void;
+  isCollapsed: boolean;
+  searchQuery: string;
+  setSearchQuery: (v: string) => void;
+  notifications: number;
+}) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
-  const menuRef = useRef(null);
-  const notifRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function handleClick(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setShowUserMenu(false);
-      if (notifRef.current && !notifRef.current.contains(e.target)) setShowNotif(false);
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
+  useClickOutside(menuRef, () => setShowUserMenu(false));
+  useClickOutside(notifRef, () => setShowNotif(false));
 
-  const greeting = () => {
+  const greeting = useCallback(() => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
     if (hour < 17) return "Good afternoon";
     return "Good evening";
-  };
+  }, []);
 
   return (
-    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4 sticky top-0 z-30">
+    <header className="bg-white/95 backdrop-blur-xl border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-30">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={onMenuToggle}
-            className="lg:hidden w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
+            className="lg:hidden w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition"
           >
-            <span className="text-lg">☰</span>
+            <FiMenu className="text-gray-700" size={18} />
           </button>
           <button
             onClick={onCollapseToggle}
-            className="hidden lg:flex w-10 h-10 rounded-xl bg-gray-100 items-center justify-center hover:bg-gray-200 transition"
+            className="hidden lg:flex w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 items-center justify-center hover:bg-gray-200 transition"
           >
-            <span className="text-lg">{isCollapsed ? "→" : "←"}</span>
+            <FiArrowRight className={`text-gray-700 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} size={16} />
           </button>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-[#1a1a2e] truncate">
-              {greeting()}, {user.name.split(" ")[0]}!
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+              {greeting()}, <span className="bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">{user.name.split(" ")[0]}</span>!
             </h1>
-            <p className="text-xs text-gray-400 hidden sm:block">What do you want to read today?</p>
+            <p className="text-xs text-gray-500 hidden sm:block">What do you want to read today?</p>
           </div>
         </div>
+
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-64">
-            <span className="text-gray-400 text-sm">🔍</span>
+          {/* Search */}
+          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-72 border border-gray-200 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-100 transition-all">
+            <FiSearch className="text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Search books..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent text-sm text-[#1a1a2e] placeholder-gray-400 outline-none w-full"
+              className="bg-transparent text-sm text-gray-900 placeholder:text-gray-400 outline-none w-full"
             />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery("")} className="text-gray-400 hover:text-gray-600 transition">
+                <FiX size={14} />
+              </button>
+            )}
           </div>
+
+          {/* Notifications */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setShowNotif(!showNotif)}
-              className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition relative"
+              className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition relative"
             >
-              <span className="text-lg">🔔</span>
+              <FiBell className="text-gray-600" size={18} />
               {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-orange-500/30">
                   {notifications}
                 </span>
               )}
             </button>
-            {showNotif && (
-              <div className="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50">
-                <p className="text-sm font-bold text-[#1a1a2e] mb-3">Notifications</p>
-                <div className="space-y-2">
-                  <div className="p-3 rounded-xl bg-[#fafaf8] text-xs">
-                    <span className="font-semibold text-[#1a1a2e]">📦 Order Update</span>
-                    <p className="text-gray-500 mt-1">Your order #ORD-4790 is now in transit!</p>
+            <AnimatePresence>
+              {showNotif && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 z-50"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-bold text-gray-900">Notifications</p>
+                    <button className="text-[10px] text-orange-600 hover:text-orange-700 transition">Mark all read</button>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#fafaf8] text-xs">
-                    <span className="font-semibold text-[#1a1a2e]">📖 Reading Reminder</span>
-                    <p className="text-gray-500 mt-1">You have 52 pages left in The Alchemist.</p>
+                  <div className="space-y-2">
+                    {[
+                      { icon: "📦", title: "Order Update", desc: "Your order #ORD-4790 is now in transit!", time: "10 min ago", unread: true },
+                      { icon: "📖", title: "Reading Reminder", desc: "You have 52 pages left in The Alchemist.", time: "2 hours ago", unread: true },
+                      { icon: "💰", title: "Price Drop", desc: "The Psychology of Money is now ₹349 (was ₹399)", time: "5 hours ago", unread: false },
+                    ].map((n, i) => (
+                      <div key={i} className={`p-3 rounded-xl transition cursor-pointer ${n.unread ? "bg-gray-50" : "hover:bg-gray-50"}`}>
+                        <div className="flex items-start gap-3">
+                          <span className="text-lg">{n.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-gray-900">{n.title}</p>
+                            <p className="text-[11px] text-gray-600 mt-0.5">{n.desc}</p>
+                            <p className="text-[10px] text-gray-400 mt-1">{n.time}</p>
+                          </div>
+                          {n.unread && <span className="w-2 h-2 rounded-full bg-orange-600 flex-shrink-0 mt-1" />}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+
+          {/* User */}
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 sm:gap-3 pl-1 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-gray-100 transition"
+              className="flex items-center gap-2 sm:gap-3 pl-1 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-gray-100 transition border border-transparent hover:border-gray-200"
             >
-              <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover border-2 border-[#f5a623]/30" />
+              <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover border-2 border-orange-500/20" />
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-semibold text-[#1a1a2e] leading-tight">{user.name}</p>
-                <p className="text-[10px] text-gray-400">{user.email}</p>
+                <p className="text-sm font-semibold text-gray-900 leading-tight">{user.name}</p>
+                <p className="text-[10px] text-gray-500">{user.tier}</p>
               </div>
-              <span className="text-gray-400 text-xs">▼</span>
+              <FiChevronDown className="text-gray-500 hidden sm:block" size={14} />
             </button>
-            {showUserMenu && (
-              <div className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50">
-                <button className="w-full text-left px-4 py-2.5 rounded-xl text-sm text-[#1a1a2e] hover:bg-gray-100 transition">👤 Profile</button>
-                <button className="w-full text-left px-4 py-2.5 rounded-xl text-sm text-[#1a1a2e] hover:bg-gray-100 transition">⚙️ Settings</button>
-                <div className="border-t border-gray-100 my-1" />
-                <button className="w-full text-left px-4 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 transition">🚪 Log Out</button>
-              </div>
-            )}
+            <AnimatePresence>
+              {showUserMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 top-12 w-60 bg-white rounded-2xl shadow-2xl border border-gray-200 p-2 z-50"
+                >
+                  <div className="p-3 border-b border-gray-200 mb-2">
+                    <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                    <p className="text-[10px] text-gray-500">{user.email}</p>
+                  </div>
+                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition flex items-center gap-2">
+                    <FiUser size={14} /> Profile
+                  </button>
+                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition flex items-center gap-2">
+                    <FiSettings size={14} /> Settings
+                  </button>
+                  <div className="border-t border-gray-200 my-1" />
+                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition flex items-center gap-2">
+                    <FiLogOut size={14} /> Log Out
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -331,110 +575,197 @@ function TopHeader({ user, onMenuToggle, onCollapseToggle, isCollapsed, searchQu
 // ═══════════════════════════════════════════════════════════
 //  DASHBOARD TAB
 // ═══════════════════════════════════════════════════════════
-function DashboardTab({ user }) {
-  const [hoveredStat, setHoveredStat] = useState(null);
+function DashboardTab({ user }: { user: User }) {
+  const [hoveredStat, setHoveredStat] = useState<number | null>(null);
+  const ordersCount = useAnimatedCounter(9);
+  const booksCount = useAnimatedCounter(21);
+  const spentCount = useAnimatedCounter(11743);
+  const readCount = useAnimatedCounter(14);
 
   const stats = [
-    { label: "Total Orders", value: 9, suffix: "", color: "#f5a623", icon: "📦", trend: "+12%" },
-    { label: "Books Bought", value: 21, suffix: "", color: "#8b5cf6", icon: "📚", trend: "+5%" },
-    { label: "Total Spent", value: 11743, suffix: "₹", color: "#ec4899", icon: "💳", trend: "+8%" },
-    { label: "Books Read", value: 14, suffix: "", color: "#10b981", icon: "✅", trend: "+3" },
+    { label: "Total Orders", value: ordersCount, raw: 9, suffix: "", color: "#f97316", icon: FiPackage, trend: "+12%", trendUp: true },
+    { label: "Books Bought", value: booksCount, raw: 21, suffix: "", color: "#ec4899", icon: FiBook, trend: "+5%", trendUp: true },
+    { label: "Total Spent", value: spentCount, raw: 11743, suffix: "₹", color: "#f97316", icon: FiShoppingCart, trend: "+8%", trendUp: true },
+    { label: "Books Read", value: readCount, raw: 14, suffix: "", color: "#10b981", icon: FiCheck, trend: "+3", trendUp: true },
   ];
 
   return (
     <div className="space-y-6">
+      {/* Welcome Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 via-pink-50 to-orange-50 border border-gray-200 p-6 sm:p-8"
+      >
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-orange-200/20 blur-3xl" />
+        <div className="absolute -left-10 -bottom-10 w-60 h-60 rounded-full bg-pink-200/20 blur-3xl" />
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="relative">
+            <img src={user.avatar} alt="" className="w-20 h-20 rounded-2xl object-cover border-2 border-orange-500/20" />
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-white" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="warning">⭐ {user.tier}</Badge>
+              <span className="text-[10px] text-gray-500 tracking-widest uppercase">Member since {user.memberSince}</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{user.name}</h2>
+            <p className="text-sm text-gray-600 mt-1">{user.bio}</p>
+          </div>
+          <div className="hidden sm:flex flex-col items-end gap-2">
+            <div className="text-right">
+              <p className="text-[10px] text-gray-500 tracking-widest uppercase">Reading Streak</p>
+              <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">12 <span className="text-sm font-normal text-gray-500">days</span></p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
-          <div
+          <motion.div
             key={s.label}
-            className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-gray-300 transition-all duration-300 cursor-default group"
             onMouseEnter={() => setHoveredStat(i)}
             onMouseLeave={() => setHoveredStat(null)}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-2xl">{s.icon}</span>
-              <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">{s.trend}</span>
+              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition" style={{ color: s.color }}>
+                <s.icon size={18} />
+              </div>
+              <div className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${s.trendUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                <FiTrendingUp size={10} />
+                {s.trend}
+              </div>
             </div>
-            <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">{s.label}</p>
-            <p className="text-2xl font-black text-[#1a1a2e]">
-              {s.suffix}<AnimatedCounter value={s.value} />
+            <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1">{s.label}</p>
+            <p className="text-2xl font-black text-gray-900">
+              {s.suffix}{s.value.toLocaleString("en-IN")}
             </p>
             {hoveredStat === i && (
-              <div className="mt-2 h-1 rounded-full overflow-hidden" style={{ background: `${s.color}20` }}>
-                <div className="h-full rounded-full animate-pulse" style={{ width: "60%", background: s.color }} />
-              </div>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-3 pt-3 border-t border-gray-200"
+              >
+                <ProgressBar progress={Math.min(100, (s.raw / 30) * 100)} color={s.color} height={4} />
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        {/* Currently Reading */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6"
+        >
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="text-[10px] font-bold tracking-widest text-[#f5a623] uppercase">In Progress</p>
-              <h3 className="text-lg font-bold text-[#1a1a2e]">Currently Reading</h3>
+              <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">In Progress</p>
+              <h3 className="text-lg font-bold text-gray-900">Currently Reading</h3>
             </div>
-            <button className="text-xs font-semibold text-gray-400 hover:text-[#1a1a2e] transition">View all →</button>
+            <button className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition flex items-center gap-1">
+              View all <FiArrowRight size={12} />
+            </button>
           </div>
-          <div className="space-y-4">
-            {MY_BOOKS.filter(b => b.status === "Reading").map((book) => (
-              <div key={book.id} className="flex items-center gap-4 p-4 rounded-2xl bg-[#fafaf8] border border-gray-100 hover:border-[#f5a623]/30 transition-all group">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br from-[#f5f3ff] to-[#ede9fe] flex-shrink-0">
+          <div className="space-y-3">
+            {MY_BOOKS.filter(b => b.status === "Reading").map((book, i) => (
+              <motion.div
+                key={book.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + i * 0.1 }}
+                className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-orange-300 transition-all group"
+              >
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br ${book.coverColor} flex-shrink-0 border border-gray-200`}>
                   {book.cover}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-sm text-[#1a1a2e] truncate">{book.title}</p>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: BOOK_STATUS[book.status].bg, color: BOOK_STATUS[book.status].text }}>
-                      {BOOK_STATUS[book.status].label}
-                    </span>
+                    <p className="font-semibold text-sm text-gray-900 truncate">{book.title}</p>
+                    <Badge variant="warning">{BOOK_STATUS_CONFIG[book.status].label}</Badge>
                   </div>
-                  <p className="text-xs text-gray-400 mb-2">{book.author} · {book.currentPage} of {book.totalPages} pages</p>
-                  <ProgressBar progress={book.progress} color="#f5a623" height={6} />
+                  <p className="text-xs text-gray-600 mb-2">{book.author} · {book.currentPage} of {book.totalPages} pages</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <ProgressBar progress={book.progress} color={BOOK_STATUS_CONFIG[book.status].bar} height={5} />
+                    </div>
+                    <span className="text-[10px] text-gray-500 font-medium">{book.progress}%</span>
+                  </div>
                 </div>
-                <button className="px-5 py-2 rounded-xl text-xs font-bold text-[#1a1a2e] bg-[#f5a623] hover:bg-[#e09510] transition shadow-sm shadow-[#f5a623]/20 flex-shrink-0">
+                <button className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90 transition opacity-0 group-hover:opacity-100 flex-shrink-0">
                   Continue
                 </button>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white rounded-2xl border border-gray-200 p-6"
+        >
           <div className="flex items-center justify-between mb-5">
-            <p className="text-[10px] font-bold tracking-widest text-[#ec4899] uppercase">Activity</p>
-            <button className="text-xs font-semibold text-gray-400 hover:text-[#1a1a2e] transition">View all</button>
+            <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Activity</p>
+            <button className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition">View all</button>
           </div>
           <div className="space-y-4">
-            {RECENT_ACTIVITY.map((act) => (
-              <div key={act.id} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#fafaf8] flex items-center justify-center text-sm flex-shrink-0">
+            {RECENT_ACTIVITY.slice(0, 5).map((act, i) => (
+              <motion.div
+                key={act.id}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 + i * 0.05 }}
+                className="flex items-start gap-3"
+              >
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm flex-shrink-0 border border-gray-200">
                   {act.icon}
                 </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-[#1a1a2e]">
-                    <span className="font-semibold">{act.action}</span>{" "}
-                    <span className="text-gray-500">{act.target}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs text-gray-700">
+                    <span className="font-semibold text-gray-900">{act.action}</span>{" "}
+                    <span className="text-gray-600">{act.target}</span>
                   </p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{act.time}</p>
+                  <p className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-1">
+                    <FiClock size={8} /> {act.time}
+                  </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="bg-gradient-to-r from-[#1a1a2e] to-[#2d1f3d] rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <p className="text-[10px] font-bold tracking-widest text-[#f5a623] uppercase mb-1">Premium Access</p>
+      {/* Promo Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 to-pink-600 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+      >
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30" />
+        <div className="relative z-10">
+          <p className="text-[10px] font-bold tracking-widest text-white/70 uppercase mb-1">Premium Access</p>
           <h3 className="text-xl font-bold text-white mb-1">Explore 10K+ books with 1 year full access</h3>
-          <p className="text-sm text-white/60">Unlimited reading, exclusive discounts, and early access to new releases.</p>
+          <p className="text-sm text-white/80">Unlimited reading, exclusive discounts, and early access.</p>
         </div>
-        <button className="px-6 py-3 rounded-xl bg-[#f5a623] text-[#1a1a2e] font-bold text-sm hover:bg-[#e09510] transition shadow-lg shadow-[#f5a623]/20 flex-shrink-0">
+        <button className="relative z-10 px-6 py-3 rounded-xl bg-white text-orange-600 font-bold text-sm hover:bg-gray-50 transition shadow-xl flex-shrink-0">
           Upgrade to PRO
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -443,73 +774,106 @@ function DashboardTab({ user }) {
 //  MY BOOKS TAB
 // ═══════════════════════════════════════════════════════════
 function MyBooksTab() {
-  const [filter, setFilter] = useState("All");
-  const [books, setBooks] = useState(MY_BOOKS);
+  const [filter, setFilter] = useState<"All" | "Reading" | "Completed" | "Not Started">("All");
+  const [books, setBooks] = useState<Book[]>(MY_BOOKS);
 
-  const filters = ["All", "Reading", "Completed", "Not Started"];
+  const filters: ("All" | "Reading" | "Completed" | "Not Started")[] = ["All", "Reading", "Completed", "Not Started"];
   const filtered = filter === "All" ? books : books.filter(b => b.status === filter);
 
-  const updateProgress = (id, delta) => {
+  const updateProgress = (id: number, delta: number) => {
     setBooks(prev => prev.map(b => {
       if (b.id !== id) return b;
       const newPage = Math.max(0, Math.min(b.totalPages, b.currentPage + delta));
       const newProgress = Math.round((newPage / b.totalPages) * 100);
-      const newStatus = newProgress === 100 ? "Completed" : newProgress > 0 ? "Reading" : "Not Started";
+      const newStatus: Book["status"] = newProgress === 100 ? "Completed" : newProgress > 0 ? "Reading" : "Not Started";
       return { ...b, currentPage: newPage, progress: newProgress, status: newStatus };
     }));
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest text-[#f5a623] uppercase">Library</p>
-          <h3 className="text-xl font-bold text-[#1a1a2e]">My Books</h3>
+          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Library</p>
+          <h3 className="text-xl font-bold text-gray-900">My Books</h3>
         </div>
-        <div className="flex gap-2">
-          {filters.map(f => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                filter === f ? "bg-[#1a1a2e] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+        <div className="flex items-center gap-3">
+          <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
+            {filters.map(f => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  filter === f
+                    ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {filtered.map((book) => (
-          <div key={book.id} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filtered.map((book, i) => (
+          <motion.div
+            key={book.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-gray-300 transition-all group"
+          >
             <div className="flex items-start gap-4 mb-4">
-              <div className="w-16 h-20 rounded-xl flex items-center justify-center text-3xl bg-gradient-to-br from-[#f5f3ff] to-[#ede9fe] flex-shrink-0">
+              <div className={`w-16 h-20 rounded-xl flex items-center justify-center text-3xl bg-gradient-to-br ${book.coverColor} flex-shrink-0 border border-gray-200`}>
                 {book.cover}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="font-bold text-sm text-[#1a1a2e] truncate">{book.title}</p>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: BOOK_STATUS[book.status].bg, color: BOOK_STATUS[book.status].text }}>
-                    {BOOK_STATUS[book.status].label}
-                  </span>
+                  <p className="font-bold text-sm text-gray-900 truncate">{book.title}</p>
                 </div>
-                <p className="text-xs text-gray-400 mb-1">{book.author}</p>
-                <span className="inline-block px-2 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-500">{book.category}</span>
+                <p className="text-xs text-gray-600 mb-1">{book.author}</p>
+                <div className="flex items-center gap-2">
+                  <Badge variant={book.status === "Completed" ? "success" : book.status === "Reading" ? "warning" : "default"}>
+                    {BOOK_STATUS_CONFIG[book.status].label}
+                  </Badge>
+                  <span className="text-[10px] text-gray-500">{book.category}</span>
+                </div>
               </div>
             </div>
-            <div className="mb-3">
+
+            <div className="mb-4">
               <div className="flex justify-between items-center mb-1.5">
-                <span className="text-xs font-semibold text-gray-500">{book.progress}% completed</span>
-                <span className="text-[10px] text-gray-400">{book.currentPage}/{book.totalPages} pages</span>
+                <span className="text-xs text-gray-600">{book.progress}% completed</span>
+                <span className="text-[10px] text-gray-500">{book.currentPage}/{book.totalPages} pages</span>
               </div>
-              <ProgressBar progress={book.progress} color={book.progress === 100 ? "#10b981" : "#f5a623"} height={8} />
+              <ProgressBar progress={book.progress} color={BOOK_STATUS_CONFIG[book.status].bar} height={6} />
             </div>
+
             <div className="flex items-center gap-2">
-              <button onClick={() => updateProgress(book.id, -10)} className="flex-1 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-600 hover:bg-gray-200 transition">−10 Pages</button>
-              <button onClick={() => updateProgress(book.id, 10)} className="flex-1 py-2 rounded-xl bg-[#f5a623] text-xs font-bold text-[#1a1a2e] hover:bg-[#e09510] transition">+10 Pages</button>
+              <button
+                onClick={() => updateProgress(book.id, -10)}
+                disabled={book.currentPage <= 0}
+                className="flex-1 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+              >
+                <FiMinus size={12} /> 10
+              </button>
+              <button
+                onClick={() => updateProgress(book.id, 10)}
+                disabled={book.currentPage >= book.totalPages}
+                className="flex-1 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-xs font-bold text-white hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+              >
+                <FiPlus size={12} /> 10
+              </button>
             </div>
-          </div>
+
+            {book.status === "Reading" && (
+              <p className="text-[10px] text-gray-500 mt-3 flex items-center gap-1">
+                <FiClock size={10} /> Last read {book.lastRead}
+              </p>
+            )}
+          </motion.div>
         ))}
       </div>
     </div>
@@ -520,87 +884,134 @@ function MyBooksTab() {
 //  ORDERS TAB
 // ═══════════════════════════════════════════════════════════
 function OrdersTab() {
-  const [orders, setOrders] = useState(ORDERS);
-  const [filter, setFilter] = useState("All");
+  const [orders, setOrders] = useState<Order[]>(ORDERS);
+  const [filter, setFilter] = useState<"All" | "Delivered" | "In Transit" | "Processing" | "Cancelled">("All");
+  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
-  const filters = ["All", "Delivered", "In Transit", "Processing"];
+  const filters: ("All" | "Delivered" | "In Transit" | "Processing" | "Cancelled")[] = ["All", "Delivered", "In Transit", "Processing", "Cancelled"];
   const filtered = filter === "All" ? orders : orders.filter(o => o.status === filter);
 
-  const reorder = (orderId) => { alert(`Re-ordering ${orderId}...`); };
+  const reorder = (orderId: string) => {
+    alert(`Re-ordering ${orderId}...`);
+  };
+
+  const cancelOrder = (orderId: string) => {
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "Cancelled" as const } : o));
+  };
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest text-[#8b5cf6] uppercase">Purchase History</p>
-          <h3 className="text-xl font-bold text-[#1a1a2e]">My Orders</h3>
+          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Purchase History</p>
+          <h3 className="text-xl font-bold text-gray-900">My Orders</h3>
         </div>
-        <div className="flex gap-2">
+        <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
           {filters.map(f => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${filter === f ? "bg-[#1a1a2e] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                filter === f
+                  ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
               {f}
             </button>
           ))}
         </div>
       </div>
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 bg-[#fafaf8] text-[10px] font-bold tracking-widest text-gray-400 uppercase">
+
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-[10px] font-bold tracking-widest text-gray-500 uppercase">
           <div className="col-span-4">Book</div>
           <div className="col-span-2">Order ID</div>
           <div className="col-span-2">Date</div>
           <div className="col-span-2">Status</div>
           <div className="col-span-2 text-right">Amount</div>
         </div>
-        <div className="divide-y divide-gray-50">
-          {filtered.map((order) => {
-            const s = STATUS_STYLE[order.status];
+        <div className="divide-y divide-gray-200">
+          {filtered.map((order, i) => {
+            const s = STATUS_CONFIG[order.status];
             return (
-              <div key={order.id} className="p-4 sm:px-6 sm:py-4 hover:bg-[#fafaf8] transition-all group">
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: i * 0.05 }}
+                className="p-4 sm:px-6 sm:py-4 hover:bg-gray-50 transition-all group cursor-pointer"
+                onClick={() => setSelectedOrder(selectedOrder === order.id ? null : order.id)}
+              >
                 <div className="sm:hidden mb-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-[#1a1a2e]">{order.title}</span>
-                    <span className="text-sm font-bold text-[#1a1a2e]">{order.amount}</span>
+                    <span className="font-semibold text-sm text-gray-900">{order.title}</span>
+                    <span className="text-sm font-bold text-gray-900">{order.amount}</span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">{order.id} · {order.date}</p>
+                  <p className="text-xs text-gray-600 mt-1">{order.id} · {order.date}</p>
                 </div>
                 <div className="hidden sm:grid grid-cols-12 gap-4 items-center">
                   <div className="col-span-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-gradient-to-br from-[#f5f3ff] to-[#ede9fe]">📗</div>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-gray-100 border border-gray-200">{order.cover}</div>
                     <div>
-                      <p className="font-semibold text-sm text-[#1a1a2e]">{order.title}</p>
-                      <p className="text-[10px] text-gray-400">{order.items} item{order.items > 1 ? "s" : ""}</p>
+                      <p className="font-semibold text-sm text-gray-900">{order.title}</p>
+                      <p className="text-[10px] text-gray-600">{order.seller} · {order.items} item{order.items > 1 ? "s" : ""}</p>
                     </div>
                   </div>
-                  <div className="col-span-2 text-xs text-gray-500 font-mono">{order.id}</div>
-                  <div className="col-span-2 text-xs text-gray-500">{order.date}</div>
+                  <div className="col-span-2 text-xs text-gray-600 font-mono">{order.id}</div>
+                  <div className="col-span-2 text-xs text-gray-600">{order.date}</div>
                   <div className="col-span-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border" style={{ background: s.bg, color: s.text, borderColor: s.border }}>
-                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.dot }} />
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${s.bg} ${s.text} ${s.border}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                       {order.status}
                     </span>
                   </div>
                   <div className="col-span-2 text-right">
-                    <span className="text-sm font-bold text-[#1a1a2e]">{order.amount}</span>
+                    <span className="text-sm font-bold text-gray-900">{order.amount}</span>
                   </div>
                 </div>
                 <div className="sm:hidden flex items-center justify-between mt-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border" style={{ background: s.bg, color: s.text, borderColor: s.border }}>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.dot }} />
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${s.bg} ${s.text} ${s.border}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                     {order.status}
                   </span>
                   {order.status === "Delivered" && (
-                    <button onClick={() => reorder(order.id)} className="text-xs font-semibold text-[#f5a623] hover:text-[#e09510] transition">Reorder →</button>
+                    <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="text-xs font-semibold text-orange-600 hover:text-orange-700 transition">Reorder →</button>
                   )}
                 </div>
-                <div className="hidden sm:flex justify-end mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {order.status === "Delivered" && (
-                    <button onClick={() => reorder(order.id)} className="text-xs font-semibold text-[#f5a623] hover:text-[#e09510] transition">🔄 Reorder</button>
+                <AnimatePresence>
+                  {selectedOrder === order.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-3 mt-3 border-t border-gray-200 flex items-center gap-3">
+                        {order.status === "Delivered" && (
+                          <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition flex items-center gap-1.5">
+                            <FiShoppingCart size={12} /> Reorder
+                          </button>
+                        )}
+                        {order.status === "In Transit" && (
+                          <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition flex items-center gap-1.5">
+                            <FiPackage size={12} /> Track Order
+                          </button>
+                        )}
+                        {(order.status === "Processing" || order.status === "In Transit") && (
+                          <button onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }} className="px-4 py-2 rounded-xl bg-red-100 text-xs font-semibold text-red-700 hover:bg-red-200 transition flex items-center gap-1.5">
+                            <FiX size={12} /> Cancel
+                          </button>
+                        )}
+                        <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition flex items-center gap-1.5 ml-auto">
+                          <FiDownload size={12} /> Invoice
+                        </button>
+                      </div>
+                    </motion.div>
                   )}
-                  {order.status === "In Transit" && (
-                    <button className="text-xs font-semibold text-[#8b5cf6] hover:text-[#7c3aed] transition">📍 Track Order</button>
-                  )}
-                </div>
-              </div>
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>
@@ -613,69 +1024,126 @@ function OrdersTab() {
 //  WISHLIST TAB
 // ═══════════════════════════════════════════════════════════
 function WishlistTab() {
-  const [items, setItems] = useState(WISHLIST_DATA);
+  const [items, setItems] = useState<WishlistItem[]>(WISHLIST_DATA);
+  const [sortBy, setSortBy] = useState<"rating" | "price" | "reviews">("rating");
 
-  const toggleLike = (id) => {
+  const toggleLike = (id: number) => {
     setItems(prev => prev.map(item => item.id === id ? { ...item, liked: !item.liked } : item));
   };
 
-  const removeItem = (id) => {
+  const removeItem = (id: number) => {
     setItems(prev => prev.filter(item => item.id !== id));
   };
 
-  const moveToCart = (title) => {
+  const moveToCart = (title: string) => {
     alert(`Added "${title}" to cart!`);
   };
 
+  const sorted = [...items].sort((a, b) => {
+    if (sortBy === "rating") return b.rating - a.rating;
+    if (sortBy === "price") return parseInt(a.price.replace(/[^0-9]/g, "")) - parseInt(b.price.replace(/[^0-9]/g, ""));
+    return b.reviews - a.reviews;
+  });
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest text-[#ec4899] uppercase">Saved Books</p>
-          <h3 className="text-xl font-bold text-[#1a1a2e]">My Wishlist</h3>
+          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Saved Books</p>
+          <h3 className="text-xl font-bold text-gray-900">My Wishlist</h3>
         </div>
-        <span className="text-xs font-semibold text-gray-400">{items.filter(i => i.liked).length} items</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-600">{items.filter(i => i.liked).length} items</span>
+          <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
+            {(["rating", "price", "reviews"] as const).map(s => (
+              <button
+                key={s}
+                onClick={() => setSortBy(s)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
+                  sortBy === s
+                    ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {items.map((book) => (
-          <div key={book.id} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all group relative">
-            <button onClick={() => removeItem(book.id)} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 text-gray-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition opacity-0 group-hover:opacity-100">
-              ✕
-            </button>
-            <div className="flex items-start gap-4 mb-4">
-              <div className="w-14 h-18 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br from-[#f5f3ff] to-[#ede9fe] flex-shrink-0">
-                📘
+        <AnimatePresence mode="popLayout">
+          {sorted.map((book, i) => (
+            <motion.div
+              key={book.id}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ delay: i * 0.05 }}
+              className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-gray-300 transition-all group relative"
+            >
+              <button
+                onClick={() => removeItem(book.id)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-10"
+              >
+                <FiTrash2 size={14} />
+              </button>
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-14 h-18 rounded-xl flex items-center justify-center text-2xl bg-gray-100 border border-gray-200 flex-shrink-0">
+                  {book.cover}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm text-gray-900 truncate pr-6">{book.title}</p>
+                  <p className="text-xs text-gray-600">{book.author}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="px-2 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-600 border border-gray-200">{book.category}</span>
+                    {!book.inStock && (
+                      <span className="px-2 py-0.5 rounded-md bg-red-100 text-[10px] font-medium text-red-700 border border-red-200">Out of Stock</span>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm text-[#1a1a2e] truncate pr-6">{book.title}</p>
-                <p className="text-xs text-gray-400">{book.author}</p>
-                <span className="inline-block mt-1 px-2 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-500">{book.category}</span>
+              <div className="flex items-center justify-between mb-4">
+                <StarRating rating={book.rating} />
+                <span className="text-xs text-gray-500">{book.reviews.toLocaleString()} reviews</span>
               </div>
-            </div>
-            <div className="flex items-center justify-between mb-4">
-              <StarRating rating={book.rating} />
-              <span className="text-xs text-gray-400">{book.reviews.toLocaleString()} reviews</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-[#1a1a2e]">{book.price}</span>
-                <button onClick={() => toggleLike(book.id)} className={`w-8 h-8 rounded-full flex items-center justify-center transition ${book.liked ? "text-red-500" : "text-gray-300 hover:text-red-400"}`}>
-                  {book.liked ? "❤️" : "🤍"}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-gray-900">{book.price}</span>
+                  <button
+                    onClick={() => toggleLike(book.id)}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
+                      book.liked ? "text-red-500" : "text-gray-300 hover:text-red-500"
+                    }`}
+                  >
+                    <FiHeart className={book.liked ? "fill-red-500" : ""} size={16} />
+                  </button>
+                </div>
+                <button
+                  onClick={() => moveToCart(book.title)}
+                  disabled={!book.inStock}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xs font-bold border border-transparent hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5"
+                >
+                  <FiShoppingCart size={12} /> Add
                 </button>
               </div>
-              <button onClick={() => moveToCart(book.title)} className="px-4 py-2 rounded-xl bg-[#1a1a2e] text-white text-xs font-bold hover:bg-[#2d1f3d] transition">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
       {items.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-16 bg-white rounded-2xl border border-gray-200"
+        >
           <span className="text-5xl block mb-4">📭</span>
-          <p className="text-gray-400 font-medium">Your wishlist is empty</p>
-          <p className="text-xs text-gray-300 mt-1">Start exploring books to save them here!</p>
-        </div>
+          <p className="text-gray-600 font-medium">Your wishlist is empty</p>
+          <p className="text-xs text-gray-500 mt-1">Start exploring books to save them here!</p>
+        </motion.div>
       )}
     </div>
   );
@@ -685,69 +1153,113 @@ function WishlistTab() {
 //  ANALYTICS TAB
 // ═══════════════════════════════════════════════════════════
 function AnalyticsTab() {
-  const maxBooks = Math.max(...MONTHLY_STATS.map(s => s.books));
-  const maxPages = Math.max(...MONTHLY_STATS.map(s => s.pages));
+  const [metric, setMetric] = useState<"books" | "pages" | "hours">("books");
+  const maxVal = Math.max(...MONTHLY_STATS.map(s => s[metric]));
+
+  const metrics = [
+    { key: "books" as const, label: "Books Read", color: "#f97316", icon: FiBook },
+    { key: "pages" as const, label: "Pages Read", color: "#ec4899", icon: FiBook },
+    { key: "hours" as const, label: "Hours Spent", color: "#f97316", icon: FiClock },
+  ];
 
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[10px] font-bold tracking-widest text-[#8b5cf6] uppercase">Insights</p>
-        <h3 className="text-xl font-bold text-[#1a1a2e] mt-0.5">Reading Analytics</h3>
+        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Insights</p>
+        <h3 className="text-xl font-bold text-gray-900 mt-0.5">Reading Analytics</h3>
       </div>
+
+      <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200 w-fit">
+        {metrics.map(m => (
+          <button
+            key={m.key}
+            onClick={() => setMetric(m.key)}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+              metric === m.key
+                ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            <m.icon size={14} /> {m.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+        <motion.div
+          key={metric}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl border border-gray-200 p-6"
+        >
           <div className="flex items-center justify-between mb-6">
-            <p className="text-sm font-bold text-[#1a1a2e]">📚 Books Read Per Month</p>
-            <span className="text-xs text-gray-400">Last 6 months</span>
+            <p className="text-sm font-bold text-gray-900">{metrics.find(m => m.key === metric)?.label} Per Month</p>
+            <span className="text-xs text-gray-500">Last 6 months</span>
           </div>
-          <div className="flex items-end gap-3 h-48">
+          <div className="flex items-end gap-3 h-52">
             {MONTHLY_STATS.map((stat) => (
               <div key={stat.month} className="flex-1 flex flex-col items-center gap-2 group">
                 <div className="relative w-full flex justify-center">
-                  <div className="w-full max-w-[40px] rounded-t-lg bg-[#f5a623] transition-all duration-500 hover:bg-[#e09510] relative" style={{ height: `${(stat.books / maxBooks) * 160}px` }}>
-                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#1a1a2e] text-white text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      {stat.books} books
+                  <motion.div
+                    className="w-full max-w-[48px] rounded-t-xl relative cursor-pointer"
+                    style={{ background: metrics.find(m => m.key === metric)?.color }}
+                    initial={{ height: 0 }}
+                    animate={{ height: `${(stat[metric] / maxVal) * 180}px` }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  >
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-gray-900 text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 shadow-xl">
+                      {stat[metric]} {metric}
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
-                <span className="text-[10px] font-semibold text-gray-400">{stat.month}</span>
+                <span className="text-[10px] font-semibold text-gray-500">{stat.month}</span>
               </div>
             ))}
           </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <p className="text-sm font-bold text-[#1a1a2e]">📖 Pages Read Per Month</p>
-            <span className="text-xs text-gray-400">Last 6 months</span>
-          </div>
-          <div className="flex items-end gap-3 h-48">
-            {MONTHLY_STATS.map((stat) => (
-              <div key={stat.month} className="flex-1 flex flex-col items-center gap-2 group">
-                <div className="relative w-full flex justify-center">
-                  <div className="w-full max-w-[40px] rounded-t-lg bg-[#8b5cf6] transition-all duration-500 hover:bg-[#7c3aed] relative" style={{ height: `${(stat.pages / maxPages) * 160}px` }}>
-                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#1a1a2e] text-white text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      {stat.pages} pages
-                    </div>
-                  </div>
+        </motion.div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <p className="text-sm font-bold text-gray-900 mb-6">Reading Distribution</p>
+          <div className="space-y-4">
+            {[
+              { label: "Fiction", value: 35, color: "#f97316" },
+              { label: "Self-Help", value: 25, color: "#ec4899" },
+              { label: "History", value: 20, color: "#f97316" },
+              { label: "Business", value: 15, color: "#10b981" },
+              { label: "Other", value: 5, color: "#9ca3af" },
+            ].map((cat) => (
+              <div key={cat.label}>
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-xs text-gray-600">{cat.label}</span>
+                  <span className="text-xs text-gray-900 font-medium">{cat.value}%</span>
                 </div>
-                <span className="text-[10px] font-semibold text-gray-400">{stat.month}</span>
+                <ProgressBar progress={cat.value} color={cat.color} height={8} />
               </div>
             ))}
           </div>
         </div>
       </div>
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total Books Read", value: 15, icon: "📚" },
-          { label: "Total Pages", value: 2820, icon: "📄" },
-          { label: "Avg per Month", value: 2.5, icon: "📈" },
-          { label: "Reading Streak", value: 12, suffix: " days", icon: "🔥" },
-        ].map((s) => (
-          <div key={s.label} className="bg-white rounded-2xl border border-gray-100 p-5 text-center">
-            <span className="text-2xl mb-2 block">{s.icon}</span>
-            <p className="text-2xl font-black text-[#1a1a2e]"><AnimatedCounter value={s.value} />{s.suffix || ""}</p>
-            <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mt-1">{s.label}</p>
-          </div>
+          { label: "Total Books Read", value: 15, icon: FiBook, color: "#f97316" },
+          { label: "Total Pages", value: 2820, icon: FiBook, color: "#ec4899" },
+          { label: "Avg per Month", value: 2.5, suffix: "", icon: FiTrendingUp, color: "#f97316" },
+          { label: "Reading Streak", value: 12, suffix: " days", icon: FiCalendar, color: "#10b981" },
+        ].map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="bg-white rounded-2xl border border-gray-200 p-5 text-center"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3" style={{ color: s.color }}>
+              <s.icon size={18} />
+            </div>
+            <p className="text-2xl font-black text-gray-900">{s.value}{s.suffix || ""}</p>
+            <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mt-1">{s.label}</p>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -762,106 +1274,231 @@ function SettingsTab() {
     emailFreq: "Daily Digest",
     genres: ["Philosophy", "Sci-Fi"],
     readingGoal: 3,
-    theme: "Light",
+    theme: "Dark" as "Light" | "Dark" | "System",
     notifications: true,
+    emailNotifications: true,
+    pushNotifications: true,
     publicProfile: false,
+    twoFactor: false,
   });
   const [saved, setSaved] = useState(false);
+  const [activeSection, setActiveSection] = useState<"general" | "privacy" | "notifications">("general");
 
   const handleSave = () => {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const genres = ["Fiction", "Sci-Fi", "Philosophy", "History", "Self-Help", "Business", "Psychology"];
+  const genres = ["Fiction", "Sci-Fi", "Philosophy", "History", "Self-Help", "Business", "Psychology", "Biography"];
+
+  const sections = [
+    { id: "general" as const, label: "General", icon: FiSettings },
+    { id: "privacy" as const, label: "Privacy", icon: FiEye },
+    { id: "notifications" as const, label: "Notifications", icon: FiBell },
+  ];
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest text-emerald-500 uppercase">Preferences</p>
-          <h3 className="text-xl font-bold text-[#1a1a2e]">Account Settings</h3>
+          <p className="text-[10px] font-bold tracking-widest text-emerald-600 uppercase">Preferences</p>
+          <h3 className="text-xl font-bold text-gray-900">Account Settings</h3>
         </div>
-        <button onClick={handleSave} className={`px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all ${saved ? "bg-emerald-500" : "bg-[#1a1a2e] hover:bg-[#2d1f3d]"}`}>
-          {saved ? "✓ Saved!" : "Save Changes"}
-        </button>
+        <motion.button
+          onClick={handleSave}
+          className={`px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all flex items-center gap-2 ${
+            saved ? "bg-emerald-600" : "bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90"
+          }`}
+          whileTap={{ scale: 0.95 }}
+        >
+          {saved ? <FiCheck size={16} /> : <FiEdit3 size={16} />}
+          {saved ? "Saved!" : "Save Changes"}
+        </motion.button>
       </div>
-      <div className="space-y-4 max-w-2xl">
-        <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-[#1a1a2e]">📧 Email Frequency</p>
-              <p className="text-xs text-gray-400">How often should we email you?</p>
-            </div>
-            <select value={settings.emailFreq} onChange={(e) => setSettings({ ...settings, emailFreq: e.target.value })} className="text-sm border border-gray-200 rounded-xl px-4 py-2 bg-white text-[#1a1a2e] font-semibold focus:outline-none focus:border-[#f5a623] cursor-pointer">
-              {["Instantly", "Daily Digest", "Weekly", "Never"].map(o => <option key={o}>{o}</option>)}
-            </select>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <p className="text-sm font-semibold text-[#1a1a2e] mb-1">🎯 Preferred Genres</p>
-          <p className="text-xs text-gray-400 mb-3">Personalise your book recommendations</p>
-          <div className="flex flex-wrap gap-2">
-            {genres.map((g) => {
-              const active = settings.genres.includes(g);
-              return (
-                <button key={g} onClick={() => setSettings(prev => ({ ...prev, genres: active ? prev.genres.filter(x => x !== g) : [...prev.genres, g] }))} className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${active ? "bg-[#1a1a2e] text-white border-[#1a1a2e]" : "bg-white text-gray-500 border-gray-200 hover:border-gray-300"}`}>
-                  {g}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-[#1a1a2e]">🎯 Reading Goal</p>
-              <p className="text-xs text-gray-400">Books per month target</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.max(1, prev.readingGoal - 1) }))} className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 font-bold text-lg flex items-center justify-center transition">−</button>
-              <span className="text-xl font-black text-[#1a1a2e] w-6 text-center">{settings.readingGoal}</span>
-              <button onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.min(20, prev.readingGoal + 1) }))} className="w-9 h-9 rounded-full bg-[#f5a623] hover:bg-[#e09510] text-white font-bold text-lg flex items-center justify-center transition">+</button>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-[#1a1a2e]">🎨 Interface Theme</p>
-              <p className="text-xs text-gray-400">Choose your display preference</p>
-            </div>
-            <div className="flex gap-2">
-              {["Light", "Dark", "System"].map((o) => (
-                <button key={o} onClick={() => setSettings({ ...settings, theme: o })} className={`px-4 py-1.5 rounded-xl text-xs font-semibold border transition-all ${settings.theme === o ? "bg-[#1a1a2e] text-white border-[#1a1a2e]" : "bg-white text-gray-500 border-gray-200"}`}>
-                  {o}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-4">
-          {[
-            { key: "notifications", label: "🔔 Push Notifications", desc: "Get notified about orders and deals" },
-            { key: "publicProfile", label: "👁️ Public Profile", desc: "Allow others to see your reading list" },
-          ].map(({ key, label, desc }) => (
-            <div key={key} className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-[#1a1a2e]">{label}</p>
-                <p className="text-xs text-gray-400">{desc}</p>
-              </div>
-              <button onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))} className={`w-12 h-6 rounded-full transition-all duration-300 relative ${settings[key] ? "bg-[#f5a623]" : "bg-gray-300"}`}>
-                <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${settings[key] ? "left-6" : "left-0.5"}`} />
-              </button>
-            </div>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Settings Nav */}
+        <div className="lg:w-48 flex lg:flex-col gap-2">
+          {sections.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setActiveSection(s.id)}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                activeSection === s.id
+                  ? "bg-gray-100 text-gray-900 border border-gray-300"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <s.icon size={16} />
+              <span className="hidden lg:inline">{s.label}</span>
+            </button>
           ))}
         </div>
-        <div className="bg-white rounded-2xl border border-red-100 p-5">
-          <p className="text-sm font-semibold text-red-500 mb-1">⚠️ Danger Zone</p>
-          <p className="text-xs text-gray-400 mb-3">Once deleted, your account cannot be recovered.</p>
-          <button className="px-5 py-2.5 rounded-xl bg-red-50 text-red-500 text-sm font-semibold hover:bg-red-100 transition border border-red-200">
-            🗑️ Delete Account
-          </button>
+
+        {/* Settings Content */}
+        <div className="flex-1 space-y-4 max-w-2xl">
+          {activeSection === "general" && (
+            <>
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">📧 Email Frequency</p>
+                    <p className="text-xs text-gray-600">How often should we email you?</p>
+                  </div>
+                  <select
+                    value={settings.emailFreq}
+                    onChange={(e) => setSettings({ ...settings, emailFreq: e.target.value })}
+                    className="text-sm border border-gray-300 rounded-xl px-4 py-2.5 bg-white text-gray-900 focus:outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    {["Instantly", "Daily Digest", "Weekly", "Never"].map(o => <option key={o} className="bg-white">{o}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <p className="text-sm font-semibold text-gray-900 mb-1">🎯 Preferred Genres</p>
+                <p className="text-xs text-gray-600 mb-3">Personalise your book recommendations</p>
+                <div className="flex flex-wrap gap-2">
+                  {genres.map((g) => {
+                    const active = settings.genres.includes(g);
+                    return (
+                      <button
+                        key={g}
+                        onClick={() => setSettings(prev => ({
+                          ...prev,
+                          genres: active ? prev.genres.filter(x => x !== g) : [...prev.genres, g]
+                        }))}
+                        className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
+                          active
+                            ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white border-transparent"
+                            : "bg-gray-100 text-gray-600 border-gray-300 hover:border-gray-400"
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">🎯 Reading Goal</p>
+                    <p className="text-xs text-gray-600">Books per month target</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.max(1, prev.readingGoal - 1) }))}
+                      className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 font-bold flex items-center justify-center transition border border-gray-300"
+                    >
+                      <FiMinus size={14} />
+                    </button>
+                    <span className="text-xl font-black text-gray-900 w-6 text-center">{settings.readingGoal}</span>
+                    <button
+                      onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.min(20, prev.readingGoal + 1) }))}
+                      className="w-9 h-9 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold flex items-center justify-center transition hover:opacity-90"
+                    >
+                      <FiPlus size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">🎨 Interface Theme</p>
+                    <p className="text-xs text-gray-600">Choose your display preference</p>
+                  </div>
+                  <div className="flex gap-2">
+                    {(["Light", "Dark", "System"] as const).map((o) => (
+                      <button
+                        key={o}
+                        onClick={() => setSettings({ ...settings, theme: o })}
+                        className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                          settings.theme === o
+                            ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white border-transparent"
+                            : "bg-gray-100 text-gray-600 border-gray-300 hover:border-gray-400"
+                        }`}
+                      >
+                        {o === "Light" && <FiSun size={12} />}
+                        {o === "Dark" && <FiMoon size={12} />}
+                        {o === "System" && <FiMonitor size={12} />}
+                        {o}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeSection === "privacy" && (
+            <>
+              <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
+                {[
+                  { key: "publicProfile" as const, label: "👁️ Public Profile", desc: "Allow others to see your reading list and reviews" },
+                  { key: "twoFactor" as const, label: "🔐 Two-Factor Authentication", desc: "Add an extra layer of security to your account" },
+                ].map(({ key, label, desc }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{label}</p>
+                      <p className="text-xs text-gray-600">{desc}</p>
+                    </div>
+                    <button
+                      onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))}
+                      className={`w-12 h-6 rounded-full transition-all duration-300 relative ${
+                        settings[key] ? "bg-gradient-to-r from-orange-500 to-pink-600" : "bg-gray-300"
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${
+                        settings[key] ? "left-6" : "left-0.5"
+                      }`} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {activeSection === "notifications" && (
+            <>
+              <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
+                {[
+                  { key: "notifications" as const, label: "🔔 All Notifications", desc: "Master switch for all notifications" },
+                  { key: "emailNotifications" as const, label: "📧 Email Notifications", desc: "Get order updates and reading reminders via email" },
+                  { key: "pushNotifications" as const, label: "📱 Push Notifications", desc: "Receive push notifications on your device" },
+                ].map(({ key, label, desc }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{label}</p>
+                      <p className="text-xs text-gray-600">{desc}</p>
+                    </div>
+                    <button
+                      onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))}
+                      className={`w-12 h-6 rounded-full transition-all duration-300 relative ${
+                        settings[key] ? "bg-gradient-to-r from-orange-500 to-pink-600" : "bg-gray-300"
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${
+                        settings[key] ? "left-6" : "left-0.5"
+                      }`} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Danger Zone */}
+          <div className="bg-white rounded-2xl border border-red-300 p-5">
+            <p className="text-sm font-semibold text-red-700 mb-1">⚠️ Danger Zone</p>
+            <p className="text-xs text-gray-600 mb-3">Once deleted, your account and all data cannot be recovered.</p>
+            <button className="px-5 py-2.5 rounded-xl bg-red-100 text-red-700 text-sm font-semibold hover:bg-red-200 transition border border-red-300 flex items-center gap-2">
+              <FiTrash2 size={14} /> Delete Account
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -872,20 +1509,24 @@ function SettingsTab() {
 //  SUPPORT TAB
 // ═══════════════════════════════════════════════════════════
 function SupportTab() {
-  const [openFaq, setOpenFaq] = useState(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [ticketType, setTicketType] = useState("General");
+  const [searchFaq, setSearchFaq] = useState("");
 
   const faqs = [
-    { q: "How do I track my order?", a: "Go to the Orders tab and click on any order to see real-time tracking details and estimated delivery date." },
-    { q: "Can I return a book?", a: "Yes! We offer a 7-day return policy for unused books in original condition. Initiate returns from your Orders page." },
-    { q: "How do I change my email?", a: "Visit the Settings tab, update your email address, and verify the new email via the confirmation link." },
-    { q: "What payment methods are accepted?", a: "We accept UPI, Credit/Debit cards, Net Banking, and Cash on Delivery for orders above ₹200." },
-    { q: "How does the reading tracker work?", a: "Manually update your progress in My Books, or sync with our mobile app for automatic tracking." },
+    { q: "How do I track my order?", a: "Go to the Orders tab and click on any order to see real-time tracking details and estimated delivery date. You can also click 'Track Order' for in-transit items." },
+    { q: "Can I return a book?", a: "Yes! We offer a 7-day return policy for unused books in original condition. Initiate returns from your Orders page by clicking on any delivered order." },
+    { q: "How do I change my email?", a: "Visit the Settings tab, update your email address under General settings, and verify the new email via the confirmation link sent to your inbox." },
+    { q: "What payment methods are accepted?", a: "We accept UPI, Credit/Debit cards, Net Banking, and Cash on Delivery for orders above ₹200. All transactions are secured with 256-bit encryption." },
+    { q: "How does the reading tracker work?", a: "Manually update your progress in My Books using the +10/-10 buttons, or sync with our mobile app for automatic tracking via page detection." },
+    { q: "How do I upgrade to PRO?", a: "Click the 'Upgrade to PRO' banner on your Dashboard or visit the Settings tab. PRO members get unlimited access to 10K+ books and exclusive discounts." },
   ];
 
-  const handleSubmit = (e) => {
+  const filteredFaqs = faqs.filter(f => f.q.toLowerCase().includes(searchFaq.toLowerCase()) || f.a.toLowerCase().includes(searchFaq.toLowerCase()));
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
       setSubmitted(true);
@@ -896,51 +1537,130 @@ function SupportTab() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[10px] font-bold tracking-widest text-[#8b5cf6] uppercase">Help Center</p>
-        <h3 className="text-xl font-bold text-[#1a1a2e] mt-0.5">Support & FAQ</h3>
+        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Help Center</p>
+        <h3 className="text-xl font-bold text-gray-900 mt-0.5">Support & FAQ</h3>
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <p className="text-sm font-bold text-[#1a1a2e] mb-4">❓ Frequently Asked Questions</p>
-          <div className="space-y-2">
-            {faqs.map((faq, i) => (
-              <div key={i} className="border border-gray-100 rounded-xl overflow-hidden">
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left hover:bg-[#fafaf8] transition-all">
-                  <span className="text-sm font-semibold text-[#1a1a2e] pr-4">{faq.q}</span>
-                  <span className={`text-gray-400 transition-transform duration-300 flex-shrink-0 ${openFaq === i ? "rotate-180" : ""}`}>▼</span>
-                </button>
-                <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? "max-h-32" : "max-h-0"}`}>
-                  <p className="px-4 pb-4 text-sm text-gray-500 leading-relaxed">{faq.a}</p>
-                </div>
-              </div>
-            ))}
+        {/* FAQ Accordion */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-bold text-gray-900">❓ Frequently Asked Questions</p>
+          </div>
+          <div className="relative mb-4">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+            <input
+              type="text"
+              placeholder="Search FAQs..."
+              value={searchFaq}
+              onChange={(e) => setSearchFaq(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-300 rounded-xl pl-9 pr-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-100 transition"
+            />
+          </div>
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            <AnimatePresence>
+              {filteredFaqs.map((faq, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="border border-gray-200 rounded-xl overflow-hidden"
+                >
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-all"
+                  >
+                    <span className="text-sm font-semibold text-gray-900 pr-4">{faq.q}</span>
+                    <motion.span
+                      animate={{ rotate: openFaq === i ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-gray-400 flex-shrink-0"
+                    >
+                      <FiChevronDown size={16} />
+                    </motion.span>
+                  </button>
+                  <AnimatePresence>
+                    {openFaq === i && (
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: "auto" }}
+                        exit={{ height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            {filteredFaqs.length === 0 && (
+              <p className="text-center text-gray-500 text-sm py-8">No FAQs found matching your search.</p>
+            )}
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <p className="text-sm font-bold text-[#1a1a2e] mb-1">💬 Contact Support</p>
-          <p className="text-xs text-gray-400 mb-4">We typically reply within 24 hours</p>
+
+        {/* Contact Form */}
+        <div className="bg-white rounded-2xl border border-gray-200 p-6">
+          <p className="text-sm font-bold text-gray-900 mb-1">💬 Contact Support</p>
+          <p className="text-xs text-gray-600 mb-4">We typically reply within 24 hours</p>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Issue Type</label>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Issue Type</label>
               <div className="flex flex-wrap gap-2">
                 {["General", "Order", "Technical", "Billing"].map(t => (
-                  <button key={t} type="button" onClick={() => setTicketType(t)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${ticketType === t ? "bg-[#1a1a2e] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTicketType(t)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      ticketType === t
+                        ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900"
+                    }`}
+                  >
                     {t}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Message</label>
-              <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Describe your issue in detail..." rows={4} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-[#f5a623] focus:shadow-[0_0_0_3px_rgba(245,166,35,0.12)] transition-all" />
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Message</label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Describe your issue in detail..."
+                rows={4}
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 resize-none outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-100 transition-all"
+              />
             </div>
-            <button type="submit" disabled={submitted} className={`w-full py-3 rounded-xl text-sm font-bold text-white transition-all ${submitted ? "bg-emerald-500" : "bg-[#1a1a2e] hover:bg-[#2d1f3d]"}`}>
-              {submitted ? "✓ Ticket Submitted!" : "Submit Ticket"}
-            </button>
+            <motion.button
+              type="submit"
+              disabled={submitted}
+              className={`w-full py-3 rounded-xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2 ${
+                submitted ? "bg-emerald-600" : "bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90"
+              }`}
+              whileTap={{ scale: 0.98 }}
+            >
+              {submitted ? <FiCheck size={16} /> : <FiSend size={16} />}
+              {submitted ? "Ticket Submitted!" : "Submit Ticket"}
+            </motion.button>
           </form>
-          <div className="mt-4 p-4 rounded-xl bg-[#fafaf8] border border-gray-100">
-            <p className="text-xs font-semibold text-[#1a1a2e] mb-1">📞 Other ways to reach us</p>
-            <p className="text-xs text-gray-500">support@bookhaven.com · +91 98765 43210</p>
+
+          <div className="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
+            <p className="text-xs font-semibold text-gray-900 mb-1">📞 Other ways to reach us</p>
+            <p className="text-xs text-gray-600">support@bookhaven.com · +91 98765 43210</p>
+            <div className="flex gap-3 mt-3">
+              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
+                <FiMessageCircle size={12} /> Live Chat
+              </button>
+              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
+                <FiShare2 size={12} /> Share Feedback
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -952,7 +1672,6 @@ function SupportTab() {
 //  MAIN PAGE
 // ═══════════════════════════════════════════════════════════
 export default function ProfilePage() {
-  const { user, isImpersonating } = useAuthStore();
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -965,32 +1684,26 @@ export default function ProfilePage() {
 
   const renderTab = () => {
     switch (activeTab) {
-      case "Dashboard": return <DashboardTab user={user} />;
+      case "Dashboard": return <DashboardTab user={MOCK_USER} />;
       case "MyBooks":   return <MyBooksTab />;
       case "Orders":    return <OrdersTab />;
       case "Wishlist":  return <WishlistTab />;
       case "Analytics": return <AnalyticsTab />;
       case "Settings":  return <SettingsTab />;
       case "Support":   return <SupportTab />;
-      default:          return <DashboardTab user={user} />;
+      default:          return <DashboardTab user={MOCK_USER} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f4f0] text-[#1a1a2e]">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         * { font-family: 'Inter', sans-serif; }
-        .font-display { font-family: 'DM Sans', sans-serif; }
-        .input-field {
-          width:100%; border:1.5px solid #e5e7eb; border-radius:14px;
-          padding:12px 16px; font-size:14px; background:white;
-          outline:none; color:#1a1a2e; transition:border-color 0.2s, box-shadow 0.2s;
-        }
-        .input-field:focus { border-color:#f5a623; box-shadow:0 0 0 3px rgba(245,166,35,0.12); }
-        .input-field:disabled { background:#fafaf8; color:#9ca3af; }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;} }
-        .fade-up { animation:fadeUp 0.4s ease both; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(249, 115, 22, 0.4); }
       `}</style>
 
       <div className="flex min-h-screen">
@@ -1000,11 +1713,11 @@ export default function ProfilePage() {
           isCollapsed={isCollapsed}
           isMobileOpen={isMobileOpen}
           setIsMobileOpen={setIsMobileOpen}
-          user={user}
+          user={MOCK_USER}
         />
         <div className="flex-1 flex flex-col min-w-0">
           <TopHeader
-            user={user}
+            user={MOCK_USER}
             onMenuToggle={() => setIsMobileOpen(!isMobileOpen)}
             onCollapseToggle={() => setIsCollapsed(!isCollapsed)}
             isCollapsed={isCollapsed}
@@ -1013,9 +1726,15 @@ export default function ProfilePage() {
             notifications={2}
           />
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-            <div className="max-w-6xl mx-auto fade-up">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="max-w-6xl mx-auto"
+            >
               {renderTab()}
-            </div>
+            </motion.div>
           </main>
         </div>
       </div>

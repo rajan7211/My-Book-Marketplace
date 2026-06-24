@@ -12,6 +12,7 @@ import { AdminLayout } from "./AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { adminApi } from "@/api/admin.api";
+import type { AuthUser } from "@/types";
 
 const STAT_CARDS = [
   {
@@ -70,15 +71,19 @@ export default function AdminDashboardPage() {
   const { impersonate } = useAuthStore();
   const navigate = useNavigate();
 
-  const handleLoginAs = (kind: "seller" | "customer", user: any) => {
+  const handleLoginAs = (
+    kind: "seller" | "customer",
+    target: { id: number; userId: number; email?: string; businessName?: string; firstName?: string; lastName?: string }
+  ) => {
+    // fixed 
     // Create a proper AuthUser object for impersonation
-    const impersonatedUser = {
-      id: user.id,
-      email: kind === "seller" ? user.email : `user${user.id}@bookhub.com`,
-      name: kind === "seller" ? user.businessName : `${user.firstName} ${user.lastName}`,
+    const impersonatedUser: AuthUser = {
+      userId: target.userId ?? target.id,
+      email: kind === "seller" ? (target.email ?? "") : `user${target.id}@bookhub.com`,
+      name: kind === "seller" ? (target.businessName ?? "") : `${target.firstName} ${target.lastName}`,
       role: kind === "seller" ? "SELLER" : "CUSTOMER",
-      sellerId: kind === "seller" ? user.id : undefined,
-      customerId: kind === "customer" ? user.id : undefined,
+      sellerId: kind === "seller" ? target.id : undefined,
+      customerId: kind === "customer" ? target.id : undefined,
     };
 
     impersonate(impersonatedUser);
