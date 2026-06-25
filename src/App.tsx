@@ -22,6 +22,8 @@ import AdminCustomersPage from "@/pages/admin/AdminCustomersPage";
 import AdminOrdersPage from "@/pages/admin/AdminOrdersPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
+import NewReleasesPage from "@/pages/NewReleasesPage";
+
 
 export default function App() {
   return (
@@ -30,6 +32,8 @@ export default function App() {
         {/* Public */}
         <Route path="/" element={<HomePage />} />
         <Route path="/books" element={<BooksPage />} />
+         <Route path="/new-releases" element={<NewReleasesPage />} />
+
         {/* <Route path="/best-sellers" element={<BestSellersPage />} />
         <Route path="/categories" element={<CategoriesPage />} /> */}
         <Route path="/books/:id" element={<BookDetailsPage />} />

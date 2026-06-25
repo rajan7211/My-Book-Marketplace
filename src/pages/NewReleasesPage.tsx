@@ -13,25 +13,18 @@ import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 10;
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "newest", label: "Newest first" },
-  { value: "title-asc", label: "Title: A → Z" },
-  { value: "title-desc", label: "Title: Z → A" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
-];
-
-export default function BooksPage() {
+export default function NewReleasesPage() {
   const [params, setParams] = useSearchParams();
 
   const page = Number(params.get("page") ?? 1);
   const search = params.get("search") ?? "";
   const category = params.get("category") ?? "All";
-  const sort = (params.get("sort") as SortOption) ?? "newest";
+  const sort: SortOption = "newest";
+  const tag = "new-release";
 
   const [searchInput, setSearchInput] = useState(search);
 
-  // debounce search -> URL params (resets to page 1)
+  // debounce search -> URL params
   useEffect(() => {
     const t = setTimeout(() => {
       if (searchInput !== search) {
@@ -60,9 +53,16 @@ export default function BooksPage() {
   });
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["books", "catalog", { page, search, category, sort }],
+    queryKey: ["books", "catalog", { page, search, category, sort, tag }],
     queryFn: () =>
-      booksApi.getBooks({ page, limit: PAGE_SIZE, search, category, sort }),
+      booksApi.getBooks({
+        page,
+        limit: PAGE_SIZE,
+        search,
+        category,
+        sort,
+        tag,
+      }),
     placeholderData: keepPreviousData,
   });
 
@@ -93,11 +93,11 @@ export default function BooksPage() {
           >
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-purple-300">
               <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-pink-400 shadow-[0_0_8px_rgba(236,72,153,0.8)]" />
-              35+ curated titles • Updated daily
+              Fresh arrivals • Just added
             </div>
 
             <h1 className="font-serif text-[42px] font-semibold leading-tight tracking-tight text-[#f1f0f9] sm:text-5xl">
-              Discover your next{" "}
+              Discover the Latest{" "}
               <span
                 style={{
                   background: "linear-gradient(90deg,#f5a623,#ec4899,#8b5cf6)",
@@ -106,12 +106,12 @@ export default function BooksPage() {
                   color: "transparent",
                 }}
               >
-                great story
+                New Releases
               </span>
             </h1>
 
             <p className="mx-auto mt-4 max-w-md text-[#8b86a8]">
-              One book, many sellers — always the best price
+              Stay ahead of the curve with freshly added books.
             </p>
           </motion.div>
 
@@ -123,8 +123,12 @@ export default function BooksPage() {
               { num: "4.8★", label: "Avg Rating" },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-xl font-semibold text-white">{stat.num}</div>
-                <div className="text-[11px] tracking-widest text-[#6b6888]">{stat.label}</div>
+                <div className="text-xl font-semibold text-white">
+                  {stat.num}
+                </div>
+                <div className="text-[11px] tracking-widest text-[#6b6888]">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -133,9 +137,12 @@ export default function BooksPage() {
 
       <main className="mx-auto max-w-[1760px] px-6 pb-14 sm:px-20">
         {/* Toolbar: search + sort */}
-<div className="mb-6 pt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="relative w-full sm:max-w-sm">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8b86a8]" size={16} />
+        <div className="mb-6 pt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:max-w-sm">
+            <FiSearch
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8b86a8]"
+              size={16}
+            />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -152,24 +159,6 @@ export default function BooksPage() {
               </button>
             )}
           </div>
-
-          <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="text-sm text-[#8b86a8]">
-              Sort by:
-            </label>
-            <select
-              id="sort"
-              value={sort}
-              onChange={(e) => setParam("sort", e.target.value)}
-              className="h-11 rounded-lg border border-white/10 bg-[#1a1625] px-3 text-sm text-white focus:border-[#ec4899] focus:outline-none focus:ring-2 focus:ring-[#ec4899]/30"
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* Category filter pills - Dark theme */}
@@ -182,7 +171,7 @@ export default function BooksPage() {
                 "whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition",
                 category === c
                   ? "border-[#ec4899] bg-[#ec4899] text-white"
-                  : "border-white/10 bg-[#1a1625] text-[#b0aac8] hover:border-[#ec4899] hover:text-white"
+                  : "border-white/10 bg-[#1a1625] text-[#b0aac8] hover:border-[#ec4899] hover:text-white",
               )}
             >
               {c}
@@ -197,7 +186,9 @@ export default function BooksPage() {
             : `Showing ${data?.data.length ?? 0} of ${data?.total ?? 0} books`}
           {search && (
             <>
-              {" "}for "<span className="font-semibold text-brand-dark">{search}</span>"
+              {" "}
+              for "
+              <span className="font-semibold text-brand-dark">{search}</span>"
             </>
           )}
           {isFetching && !isLoading && (
@@ -215,9 +206,7 @@ export default function BooksPage() {
         ) : data?.data.length === 0 ? (
           <div className="rounded-xl bg-[#1a1625] py-20 text-center border border-white/10">
             <p className="text-4xl">📚</p>
-            <h3 className="mt-3 font-semibold text-white">
-              No books found
-            </h3>
+            <h3 className="mt-3 font-semibold text-white">No books found</h3>
             <p className="mt-1 text-sm text-[#8b86a8]">
               Try a different search term or category.
             </p>
@@ -243,8 +232,3 @@ export default function BooksPage() {
     </div>
   );
 }
-
-
-
-
-

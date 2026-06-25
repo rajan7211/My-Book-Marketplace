@@ -228,7 +228,6 @@
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780349436937-L.jpg",
       "status": "APPROVED",
       "tags": [
-        "new-release",
         "created-for-you"
       ],
       "createdAt": "2026-02-13T11:00:00.000Z"
@@ -244,7 +243,6 @@
       "coverImage": "https://covers.openlibrary.org/b/id/13069105-M.jpg",
       "status": "APPROVED",
       "tags": [
-        "new-release",
         "created-for-you"
       ],
       "createdAt": "2026-02-13T11:05:00.000Z"
@@ -259,9 +257,7 @@
       "category": "Fictions",
       "coverImage": "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg",
       "status": "APPROVED",
-      "tags": [
-        "new-release"
-      ],
+      "tags": [],
       "createdAt": "2026-02-13T11:10:00.000Z"
     },
     {
@@ -691,6 +687,306 @@
       "tags": [],
       "createdAt": "2026-06-16T08:08:08.648Z",
       "id": 35
+    },
+    {
+      "id": 36,
+      "isbn": "9780000000036",
+      "title": "Fourth Wing",
+      "author": "Rebecca Yarros",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Fourth Wing by Rebecca Yarros.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/14407898-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 37,
+      "isbn": "9780000000037",
+      "title": "Powerless",
+      "author": "Lauren Roberts",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Powerless by Lauren Roberts.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/14567864-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 38,
+      "isbn": "9780000000038",
+      "title": "Iron Flame",
+      "author": "Rebecca Yarros",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Iron Flame by Rebecca Yarros.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/14405746-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 39,
+      "isbn": "9780000000039",
+      "title": "అమ్మ డైరీలో... కొన్ని పేజీలు!",
+      "author": "రవే మంత్రీ",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: అమ్మ డైరీలో... కొన్ని పేజీలు! by రవే మంత్రీ.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/15223433-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 40,
+      "isbn": "9780000000040",
+      "title": "King of Pride",
+      "author": "Ana Huang",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: King of Pride by Ana Huang.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13244526-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 41,
+      "isbn": "9780000000041",
+      "title": "The Housemaid's Secret",
+      "author": "Freida McFadden",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: The Housemaid's Secret by Freida McFadden.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13439869-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 42,
+      "isbn": "9780000000042",
+      "title": "8 Rules of Love",
+      "author": "Jay Shetty",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: 8 Rules of Love by Jay Shetty.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13110571-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 43,
+      "isbn": "9780000000043",
+      "title": "Love Theoretically",
+      "author": "Ali Hazelwood",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Love Theoretically by Ali Hazelwood.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13264824-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 44,
+      "isbn": "9780000000044",
+      "title": "No Brainer",
+      "author": "Jeff Kinney",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: No Brainer by Jeff Kinney.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13442265-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 45,
+      "isbn": "9780000000045",
+      "title": "King of Greed",
+      "author": "Ana Huang",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: King of Greed by Ana Huang.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/15230385-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 46,
+      "isbn": "9780000000046",
+      "title": "The Chalice of the Gods",
+      "author": "Rick Riordan",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: The Chalice of the Gods by Rick Riordan.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/14596529-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 47,
+      "isbn": "9780000000047",
+      "title": "The Art of Being Alone",
+      "author": "Renuka Gavrani",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: The Art of Being Alone by Renuka Gavrani.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/15052166-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 48,
+      "isbn": "9780000000048",
+      "title": "The Sun and the Star",
+      "author": "Rick Riordan",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: The Sun and the Star by Rick Riordan.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13348151-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 49,
+      "isbn": "9780000000049",
+      "title": "Black Ties and White Lies",
+      "author": "Kat Singleton",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Black Ties and White Lies by Kat Singleton.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13224876-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 50,
+      "isbn": "9780000000050",
+      "title": "Wildfire",
+      "author": "Hannah Grace",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Wildfire by Hannah Grace.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13820942-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 51,
+      "isbn": "9780000000051",
+      "title": "Spare",
+      "author": "Prince Harry, Duke of Sussex",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Spare by Prince Harry, Duke of Sussex.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13415348-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 52,
+      "isbn": "9780000000052",
+      "title": "Yellowface",
+      "author": "R. F. Kuang",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Yellowface by R. F. Kuang.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13195421-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 53,
+      "isbn": "9780000000053",
+      "title": "God of Fury",
+      "author": "Rina Kent",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: God of Fury by Rina Kent.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/14858421-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 54,
+      "isbn": "9780000000054",
+      "title": "Happy Place",
+      "author": "Emily Henry",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Happy Place by Emily Henry.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13233403-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 55,
+      "isbn": "9780000000055",
+      "title": "Final Offer",
+      "author": "Lauren Asher",
+      "publisher": "Independent",
+      "description": "A highly anticipated new release: Final Offer by Lauren Asher.",
+      "category": "Fiction",
+      "coverImage": "https://covers.openlibrary.org/b/id/13258475-L.jpg",
+      "status": "APPROVED",
+      "tags": [
+        "new-release"
+      ],
+      "createdAt": "2026-06-25T04:06:00.709Z"
     }
   ],
   "listings": [
@@ -1083,6 +1379,206 @@
       "status": "ACTIVE",
       "createdAt": "2026-06-16T08:09:48.943Z",
       "id": 39
+    },
+    {
+      "id": 40,
+      "bookId": 36,
+      "sellerId": 1,
+      "price": 438,
+      "mrp": 699,
+      "stock": 28,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 41,
+      "bookId": 37,
+      "sellerId": 1,
+      "price": 554,
+      "mrp": 699,
+      "stock": 39,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 42,
+      "bookId": 38,
+      "sellerId": 1,
+      "price": 510,
+      "mrp": 699,
+      "stock": 49,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 43,
+      "bookId": 39,
+      "sellerId": 1,
+      "price": 306,
+      "mrp": 699,
+      "stock": 20,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 44,
+      "bookId": 40,
+      "sellerId": 1,
+      "price": 296,
+      "mrp": 699,
+      "stock": 47,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 45,
+      "bookId": 41,
+      "sellerId": 1,
+      "price": 501,
+      "mrp": 699,
+      "stock": 18,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 46,
+      "bookId": 42,
+      "sellerId": 1,
+      "price": 365,
+      "mrp": 699,
+      "stock": 40,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 47,
+      "bookId": 43,
+      "sellerId": 1,
+      "price": 579,
+      "mrp": 699,
+      "stock": 36,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 48,
+      "bookId": 44,
+      "sellerId": 1,
+      "price": 278,
+      "mrp": 699,
+      "stock": 39,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 49,
+      "bookId": 45,
+      "sellerId": 1,
+      "price": 479,
+      "mrp": 699,
+      "stock": 39,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 50,
+      "bookId": 46,
+      "sellerId": 1,
+      "price": 215,
+      "mrp": 699,
+      "stock": 14,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 51,
+      "bookId": 47,
+      "sellerId": 1,
+      "price": 284,
+      "mrp": 699,
+      "stock": 48,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 52,
+      "bookId": 48,
+      "sellerId": 1,
+      "price": 574,
+      "mrp": 699,
+      "stock": 36,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 53,
+      "bookId": 49,
+      "sellerId": 1,
+      "price": 227,
+      "mrp": 699,
+      "stock": 48,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 54,
+      "bookId": 50,
+      "sellerId": 1,
+      "price": 334,
+      "mrp": 699,
+      "stock": 31,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 55,
+      "bookId": 51,
+      "sellerId": 1,
+      "price": 359,
+      "mrp": 699,
+      "stock": 49,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 56,
+      "bookId": 52,
+      "sellerId": 1,
+      "price": 375,
+      "mrp": 699,
+      "stock": 18,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 57,
+      "bookId": 53,
+      "sellerId": 1,
+      "price": 417,
+      "mrp": 699,
+      "stock": 48,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 58,
+      "bookId": 54,
+      "sellerId": 1,
+      "price": 597,
+      "mrp": 699,
+      "stock": 12,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "id": 59,
+      "bookId": 55,
+      "sellerId": 1,
+      "price": 270,
+      "mrp": 699,
+      "stock": 28,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-25T04:06:00.709Z"
     }
   ],
   "carts": [
