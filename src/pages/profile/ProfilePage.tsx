@@ -6,9 +6,9 @@ import {
   FiChevronDown, FiLogOut, FiUser, FiEdit3, FiCheck,
   FiX, FiPlus, FiMinus, FiTrash2, FiShoppingCart,
   FiArrowRight, FiTrendingUp, FiCalendar, FiClock,
-  FiStar, FiMessageCircle, FiSend, FiChevronRight,
-  FiMoreHorizontal, FiFilter, FiDownload, FiShare2,
-  FiEye, FiEyeOff, FiMoon, FiSun, FiMonitor
+  FiStar, FiMessageCircle, FiSend, 
+  FiDownload, FiShare2,
+  FiEye, FiMoon, FiSun, FiMonitor
 } from "react-icons/fi";
 
 // ═══════════════════════════════════════════════════════════
@@ -96,7 +96,7 @@ const MOCK_USER: User = {
 };
 
 const MY_BOOKS: Book[] = [
-  { id: 1, title: "The Alchemist", author: "Paulo Coelho", category: "Fiction", progress: 75, totalPages: 208, currentPage: 156, cover: "🌟", status: "Reading", lastRead: "2 hours ago", rating: 4.5, coverColor: "from-amber-400/20 to-orange-500/20" },
+  { id: 1, title: "The Alchemist", author: "Paulo Coelho", category: "Fiction", progress: 75, totalPages: 208, currentPage: 156, cover: "🌟", status: "Reading", lastRead: "2 hours ago", rating: 4.5, coverColor: "from-amber-400/20 to-purple-500/20" },
   { id: 2, title: "Atomic Habits", author: "James Clear", category: "Self-Help", progress: 32, totalPages: 320, currentPage: 102, cover: "⚛️", status: "Reading", lastRead: "1 day ago", rating: 4.8, coverColor: "from-blue-400/20 to-cyan-500/20" },
   { id: 3, title: "Sapiens", author: "Yuval Noah Harari", category: "History", progress: 100, totalPages: 443, currentPage: 443, cover: "🌍", status: "Completed", lastRead: "Completed", rating: 4.7, coverColor: "from-emerald-400/20 to-teal-500/20" },
   { id: 4, title: "Deep Work", author: "Cal Newport", category: "Productivity", progress: 0, totalPages: 304, currentPage: 0, cover: "🧠", status: "Not Started", lastRead: "—", rating: 4.4, coverColor: "from-violet-400/20 to-purple-500/20" },
@@ -258,7 +258,7 @@ function Sidebar({
   setIsMobileOpen: (v: boolean) => void;
   user: User;
 }) {
-  const sidebarRef = useRef<HTMLElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null!);
   useClickOutside(sidebarRef, () => setIsMobileOpen(false));
 
   useEffect(() => {
@@ -302,7 +302,7 @@ function Sidebar({
       >
         {/* Logo */}
         <div className={`p-6 border-b border-gray-200 flex items-center gap-3 ${isCollapsed ? "lg:justify-center" : ""}`}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-orange-500 to-pink-600">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-purple-500 to-pink-500">
             <FiBook className="text-white text-lg" />
           </div>
           <AnimatePresence>
@@ -313,7 +313,7 @@ function Sidebar({
                 exit={{ opacity: 0, width: 0 }}
                 className="overflow-hidden"
               >
-                <h2 className="font-bold text-lg text-gray-900 whitespace-nowrap">BookHaven</h2>
+                <h2 className="font-bold text-lg text-brand-dark whitespace-nowrap">BookHaven</h2>
                 <p className="text-[10px] text-gray-500 whitespace-nowrap">Your reading journey</p>
               </motion.div>
             )}
@@ -343,11 +343,11 @@ function Sidebar({
                 onClick={() => handleNav(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
                   isActive
-                    ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg shadow-orange-500/20"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/20"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-brand-dark"
                 } ${isCollapsed ? "lg:justify-center lg:px-2" : ""}`}
               >
-                <Icon className={`flex-shrink-0 ${isActive ? "text-white" : "text-gray-600 group-hover:text-gray-900"}`} size={20} />
+                <Icon className={`flex-shrink-0 ${isActive ? "text-white" : "text-gray-600 group-hover:text-brand-dark"}`} size={20} />
                 <AnimatePresence>
                   {!isCollapsed && (
                     <motion.span
@@ -380,10 +380,10 @@ function Sidebar({
               exit={{ opacity: 0, height: 0 }}
               className="p-4 border-t border-gray-200 overflow-hidden"
             >
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200">
-                <img src={user.avatar} alt="" className="w-10 h-10 rounded-full object-cover border-2 border-orange-500/30" />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-gray border border-gray-200">
+                <img src={user.avatar} alt="" className="w-10 h-10 rounded-full object-cover border-2 border-pink-500/30" />
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                  <p className="text-sm font-semibold text-brand-dark truncate">{user.name}</p>
                   <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
                 </div>
               </div>
@@ -421,8 +421,8 @@ function TopHeader({
 }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const notifRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null!);
+  const notifRef = useRef<HTMLDivElement>(null!);
 
   useClickOutside(menuRef, () => setShowUserMenu(false));
   useClickOutside(notifRef, () => setShowNotif(false));
@@ -451,8 +451,8 @@ function TopHeader({
             <FiArrowRight className={`text-gray-700 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} size={16} />
           </button>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
-              {greeting()}, <span className="bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">{user.name.split(" ")[0]}</span>!
+            <h1 className="text-lg sm:text-xl font-bold text-brand-dark truncate">
+              {greeting()}, <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{user.name.split(" ")[0]}</span>!
             </h1>
             <p className="text-xs text-gray-500 hidden sm:block">What do you want to read today?</p>
           </div>
@@ -460,14 +460,14 @@ function TopHeader({
 
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Search */}
-          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-72 border border-gray-200 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-100 transition-all">
+          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-72 border border-gray-200 focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-200 transition-all">
             <FiSearch className="text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Search books..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent text-sm text-gray-900 placeholder:text-gray-400 outline-none w-full"
+              className="bg-transparent text-sm text-brand-dark placeholder:text-gray-400 outline-none w-full"
             />
             {searchQuery && (
               <button onClick={() => setSearchQuery("")} className="text-gray-400 hover:text-gray-600 transition">
@@ -484,7 +484,7 @@ function TopHeader({
             >
               <FiBell className="text-gray-600" size={18} />
               {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-orange-500/30">
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-purple-500/30">
                   {notifications}
                 </span>
               )}
@@ -499,8 +499,8 @@ function TopHeader({
                   className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 z-50"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-bold text-gray-900">Notifications</p>
-                    <button className="text-[10px] text-orange-600 hover:text-orange-700 transition">Mark all read</button>
+                    <p className="text-sm font-bold text-brand-dark">Notifications</p>
+                    <button className="text-[10px] text-pink-600 hover:text-pink-700 transition">Mark all read</button>
                   </div>
                   <div className="space-y-2">
                     {[
@@ -508,15 +508,15 @@ function TopHeader({
                       { icon: "📖", title: "Reading Reminder", desc: "You have 52 pages left in The Alchemist.", time: "2 hours ago", unread: true },
                       { icon: "💰", title: "Price Drop", desc: "The Psychology of Money is now ₹349 (was ₹399)", time: "5 hours ago", unread: false },
                     ].map((n, i) => (
-                      <div key={i} className={`p-3 rounded-xl transition cursor-pointer ${n.unread ? "bg-gray-50" : "hover:bg-gray-50"}`}>
+                      <div key={i} className={`p-3 rounded-xl transition cursor-pointer ${n.unread ? "bg-brand-gray" : "hover:bg-brand-gray"}`}>
                         <div className="flex items-start gap-3">
                           <span className="text-lg">{n.icon}</span>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold text-gray-900">{n.title}</p>
+                            <p className="text-xs font-semibold text-brand-dark">{n.title}</p>
                             <p className="text-[11px] text-gray-600 mt-0.5">{n.desc}</p>
                             <p className="text-[10px] text-gray-400 mt-1">{n.time}</p>
                           </div>
-                          {n.unread && <span className="w-2 h-2 rounded-full bg-orange-600 flex-shrink-0 mt-1" />}
+                          {n.unread && <span className="w-2 h-2 rounded-full bg-pink-600 flex-shrink-0 mt-1" />}
                         </div>
                       </div>
                     ))}
@@ -532,9 +532,9 @@ function TopHeader({
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 sm:gap-3 pl-1 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-gray-100 transition border border-transparent hover:border-gray-200"
             >
-              <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover border-2 border-orange-500/20" />
+              <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover border border-white/10" />
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-semibold text-gray-900 leading-tight">{user.name}</p>
+                <p className="text-sm font-semibold text-brand-dark leading-tight">{user.name}</p>
                 <p className="text-[10px] text-gray-500">{user.tier}</p>
               </div>
               <FiChevronDown className="text-gray-500 hidden sm:block" size={14} />
@@ -549,13 +549,13 @@ function TopHeader({
                   className="absolute right-0 top-12 w-60 bg-white rounded-2xl shadow-2xl border border-gray-200 p-2 z-50"
                 >
                   <div className="p-3 border-b border-gray-200 mb-2">
-                    <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                    <p className="text-sm font-semibold text-brand-dark">{user.name}</p>
                     <p className="text-[10px] text-gray-500">{user.email}</p>
                   </div>
-                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition flex items-center gap-2">
+                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-dark transition flex items-center gap-2">
                     <FiUser size={14} /> Profile
                   </button>
-                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition flex items-center gap-2">
+                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-dark transition flex items-center gap-2">
                     <FiSettings size={14} /> Settings
                   </button>
                   <div className="border-t border-gray-200 my-1" />
@@ -595,72 +595,97 @@ function DashboardTab({ user }: { user: User }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 via-pink-50 to-orange-50 border border-gray-200 p-6 sm:p-8"
+        className="relative overflow-hidden rounded-3xl bg-[#0f0d1a] border border-white/10 p-6 sm:p-8 text-white"
       >
-        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-orange-200/20 blur-3xl" />
-        <div className="absolute -left-10 -bottom-10 w-60 h-60 rounded-full bg-pink-200/20 blur-3xl" />
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/15 blur-3xl" />
+        <div className="absolute -left-10 -bottom-10 w-60 h-60 rounded-full bg-pink-500/10 blur-3xl" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="relative">
-            <img src={user.avatar} alt="" className="w-20 h-20 rounded-2xl object-cover border-2 border-orange-500/20" />
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center">
+            <img src={user.avatar} alt="" className="w-20 h-20 rounded-2xl object-cover border border-white/10" />
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#0f0d1a] flex items-center justify-center">
               <div className="w-2 h-2 rounded-full bg-white" />
             </div>
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <Badge variant="warning">⭐ {user.tier}</Badge>
-              <span className="text-[10px] text-gray-500 tracking-widest uppercase">Member since {user.memberSince}</span>
+              <span className="text-[10px] text-[#6b6888] tracking-widest uppercase">Member since {user.memberSince}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{user.name}</h2>
-            <p className="text-sm text-gray-600 mt-1">{user.bio}</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#f1f0f9]">{user.name}</h2>
+            <p className="text-sm text-[#8b86a8] mt-1">{user.bio}</p>
           </div>
           <div className="hidden sm:flex flex-col items-end gap-2">
             <div className="text-right">
-              <p className="text-[10px] text-gray-500 tracking-widest uppercase">Reading Streak</p>
-              <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">12 <span className="text-sm font-normal text-gray-500">days</span></p>
+              <p className="text-[10px] text-[#6b6888] tracking-widest uppercase">Reading Streak</p>
+              <p className="text-2xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">12 <span className="text-sm font-normal text-[#6b6888]">days</span></p>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-gray-300 transition-all duration-300 cursor-default group"
-            onMouseEnter={() => setHoveredStat(i)}
-            onMouseLeave={() => setHoveredStat(null)}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition" style={{ color: s.color }}>
-                <s.icon size={18} />
-              </div>
-              <div className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${s.trendUp ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
-                <FiTrendingUp size={10} />
-                {s.trend}
-              </div>
-            </div>
-            <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1">{s.label}</p>
-            <p className="text-2xl font-black text-gray-900">
-              {s.suffix}{s.value.toLocaleString("en-IN")}
-            </p>
-            {hoveredStat === i && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-3 pt-3 border-t border-gray-200"
-              >
-                <ProgressBar progress={Math.min(100, (s.raw / 30) * 100)} color={s.color} height={4} />
-              </motion.div>
-            )}
-          </motion.div>
-        ))}
+     {/* Stat Cards */}
+<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+  {stats.map((s, i) => (
+    <motion.div
+      key={s.label}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.1 }}
+      className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-gray-300 transition-all duration-300 cursor-default group"
+      onMouseEnter={() => setHoveredStat(i)}
+      onMouseLeave={() => setHoveredStat(null)}
+    >
+      {/* Top row */}
+      <div className="flex items-center justify-between mb-3">
+        <div
+          className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition"
+          style={{ color: s.color }}
+        >
+          <s.icon size={18} />
+        </div>
+
+        <div
+          className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+            s.trendUp
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          <FiTrendingUp size={10} />
+          {s.trend}
+        </div>
       </div>
 
+      {/* Label */}
+      <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1">
+        {s.label}
+      </p>
+
+      {/* Value */}
+      <p className="text-2xl font-black text-brand-dark">
+        {s.suffix}
+        {s.value.toLocaleString("en-IN")}
+      </p>
+
+      {/* Progress section (NO layout shift fix) */}
+      <div className="mt-3 pt-3 border-t border-gray-200 min-h-[44px]">
+        {hoveredStat === i && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ProgressBar
+              progress={Math.min(100, (s.raw / 30) * 100)}
+              color={s.color}
+              height={4}
+            />
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  ))}
+</div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Currently Reading */}
         <motion.div
@@ -671,10 +696,10 @@ function DashboardTab({ user }: { user: User }) {
         >
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">In Progress</p>
-              <h3 className="text-lg font-bold text-gray-900">Currently Reading</h3>
+              <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">In Progress</p>
+              <h3 className="text-lg font-bold text-brand-dark">Currently Reading</h3>
             </div>
-            <button className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition flex items-center gap-1">
+            <button className="text-xs font-semibold text-gray-500 hover:text-brand-dark transition flex items-center gap-1">
               View all <FiArrowRight size={12} />
             </button>
           </div>
@@ -685,14 +710,14 @@ function DashboardTab({ user }: { user: User }) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-200 hover:border-orange-300 transition-all group"
+                className="flex items-center gap-4 p-4 rounded-2xl bg-brand-gray border border-gray-200 hover:border-purple-300 transition-all group"
               >
                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br ${book.coverColor} flex-shrink-0 border border-gray-200`}>
                   {book.cover}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-sm text-gray-900 truncate">{book.title}</p>
+                    <p className="font-semibold text-sm text-brand-dark truncate">{book.title}</p>
                     <Badge variant="warning">{BOOK_STATUS_CONFIG[book.status].label}</Badge>
                   </div>
                   <p className="text-xs text-gray-600 mb-2">{book.author} · {book.currentPage} of {book.totalPages} pages</p>
@@ -703,7 +728,7 @@ function DashboardTab({ user }: { user: User }) {
                     <span className="text-[10px] text-gray-500 font-medium">{book.progress}%</span>
                   </div>
                 </div>
-                <button className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90 transition opacity-0 group-hover:opacity-100 flex-shrink-0">
+                <button className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition opacity-0 group-hover:opacity-100 flex-shrink-0">
                   Continue
                 </button>
               </motion.div>
@@ -719,8 +744,8 @@ function DashboardTab({ user }: { user: User }) {
           className="bg-white rounded-2xl border border-gray-200 p-6"
         >
           <div className="flex items-center justify-between mb-5">
-            <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Activity</p>
-            <button className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition">View all</button>
+            <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Activity</p>
+            <button className="text-xs font-semibold text-gray-500 hover:text-brand-dark transition">View all</button>
           </div>
           <div className="space-y-4">
             {RECENT_ACTIVITY.slice(0, 5).map((act, i) => (
@@ -736,7 +761,7 @@ function DashboardTab({ user }: { user: User }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-700">
-                    <span className="font-semibold text-gray-900">{act.action}</span>{" "}
+                    <span className="font-semibold text-brand-dark">{act.action}</span>{" "}
                     <span className="text-gray-600">{act.target}</span>
                   </p>
                   <p className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-1">
@@ -754,15 +779,15 @@ function DashboardTab({ user }: { user: User }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 to-pink-600 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+        className="relative overflow-hidden rounded-2xl bg-[#1a1625] border border-white/10 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30" />
         <div className="relative z-10">
-          <p className="text-[10px] font-bold tracking-widest text-white/70 uppercase mb-1">Premium Access</p>
-          <h3 className="text-xl font-bold text-white mb-1">Explore 10K+ books with 1 year full access</h3>
-          <p className="text-sm text-white/80">Unlimited reading, exclusive discounts, and early access.</p>
+          <p className="text-[10px] font-bold tracking-widest text-[#6b6888] uppercase mb-1">Premium Access</p>
+          <h3 className="text-xl font-bold text-[#f1f0f9] mb-1">Explore 10K+ books with 1 year full access</h3>
+          <p className="text-sm text-[#8b86a8]">Unlimited reading, exclusive discounts, and early access.</p>
         </div>
-        <button className="relative z-10 px-6 py-3 rounded-xl bg-white text-orange-600 font-bold text-sm hover:bg-gray-50 transition shadow-xl flex-shrink-0">
+        <button className="relative z-10 px-6 py-3 rounded-xl text-sm font-bold text-white transition shadow-[0_0_18px_rgba(139,92,246,0.45)] hover:shadow-[0_0_24px_rgba(236,72,153,0.55)] flex-shrink-0" style={{ background: "linear-gradient(135deg,#8b5cf6,#ec4899)" }}>
           Upgrade to PRO
         </button>
       </motion.div>
@@ -794,8 +819,8 @@ function MyBooksTab() {
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Library</p>
-          <h3 className="text-xl font-bold text-gray-900">My Books</h3>
+          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Library</p>
+          <h3 className="text-xl font-bold text-brand-dark">My Books</h3>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
@@ -805,8 +830,8 @@ function MyBooksTab() {
                 onClick={() => setFilter(f)}
                 className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   filter === f
-                    ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                    : "text-gray-600 hover:text-brand-dark"
                 }`}
               >
                 {f}
@@ -831,7 +856,7 @@ function MyBooksTab() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="font-bold text-sm text-gray-900 truncate">{book.title}</p>
+                  <p className="font-bold text-sm text-brand-dark truncate">{book.title}</p>
                 </div>
                 <p className="text-xs text-gray-600 mb-1">{book.author}</p>
                 <div className="flex items-center gap-2">
@@ -855,14 +880,14 @@ function MyBooksTab() {
               <button
                 onClick={() => updateProgress(book.id, -10)}
                 disabled={book.currentPage <= 0}
-                className="flex-1 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+                className="flex-1 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-600 hover:bg-gray-200 hover:text-brand-dark transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-1"
               >
                 <FiMinus size={12} /> 10
               </button>
               <button
                 onClick={() => updateProgress(book.id, 10)}
                 disabled={book.currentPage >= book.totalPages}
-                className="flex-1 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-xs font-bold text-white hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+                className="flex-1 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-xs font-bold text-white hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
               >
                 <FiPlus size={12} /> 10
               </button>
@@ -903,8 +928,8 @@ function OrdersTab() {
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Purchase History</p>
-          <h3 className="text-xl font-bold text-gray-900">My Orders</h3>
+          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Purchase History</p>
+          <h3 className="text-xl font-bold text-brand-dark">My Orders</h3>
         </div>
         <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
           {filters.map(f => (
@@ -913,8 +938,8 @@ function OrdersTab() {
               onClick={() => setFilter(f)}
               className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 filter === f
-                  ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                  : "text-gray-600 hover:text-brand-dark"
               }`}
             >
               {f}
@@ -924,7 +949,7 @@ function OrdersTab() {
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-[10px] font-bold tracking-widest text-gray-500 uppercase">
+        <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 bg-brand-gray text-[10px] font-bold tracking-widest text-gray-500 uppercase">
           <div className="col-span-4">Book</div>
           <div className="col-span-2">Order ID</div>
           <div className="col-span-2">Date</div>
@@ -940,13 +965,13 @@ function OrdersTab() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.05 }}
-                className="p-4 sm:px-6 sm:py-4 hover:bg-gray-50 transition-all group cursor-pointer"
+                className="p-4 sm:px-6 sm:py-4 hover:bg-brand-gray transition-all group cursor-pointer"
                 onClick={() => setSelectedOrder(selectedOrder === order.id ? null : order.id)}
               >
                 <div className="sm:hidden mb-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-gray-900">{order.title}</span>
-                    <span className="text-sm font-bold text-gray-900">{order.amount}</span>
+                    <span className="font-semibold text-sm text-brand-dark">{order.title}</span>
+                    <span className="text-sm font-bold text-brand-dark">{order.amount}</span>
                   </div>
                   <p className="text-xs text-gray-600 mt-1">{order.id} · {order.date}</p>
                 </div>
@@ -954,7 +979,7 @@ function OrdersTab() {
                   <div className="col-span-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-gray-100 border border-gray-200">{order.cover}</div>
                     <div>
-                      <p className="font-semibold text-sm text-gray-900">{order.title}</p>
+                      <p className="font-semibold text-sm text-brand-dark">{order.title}</p>
                       <p className="text-[10px] text-gray-600">{order.seller} · {order.items} item{order.items > 1 ? "s" : ""}</p>
                     </div>
                   </div>
@@ -967,7 +992,7 @@ function OrdersTab() {
                     </span>
                   </div>
                   <div className="col-span-2 text-right">
-                    <span className="text-sm font-bold text-gray-900">{order.amount}</span>
+                    <span className="text-sm font-bold text-brand-dark">{order.amount}</span>
                   </div>
                 </div>
                 <div className="sm:hidden flex items-center justify-between mt-2">
@@ -976,7 +1001,7 @@ function OrdersTab() {
                     {order.status}
                   </span>
                   {order.status === "Delivered" && (
-                    <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="text-xs font-semibold text-orange-600 hover:text-orange-700 transition">Reorder →</button>
+                    <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="text-xs font-semibold text-pink-600 hover:text-pink-700 transition">Reorder →</button>
                   )}
                 </div>
                 <AnimatePresence>
@@ -990,12 +1015,12 @@ function OrdersTab() {
                     >
                       <div className="pt-3 mt-3 border-t border-gray-200 flex items-center gap-3">
                         {order.status === "Delivered" && (
-                          <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition flex items-center gap-1.5">
+                          <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-brand-dark transition flex items-center gap-1.5">
                             <FiShoppingCart size={12} /> Reorder
                           </button>
                         )}
                         {order.status === "In Transit" && (
-                          <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition flex items-center gap-1.5">
+                          <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-brand-dark transition flex items-center gap-1.5">
                             <FiPackage size={12} /> Track Order
                           </button>
                         )}
@@ -1004,7 +1029,7 @@ function OrdersTab() {
                             <FiX size={12} /> Cancel
                           </button>
                         )}
-                        <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition flex items-center gap-1.5 ml-auto">
+                        <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-brand-dark transition flex items-center gap-1.5 ml-auto">
                           <FiDownload size={12} /> Invoice
                         </button>
                       </div>
@@ -1049,8 +1074,8 @@ function WishlistTab() {
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Saved Books</p>
-          <h3 className="text-xl font-bold text-gray-900">My Wishlist</h3>
+          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Saved Books</p>
+          <h3 className="text-xl font-bold text-brand-dark">My Wishlist</h3>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-600">{items.filter(i => i.liked).length} items</span>
@@ -1061,8 +1086,8 @@ function WishlistTab() {
                 onClick={() => setSortBy(s)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
                   sortBy === s
-                    ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                    : "text-gray-600 hover:text-brand-dark"
                 }`}
               >
                 {s}
@@ -1095,7 +1120,7 @@ function WishlistTab() {
                   {book.cover}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-gray-900 truncate pr-6">{book.title}</p>
+                  <p className="font-bold text-sm text-brand-dark truncate pr-6">{book.title}</p>
                   <p className="text-xs text-gray-600">{book.author}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="px-2 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-600 border border-gray-200">{book.category}</span>
@@ -1111,7 +1136,7 @@ function WishlistTab() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-gray-900">{book.price}</span>
+                  <span className="text-lg font-bold text-brand-dark">{book.price}</span>
                   <button
                     onClick={() => toggleLike(book.id)}
                     className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
@@ -1124,7 +1149,7 @@ function WishlistTab() {
                 <button
                   onClick={() => moveToCart(book.title)}
                   disabled={!book.inStock}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xs font-bold border border-transparent hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold border border-transparent hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5"
                 >
                   <FiShoppingCart size={12} /> Add
                 </button>
@@ -1165,8 +1190,8 @@ function AnalyticsTab() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Insights</p>
-        <h3 className="text-xl font-bold text-gray-900 mt-0.5">Reading Analytics</h3>
+        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Insights</p>
+        <h3 className="text-xl font-bold text-brand-dark mt-0.5">Reading Analytics</h3>
       </div>
 
       <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200 w-fit">
@@ -1176,8 +1201,8 @@ function AnalyticsTab() {
             onClick={() => setMetric(m.key)}
             className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
               metric === m.key
-                ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-lg"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-brand-dark"
             }`}
           >
             <m.icon size={14} /> {m.label}
@@ -1193,7 +1218,7 @@ function AnalyticsTab() {
           className="bg-white rounded-2xl border border-gray-200 p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <p className="text-sm font-bold text-gray-900">{metrics.find(m => m.key === metric)?.label} Per Month</p>
+            <p className="text-sm font-bold text-brand-dark">{metrics.find(m => m.key === metric)?.label} Per Month</p>
             <span className="text-xs text-gray-500">Last 6 months</span>
           </div>
           <div className="flex items-end gap-3 h-52">
@@ -1207,7 +1232,7 @@ function AnalyticsTab() {
                     animate={{ height: `${(stat[metric] / maxVal) * 180}px` }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                   >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-gray-900 text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 shadow-xl">
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-brand-dark text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 shadow-xl">
                       {stat[metric]} {metric}
                     </div>
                   </motion.div>
@@ -1219,7 +1244,7 @@ function AnalyticsTab() {
         </motion.div>
 
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <p className="text-sm font-bold text-gray-900 mb-6">Reading Distribution</p>
+          <p className="text-sm font-bold text-brand-dark mb-6">Reading Distribution</p>
           <div className="space-y-4">
             {[
               { label: "Fiction", value: 35, color: "#f97316" },
@@ -1231,7 +1256,7 @@ function AnalyticsTab() {
               <div key={cat.label}>
                 <div className="flex justify-between items-center mb-1.5">
                   <span className="text-xs text-gray-600">{cat.label}</span>
-                  <span className="text-xs text-gray-900 font-medium">{cat.value}%</span>
+                  <span className="text-xs text-brand-dark font-medium">{cat.value}%</span>
                 </div>
                 <ProgressBar progress={cat.value} color={cat.color} height={8} />
               </div>
@@ -1257,7 +1282,7 @@ function AnalyticsTab() {
             <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3" style={{ color: s.color }}>
               <s.icon size={18} />
             </div>
-            <p className="text-2xl font-black text-gray-900">{s.value}{s.suffix || ""}</p>
+            <p className="text-2xl font-black text-brand-dark">{s.value}{s.suffix || ""}</p>
             <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mt-1">{s.label}</p>
           </motion.div>
         ))}
@@ -1302,12 +1327,12 @@ function SettingsTab() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
           <p className="text-[10px] font-bold tracking-widest text-emerald-600 uppercase">Preferences</p>
-          <h3 className="text-xl font-bold text-gray-900">Account Settings</h3>
+          <h3 className="text-xl font-bold text-brand-dark">Account Settings</h3>
         </div>
         <motion.button
           onClick={handleSave}
           className={`px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all flex items-center gap-2 ${
-            saved ? "bg-emerald-600" : "bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90"
+            saved ? "bg-emerald-600" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
           }`}
           whileTap={{ scale: 0.95 }}
         >
@@ -1325,8 +1350,8 @@ function SettingsTab() {
               onClick={() => setActiveSection(s.id)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                 activeSection === s.id
-                  ? "bg-gray-100 text-gray-900 border border-gray-300"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  ? "bg-gray-100 text-brand-dark border border-gray-300"
+                  : "text-gray-600 hover:text-brand-dark hover:bg-brand-gray"
               }`}
             >
               <s.icon size={16} />
@@ -1342,13 +1367,13 @@ function SettingsTab() {
               <div className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">📧 Email Frequency</p>
+                    <p className="text-sm font-semibold text-brand-dark">📧 Email Frequency</p>
                     <p className="text-xs text-gray-600">How often should we email you?</p>
                   </div>
                   <select
                     value={settings.emailFreq}
                     onChange={(e) => setSettings({ ...settings, emailFreq: e.target.value })}
-                    className="text-sm border border-gray-300 rounded-xl px-4 py-2.5 bg-white text-gray-900 focus:outline-none focus:border-orange-500 cursor-pointer"
+                    className="text-sm border border-gray-300 rounded-xl px-4 py-2.5 bg-white text-brand-dark focus:outline-none focus:border-pink-500 cursor-pointer"
                   >
                     {["Instantly", "Daily Digest", "Weekly", "Never"].map(o => <option key={o} className="bg-white">{o}</option>)}
                   </select>
@@ -1356,7 +1381,7 @@ function SettingsTab() {
               </div>
 
               <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                <p className="text-sm font-semibold text-gray-900 mb-1">🎯 Preferred Genres</p>
+                <p className="text-sm font-semibold text-brand-dark mb-1">🎯 Preferred Genres</p>
                 <p className="text-xs text-gray-600 mb-3">Personalise your book recommendations</p>
                 <div className="flex flex-wrap gap-2">
                   {genres.map((g) => {
@@ -1370,7 +1395,7 @@ function SettingsTab() {
                         }))}
                         className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
                           active
-                            ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white border-transparent"
+                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent"
                             : "bg-gray-100 text-gray-600 border-gray-300 hover:border-gray-400"
                         }`}
                       >
@@ -1384,20 +1409,20 @@ function SettingsTab() {
               <div className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">🎯 Reading Goal</p>
+                    <p className="text-sm font-semibold text-brand-dark">🎯 Reading Goal</p>
                     <p className="text-xs text-gray-600">Books per month target</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.max(1, prev.readingGoal - 1) }))}
-                      className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 font-bold flex items-center justify-center transition border border-gray-300"
+                      className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-brand-dark font-bold flex items-center justify-center transition border border-gray-300"
                     >
                       <FiMinus size={14} />
                     </button>
-                    <span className="text-xl font-black text-gray-900 w-6 text-center">{settings.readingGoal}</span>
+                    <span className="text-xl font-black text-brand-dark w-6 text-center">{settings.readingGoal}</span>
                     <button
                       onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.min(20, prev.readingGoal + 1) }))}
-                      className="w-9 h-9 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold flex items-center justify-center transition hover:opacity-90"
+                      className="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold flex items-center justify-center transition hover:opacity-90"
                     >
                       <FiPlus size={14} />
                     </button>
@@ -1408,7 +1433,7 @@ function SettingsTab() {
               <div className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">🎨 Interface Theme</p>
+                    <p className="text-sm font-semibold text-brand-dark">🎨 Interface Theme</p>
                     <p className="text-xs text-gray-600">Choose your display preference</p>
                   </div>
                   <div className="flex gap-2">
@@ -1418,7 +1443,7 @@ function SettingsTab() {
                         onClick={() => setSettings({ ...settings, theme: o })}
                         className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 ${
                           settings.theme === o
-                            ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white border-transparent"
+                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent"
                             : "bg-gray-100 text-gray-600 border-gray-300 hover:border-gray-400"
                         }`}
                       >
@@ -1443,13 +1468,13 @@ function SettingsTab() {
                 ].map(({ key, label, desc }) => (
                   <div key={key} className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">{label}</p>
+                      <p className="text-sm font-semibold text-brand-dark">{label}</p>
                       <p className="text-xs text-gray-600">{desc}</p>
                     </div>
                     <button
                       onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))}
                       className={`w-12 h-6 rounded-full transition-all duration-300 relative ${
-                        settings[key] ? "bg-gradient-to-r from-orange-500 to-pink-600" : "bg-gray-300"
+                        settings[key] ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-gray-300"
                       }`}
                     >
                       <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${
@@ -1472,13 +1497,13 @@ function SettingsTab() {
                 ].map(({ key, label, desc }) => (
                   <div key={key} className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">{label}</p>
+                      <p className="text-sm font-semibold text-brand-dark">{label}</p>
                       <p className="text-xs text-gray-600">{desc}</p>
                     </div>
                     <button
                       onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))}
                       className={`w-12 h-6 rounded-full transition-all duration-300 relative ${
-                        settings[key] ? "bg-gradient-to-r from-orange-500 to-pink-600" : "bg-gray-300"
+                        settings[key] ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-gray-300"
                       }`}
                     >
                       <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${
@@ -1537,15 +1562,15 @@ function SupportTab() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent uppercase">Help Center</p>
-        <h3 className="text-xl font-bold text-gray-900 mt-0.5">Support & FAQ</h3>
+        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Help Center</p>
+        <h3 className="text-xl font-bold text-brand-dark mt-0.5">Support & FAQ</h3>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* FAQ Accordion */}
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-bold text-gray-900">❓ Frequently Asked Questions</p>
+            <p className="text-sm font-bold text-brand-dark">❓ Frequently Asked Questions</p>
           </div>
           <div className="relative mb-4">
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
@@ -1554,7 +1579,7 @@ function SupportTab() {
               placeholder="Search FAQs..."
               value={searchFaq}
               onChange={(e) => setSearchFaq(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-300 rounded-xl pl-9 pr-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-100 transition"
+              className="w-full bg-brand-gray border border-gray-300 rounded-xl pl-9 pr-4 py-2.5 text-sm text-brand-dark placeholder:text-gray-400 outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-200 transition"
             />
           </div>
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
@@ -1569,9 +1594,9 @@ function SupportTab() {
                 >
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-all"
+                    className="w-full flex items-center justify-between p-4 text-left hover:bg-brand-gray transition-all"
                   >
-                    <span className="text-sm font-semibold text-gray-900 pr-4">{faq.q}</span>
+                    <span className="text-sm font-semibold text-brand-dark pr-4">{faq.q}</span>
                     <motion.span
                       animate={{ rotate: openFaq === i ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
@@ -1604,7 +1629,7 @@ function SupportTab() {
 
         {/* Contact Form */}
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <p className="text-sm font-bold text-gray-900 mb-1">💬 Contact Support</p>
+          <p className="text-sm font-bold text-brand-dark mb-1">💬 Contact Support</p>
           <p className="text-xs text-gray-600 mb-4">We typically reply within 24 hours</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -1618,8 +1643,8 @@ function SupportTab() {
                     onClick={() => setTicketType(t)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       ticketType === t
-                        ? "bg-gradient-to-r from-orange-500 to-pink-600 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900"
+                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-brand-dark"
                     }`}
                   >
                     {t}
@@ -1634,14 +1659,14 @@ function SupportTab() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Describe your issue in detail..."
                 rows={4}
-                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 resize-none outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-100 transition-all"
+                className="w-full bg-brand-gray border border-gray-300 rounded-xl px-4 py-3 text-sm text-brand-dark placeholder:text-gray-400 resize-none outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-200 transition-all"
               />
             </div>
             <motion.button
               type="submit"
               disabled={submitted}
               className={`w-full py-3 rounded-xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2 ${
-                submitted ? "bg-emerald-600" : "bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90"
+                submitted ? "bg-emerald-600" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
               }`}
               whileTap={{ scale: 0.98 }}
             >
@@ -1650,14 +1675,14 @@ function SupportTab() {
             </motion.button>
           </form>
 
-          <div className="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
-            <p className="text-xs font-semibold text-gray-900 mb-1">📞 Other ways to reach us</p>
+          <div className="mt-4 p-4 rounded-xl bg-brand-gray border border-gray-200">
+            <p className="text-xs font-semibold text-brand-dark mb-1">📞 Other ways to reach us</p>
             <p className="text-xs text-gray-600">support@bookhaven.com · +91 98765 43210</p>
             <div className="flex gap-3 mt-3">
-              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
+              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-brand-dark hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
                 <FiMessageCircle size={12} /> Live Chat
               </button>
-              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
+              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-brand-dark hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
                 <FiShare2 size={12} /> Share Feedback
               </button>
             </div>
@@ -1696,14 +1721,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-brand-gray text-brand-dark">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         * { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(249, 115, 22, 0.4); }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.4); }
       `}</style>
 
       <div className="flex min-h-screen">

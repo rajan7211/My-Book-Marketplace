@@ -21,6 +21,7 @@ export interface BookQueryParams {
   category?: string;
   sort?: SortOption;
   tag?: string;
+  excludeTag?: string;
 }
 
 async function attachListings(books: Book[]): Promise<BookWithListings[]> {
@@ -63,48 +64,57 @@ export const booksApi = {
       category,
       sort = "newest",
       tag,
+      excludeTag,
     } = params;
 
-    const query: Record<string, string | number> = {
-      status: "APPROVED",
-      _page: page,
-      _limit: limit,
-    };
+    // Fetch all APPROVED books first
+    const res = await api.get<Book[]>("/books", { params: { status: "APPROVED" } });
+    let allBooks = res.data;
 
-    if (search.trim()) query.q = search.trim();
-    if (category && category !== "All") query.category = category;
-    if (tag) query.tags_like = tag;
+    // Apply JS Filtering
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      allBooks = allBooks.filter((b) => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q));
+    }
+    if (category && category !== "All") {
+      allBooks = allBooks.filter((b) => b.category === category);
+    }
+    if (tag) {
+      allBooks = allBooks.filter((b) => b.tags && b.tags.includes(tag));
+    }
+    if (excludeTag) {
+      allBooks = allBooks.filter((b) => !(b.tags && b.tags.includes(excludeTag)));
+    }
 
+    // Attach listings
+    let data = await attachListings(allBooks);
+
+    // Apply Sorting
     switch (sort) {
       case "title-asc":
-        query._sort = "title";
-        query._order = "asc";
+        data.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "title-desc":
-        query._sort = "title";
-        query._order = "desc";
+        data.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "price-asc":
+        data.sort((a, b) => (a.minPrice ?? Infinity) - (b.minPrice ?? Infinity));
+        break;
+      case "price-desc":
+        data.sort((a, b) => (b.minPrice ?? 0) - (a.minPrice ?? 0));
         break;
       case "newest":
       default:
-        query._sort = "createdAt";
-        query._order = "desc";
+        data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
     }
 
-    const res = await api.get<Book[]>("/books", { params: query });
-    const total = Number(res.headers["x-total-count"] ?? res.data.length);
-    let data = await attachListings(res.data);
+    // Apply Pagination
+    const total = data.length;
+    const start = (page - 1) * limit;
+    const paginatedData = data.slice(start, start + limit);
 
-    // price sorting happens client-side because price lives on listings
-    if (sort === "price-asc") {
-      data = [...data].sort(
-        (a, b) => (a.minPrice ?? Infinity) - (b.minPrice ?? Infinity)
-      );
-    } else if (sort === "price-desc") {
-      data = [...data].sort((a, b) => (b.minPrice ?? 0) - (a.minPrice ?? 0));
-    }
-
-    return { data, total };
+    return { data: paginatedData, total };
   },
 
   async getBooksByTag(tag: string, limit = 6): Promise<BookWithListings[]> {

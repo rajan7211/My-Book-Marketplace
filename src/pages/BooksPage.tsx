@@ -28,6 +28,7 @@ export default function BooksPage() {
   const search = params.get("search") ?? "";
   const category = params.get("category") ?? "All";
   const sort = (params.get("sort") as SortOption) ?? "newest";
+  const tag = params.get("tag") ?? "";
 
   const [searchInput, setSearchInput] = useState(search);
 
@@ -60,9 +61,9 @@ export default function BooksPage() {
   });
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["books", "catalog", { page, search, category, sort }],
+    queryKey: ["books", "catalog", { page, search, category, sort, tag, excludeTag: "new-release" }],
     queryFn: () =>
-      booksApi.getBooks({ page, limit: PAGE_SIZE, search, category, sort }),
+      booksApi.getBooks({ page, limit: PAGE_SIZE, search, category, sort, tag, excludeTag: "new-release" }),
     placeholderData: keepPreviousData,
   });
 
