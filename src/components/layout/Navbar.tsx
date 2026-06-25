@@ -11,8 +11,8 @@ import { toast } from "react-toastify";
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Shop", to: "/books" },
-   { label: "New Release", to: "/new-releases" },
-
+  { label: "New Release", to: "/new-releases" },
+  { label: "Contact", to: "/contact" },
 ];
 
 
@@ -228,5 +228,7 @@ export function Navbar() {
     </>
   );
 }
+
+
 
 

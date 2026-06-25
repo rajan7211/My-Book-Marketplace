@@ -20,9 +20,7 @@ import { sellerApi } from "@/api/seller.api";
 import { adminApi } from "@/api/admin.api";
 import { authApi } from "@/api/auth.api";
 
-// ═══════════════════════════════════════════════════════════
 //  SHARED CONFIG & SMALL HELPERS
-// ═══════════════════════════════════════════════════════════
 
 const ROLE_LABEL: Record<RoleName, string> = {
   CUSTOMER: "Customer",
@@ -94,7 +92,7 @@ function formatDate(iso: string) {
   }
 }
 
-// ── Reusable visual atoms ───────────────────────────────────
+//  Reusable visual atoms 
 
 function Avatar({ name, size = 40 }: { name: string; size?: number }) {
   return (
@@ -188,7 +186,6 @@ type StatDef = {
   color: string;
   icon: typeof FiHome;
   trend?: string;
-  /** value used to scale the hover progress bar (defaults to value) */
   max?: number;
 };
 
@@ -271,9 +268,9 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
   return <div className={`bg-white rounded-2xl border border-gray-200 ${className}`}>{children}</div>;
 }
 
-// ═══════════════════════════════════════════════════════════
+
 //  SIDEBAR  (shared shell — items come from role)
-// ═══════════════════════════════════════════════════════════
+
 function Sidebar({
   items,
   activeTab,
@@ -410,9 +407,8 @@ function Sidebar({
   );
 }
 
-// ═══════════════════════════════════════════════════════════
+
 //  TOP HEADER (shared shell)
-// ═══════════════════════════════════════════════════════════
 function TopHeader({
   name,
   email,
@@ -450,35 +446,36 @@ function TopHeader({
   }, []);
 
   return (
-    <header className="bg-white/95 backdrop-blur-xl border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-30">
+    <header className="bg-[#0f0d1a] backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-4 sticky top-0 z-30">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <button onClick={onMenuToggle} className="lg:hidden w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition">
-            <FiMenu className="text-gray-700" size={18} />
+          <button onClick={onMenuToggle} className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition">
+            <FiMenu className="text-gray-300" size={18} />
           </button>
-          <button onClick={onCollapseToggle} className="hidden lg:flex w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 items-center justify-center hover:bg-gray-200 transition">
-            <FiArrowRight className={`text-gray-700 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} size={16} />
+          <button onClick={onCollapseToggle} className="hidden lg:flex w-10 h-10 rounded-xl bg-white/5 border border-white/10 items-center justify-center hover:bg-white/10 transition">
+            <FiArrowRight className={`text-gray-300 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} size={16} />
           </button>
           <div className="min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-brand-dark truncate">
-              {greeting()}, <span className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">{name.split(" ")[0]}</span>!
+            <h1 className="text-lg sm:text-xl font-bold text-white truncate">
+              {greeting()}, <span className="bg-gradient-to-r from-amber-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">{name.split(" ")[0]}</span>!
             </h1>
-            <p className="text-xs text-gray-500 hidden sm:block">{subtitle}</p>
+            <p className="text-xs text-[#8b86a8] hidden sm:block">{subtitle}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-64 border border-gray-200 focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-200 transition-all">
+          <div className="hidden md:flex items-center bg-white/5 rounded-xl px-4 py-2.5 gap-2 w-64 border border-white/10 focus-within:border-amber-400/50 focus-within:ring-1 focus-within:ring-amber-400/20 transition-all">
             <FiSearch className="text-gray-400" size={16} />
             <input
               type="text"
               placeholder="Search…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent text-sm text-brand-dark placeholder:text-gray-400 outline-none w-full"
+              style={{ backgroundColor: "transparent" }}
+              className="bg-transparent text-sm text-white placeholder:text-gray-500 outline-none w-full"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery("")} className="text-gray-400 hover:text-gray-600 transition">
+              <button onClick={() => setSearchQuery("")} className="text-gray-400 hover:text-gray-200 transition">
                 <FiX size={14} />
               </button>
             )}
@@ -488,27 +485,27 @@ function TopHeader({
           <button
             onClick={onGoHome}
             title="Back to Home"
-            className="flex items-center gap-2 h-10 px-3 sm:px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-pink-500 hover:opacity-90 transition shadow-lg shadow-amber-500/20"
+            className="flex items-center gap-2 h-10 px-3 sm:px-4 rounded-xl text-sm font-semibold text-brand-dark bg-brand-yellow hover:bg-brand-yellow-dark transition shadow-lg shadow-amber-500/20"
           >
             <FiHome size={16} />
             <span className="hidden sm:inline">Home</span>
           </button>
 
-          <button className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition relative">
-            <FiBell className="text-gray-600" size={18} />
+          <button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition relative">
+            <FiBell className="text-gray-300" size={18} />
           </button>
 
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 sm:gap-3 pl-1 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-gray-100 transition border border-transparent hover:border-gray-200"
+              className="flex items-center gap-2 sm:gap-3 pl-1 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-white/5 transition border border-transparent hover:border-white/10"
             >
               <Avatar name={name} size={36} />
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-semibold text-brand-dark leading-tight">{name}</p>
-                <p className="text-[10px] text-gray-500">{roleLabel}</p>
+                <p className="text-sm font-semibold text-white leading-tight">{name}</p>
+                <p className="text-[10px] text-[#8b86a8]">{roleLabel}</p>
               </div>
-              <FiChevronDown className="text-gray-500 hidden sm:block" size={14} />
+              <FiChevronDown className="text-gray-400 hidden sm:block" size={14} />
             </button>
             <AnimatePresence>
               {showUserMenu && (
@@ -541,9 +538,7 @@ function TopHeader({
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  WELCOME BANNER (shared)
-// ═══════════════════════════════════════════════════════════
 function WelcomeBanner({ name, roleLabel, headline }: { name: string; roleLabel: string; headline: string }) {
   return (
     <motion.div
@@ -565,9 +560,7 @@ function WelcomeBanner({ name, roleLabel, headline }: { name: string; roleLabel:
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  GENERIC ORDERS TABLE (customer / seller / admin reuse)
-// ═══════════════════════════════════════════════════════════
 type AnyOrder = {
   id: number;
   status: OrderStatus;
@@ -652,9 +645,7 @@ function OrdersTable({
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  CUSTOMER TABS
-// ═══════════════════════════════════════════════════════════
 function useCustomerOrders(customerId?: number) {
   return useQuery({
     queryKey: ["profile", "customer-orders", customerId],
@@ -902,9 +893,7 @@ function CustomerAnalyticsTab({ customerId }: { customerId?: number }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  SELLER TABS
-// ═══════════════════════════════════════════════════════════
 function useSellerListings(sellerId?: number) {
   return useQuery({
     queryKey: ["profile", "seller-listings", sellerId],
@@ -1003,9 +992,7 @@ function SellerOrdersTab({ sellerId }: { sellerId?: number }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  ADMIN TABS
-// ═══════════════════════════════════════════════════════════
 function AdminDashboard({ name }: { name: string }) {
   const { data: stats, isLoading } = useQuery({
     queryKey: ["profile", "admin-stats"],
@@ -1060,9 +1047,7 @@ function AdminOrdersTab() {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  SETTINGS & SUPPORT (shared for all roles)
-// ═══════════════════════════════════════════════════════════
 function SettingsTab({
   name,
   email,
@@ -1082,7 +1067,7 @@ function SettingsTab({
   const [saved, setSaved] = useState(false);
   const toggle = (k: keyof typeof prefs) => setPrefs((p) => ({ ...p, [k]: !p[k] }));
 
-  // ── Editable profile (all roles) ──────────────────────────
+  // ── Editable profile (all roles)
   const canEdit =
     (role === "CUSTOMER" && !!customerId) ||
     (role === "SELLER" && !!sellerId) ||
@@ -1370,9 +1355,7 @@ function SupportTab() {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
 //  MAIN PAGE
-// ═══════════════════════════════════════════════════════════
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
@@ -1389,7 +1372,7 @@ export default function ProfilePage() {
 
   // Not logged in → bounce to login
   useEffect(() => {
-    if (!user) navigate("/login?redirect=/profile", { replace: true });
+    if (!user) navigate("/login", { replace: true });
   }, [user, navigate]);
 
   const handleLogout = () => {
@@ -1437,12 +1420,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-gray text-brand-dark">
+    <div className="portal-luxury min-h-screen bg-brand-gray text-brand-dark">
       <style>{`
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.4); }
+        ::-webkit-scrollbar-thumb { background: rgba(245, 166, 35, 0.25); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(245, 166, 35, 0.45); }
       `}</style>
 
       <div className="flex min-h-screen">
@@ -1489,3 +1472,12 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+

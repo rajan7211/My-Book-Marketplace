@@ -114,10 +114,6 @@ export const sellerApi = {
     return data;
   },
 
-  /**
-   * Update price/stock of OWN listing.
-   * Edge case 4: a seller must never modify another seller's listing.
-   */
   async updateListing(
     listingId: number,
     sellerId: number,
@@ -152,10 +148,7 @@ export const sellerApi = {
     }));
   },
 
-  /**
-   * Update order status with transition validation.
-   * Edge case 10: cancelling restores stock back to this seller's listing.
-   */
+
   async updateOrderStatus(
     orderId: number,
     sellerId: number,

@@ -173,3 +173,6 @@ export function BookCard({ book, compact = false }: BookCardProps) {
     </div>
   );
 }
+
+
+

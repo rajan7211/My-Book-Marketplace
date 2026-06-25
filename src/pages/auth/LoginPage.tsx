@@ -1,6 +1,6 @@
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { FaApple, FaGoogle, FaFacebook } from "react-icons/fa";
@@ -22,7 +22,6 @@ const loginSchema = Yup.object({
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
   const login = useAuthStore((s) => s.login);
 
   const mutation = useMutation({
@@ -45,7 +44,9 @@ export default function LoginPage() {
           navigate("/seller/pending");
         } else navigate("/seller");
       } else {
-        navigate(params.get("redirect") ?? "/");
+        // Customers always land on the Home page after login, regardless of
+        // where they were before logging out (never restore /profile etc.).
+        navigate("/", { replace: true });
       }
     },
     onError: (err: Error) => toast.error(err.message),

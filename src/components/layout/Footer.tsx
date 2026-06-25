@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 const QUICK_LINKS = [
   { label: "Home", to: "/" },
   { label: "About us", to: "/books" },
-  { label: "Contact", to: "/books" },
+  { label: "Contact", to: "/contact" },
   { label: "Categories", to: "/books" },
   { label: "Sign in", to: "/login" },
 ];
