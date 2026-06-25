@@ -10,6 +10,7 @@ interface AuthState {
   isImpersonating: boolean;
   login: (user: AuthUser) => void;
   logout: () => void;
+  updateUser: (patch: Partial<AuthUser>) => void;
   impersonate: (user: AuthUser) => void;
   exitImpersonation: () => void;
 }
@@ -25,6 +26,11 @@ export const useAuthStore = create<AuthState>()(
       login: (user) => {
         useCartStore.getState().switchUser(user.userId);
         set({ user, isAuthenticated: true });
+      },
+
+      updateUser: (patch) => {
+        const current = get().user;
+        if (current) set({ user: { ...current, ...patch } });
       },
 
       logout: () => {

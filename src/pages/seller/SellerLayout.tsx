@@ -1,4 +1,4 @@
-import { FiGrid, FiBookOpen, FiArchive, FiPackage } from "react-icons/fi";
+import { FiGrid, FiBookOpen, FiArchive, FiPackage, FiUser } from "react-icons/fi";
 import { PortalLayout } from "@/components/layout/PortalLayout";
 
 export function SellerLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +10,7 @@ export function SellerLayout({ children }: { children: React.ReactNode }) {
         { to: "/seller/listings", label: "Listings", icon: FiBookOpen },
         { to: "/seller/inventory", label: "Inventory", icon: FiArchive },
         { to: "/seller/orders", label: "Orders", icon: FiPackage },
+        { to: "/profile", label: "My Profile", icon: FiUser },
       ]}
     >
       {children}

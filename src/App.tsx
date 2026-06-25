@@ -67,8 +67,10 @@ export default function App() {
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
         </Route>
 
-        {/* Profile Page */}
-        <Route path="/profile" element={<ProfilePage />} />
+        {/* Profile Page (any authenticated role) */}
+        <Route element={<ProtectedRoute roles={["CUSTOMER", "SELLER", "ADMIN"]} />}>
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

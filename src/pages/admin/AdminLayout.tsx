@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiGrid,
   FiUsers,
+  FiUser,
   FiBookOpen,
   FiList,
   FiUserCheck,
@@ -50,6 +51,7 @@ const NAV: NavItem[] = [
     badge: null,
   },
   { to: "/admin/orders", label: "Orders", icon: FiPackage, badge: null },
+  { to: "/profile", label: "My Profile", icon: FiUser, badge: null },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

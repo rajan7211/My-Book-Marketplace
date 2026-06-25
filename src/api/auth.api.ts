@@ -63,6 +63,31 @@ export const authApi = {
     };
   },
 
+  /** Update a customer's name. Returns the new full name. */
+  async updateCustomerProfile(
+    customerId: number,
+    changes: { firstName: string; lastName: string }
+  ): Promise<string> {
+    const { data } = await api.patch<Customer>(`/customers/${customerId}`, {
+      firstName: changes.firstName,
+      lastName: changes.lastName,
+    });
+    return `${data.firstName} ${data.lastName}`;
+  },
+
+  /** Update a seller's profile. Returns the (new) display name = businessName. */
+  async updateSellerProfile(
+    sellerId: number,
+    changes: { businessName: string; contactPerson: string; mobile: string }
+  ): Promise<string> {
+    const { data } = await api.patch<Seller>(`/sellers/${sellerId}`, {
+      businessName: changes.businessName,
+      contactPerson: changes.contactPerson,
+      mobile: changes.mobile,
+    });
+    return data.businessName;
+  },
+
   async login(payload: LoginPayload): Promise<AuthUser> {
     const { data: users } = await api.get<User[]>("/users", {
       params: { email: payload.email.toLowerCase() },

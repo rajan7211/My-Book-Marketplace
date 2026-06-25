@@ -1,174 +1,161 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  FiHome, FiBook, FiPackage, FiHeart, FiBarChart2, 
-  FiSettings, FiHelpCircle, FiMenu, FiBell, FiSearch,
-  FiChevronDown, FiLogOut, FiUser, FiEdit3, FiCheck,
-  FiX, FiPlus, FiMinus, FiTrash2, FiShoppingCart,
-  FiArrowRight, FiTrendingUp, FiCalendar, FiClock,
-  FiStar, FiMessageCircle, FiSend, 
-  FiDownload, FiShare2,
-  FiEye, FiMoon, FiSun, FiMonitor
+import { toast } from "react-toastify";
+import {
+  FiHome, FiBook, FiPackage, FiUsers, FiUser, FiSettings, FiHelpCircle,
+  FiMenu, FiBell, FiSearch, FiChevronDown, FiLogOut, FiArrowRight,
+  FiTrendingUp, FiX, FiCheck, FiSend, FiMessageCircle,
+  FiDollarSign, FiShoppingCart, FiLayers, FiAlertCircle, FiList,
+  FiBarChart2, FiEdit3, FiClock,
 } from "react-icons/fi";
 
+import { useAuthStore } from "@/store/auth.store";
+import { formatPrice } from "@/lib/utils";
+import type { OrderStatus, RoleName } from "@/types";
+
+import { ordersApi } from "@/api/orders.api";
+import { sellerApi } from "@/api/seller.api";
+import { adminApi } from "@/api/admin.api";
+import { authApi } from "@/api/auth.api";
+
 // ═══════════════════════════════════════════════════════════
-//  TYPES & MOCK DATA
+//  SHARED CONFIG & SMALL HELPERS
 // ═══════════════════════════════════════════════════════════
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  role: string;
-  memberSince: string;
-  tier: string;
-  bio: string;
-  phone: string;
-  location: string;
-}
 
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  category: string;
-  progress: number;
-  totalPages: number;
-  currentPage: number;
-  cover: string;
-  status: "Reading" | "Completed" | "Not Started";
-  lastRead: string;
-  rating: number;
-  coverColor: string;
-}
-
-interface Order {
-  id: string;
-  title: string;
-  date: string;
-  status: "Delivered" | "In Transit" | "Processing" | "Cancelled";
-  amount: string;
-  items: number;
-  seller: string;
-  cover: string;
-}
-
-interface WishlistItem {
-  id: number;
-  title: string;
-  author: string;
-  price: string;
-  rating: number;
-  reviews: number;
-  category: string;
-  liked: boolean;
-  cover: string;
-  inStock: boolean;
-}
-
-interface Activity {
-  id: number;
-  action: string;
-  target: string;
-  time: string;
-  icon: string;
-  type: "read" | "purchase" | "wishlist" | "review" | "milestone";
-}
-
-interface MonthlyStat {
-  month: string;
-  books: number;
-  pages: number;
-  hours: number;
-}
-
-const MOCK_USER: User = {
-  id: "usr_001",
-  name: "Arjun Sharma",
-  email: "arjun.sharma@example.com",
-  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-  role: "Premium Member",
-  memberSince: "Jun 2024",
-  tier: "Gold Reader",
-  bio: "Avid reader and book collector. Passionate about philosophy, sci-fi, and self-improvement. Always looking for the next great story.",
-  phone: "+91 98765 43210",
-  location: "Mumbai, India",
+const ROLE_LABEL: Record<RoleName, string> = {
+  CUSTOMER: "Customer",
+  SELLER: "Seller",
+  ADMIN: "Administrator",
 };
 
-const MY_BOOKS: Book[] = [
-  { id: 1, title: "The Alchemist", author: "Paulo Coelho", category: "Fiction", progress: 75, totalPages: 208, currentPage: 156, cover: "🌟", status: "Reading", lastRead: "2 hours ago", rating: 4.5, coverColor: "from-amber-400/20 to-purple-500/20" },
-  { id: 2, title: "Atomic Habits", author: "James Clear", category: "Self-Help", progress: 32, totalPages: 320, currentPage: 102, cover: "⚛️", status: "Reading", lastRead: "1 day ago", rating: 4.8, coverColor: "from-blue-400/20 to-cyan-500/20" },
-  { id: 3, title: "Sapiens", author: "Yuval Noah Harari", category: "History", progress: 100, totalPages: 443, currentPage: 443, cover: "🌍", status: "Completed", lastRead: "Completed", rating: 4.7, coverColor: "from-emerald-400/20 to-teal-500/20" },
-  { id: 4, title: "Deep Work", author: "Cal Newport", category: "Productivity", progress: 0, totalPages: 304, currentPage: 0, cover: "🧠", status: "Not Started", lastRead: "—", rating: 4.4, coverColor: "from-violet-400/20 to-purple-500/20" },
-  { id: 5, title: "Ikigai", author: "Héctor García", category: "Philosophy", progress: 60, totalPages: 208, currentPage: 125, cover: "🌸", status: "Reading", lastRead: "3 days ago", rating: 4.2, coverColor: "from-pink-400/20 to-rose-500/20" },
-];
-
-const ORDERS: Order[] = [
-  { id: "#ORD-4821", title: "The Alchemist", date: "12 Jun 2026", status: "Delivered", amount: "₹349", items: 1, seller: "BookWorm Store", cover: "🌟" },
-  { id: "#ORD-4790", title: "Atomic Habits", date: "5 Jun 2026", status: "In Transit", amount: "₹499", items: 1, seller: "ReadMore Hub", cover: "⚛️" },
-  { id: "#ORD-4755", title: "Deep Work", date: "28 May 2026", status: "Processing", amount: "₹399", items: 2, seller: "PageTurner", cover: "🧠" },
-  { id: "#ORD-4731", title: "Sapiens", date: "20 May 2026", status: "Delivered", amount: "₹599", items: 1, seller: "BookWorm Store", cover: "🌍" },
-  { id: "#ORD-4700", title: "Ikigai", date: "15 May 2026", status: "Delivered", amount: "₹299", items: 3, seller: "Literary Lane", cover: "🌸" },
-  { id: "#ORD-4680", title: "The Psychology of Money", date: "8 May 2026", status: "Cancelled", amount: "₹399", items: 1, seller: "ReadMore Hub", cover: "💰" },
-];
-
-const WISHLIST_DATA: WishlistItem[] = [
-  { id: 1, title: "The Psychology of Money", author: "Morgan Housel", price: "₹399", rating: 4.8, reviews: 1240, category: "Finance", liked: true, cover: "💰", inStock: true },
-  { id: 2, title: "Thinking, Fast and Slow", author: "Daniel Kahneman", price: "₹549", rating: 4.6, reviews: 890, category: "Psychology", liked: true, cover: "🧠", inStock: true },
-  { id: 3, title: "Zero to One", author: "Peter Thiel", price: "₹449", rating: 4.5, reviews: 670, category: "Business", liked: true, cover: "🚀", inStock: false },
-  { id: 4, title: "The Lean Startup", author: "Eric Ries", price: "₹379", rating: 4.4, reviews: 520, category: "Business", liked: false, cover: "💡", inStock: true },
-  { id: 5, title: "Rich Dad Poor Dad", author: "Robert Kiyosaki", price: "₹299", rating: 4.3, reviews: 2100, category: "Finance", liked: true, cover: "💵", inStock: true },
-];
-
-const RECENT_ACTIVITY: Activity[] = [
-  { id: 1, action: "Started reading", target: "The Alchemist", time: "2 hours ago", icon: "📖", type: "read" },
-  { id: 2, action: "Purchased", target: "Atomic Habits", time: "1 day ago", icon: "💳", type: "purchase" },
-  { id: 3, action: "Added to wishlist", target: "The Psychology of Money", time: "2 days ago", icon: "❤️", type: "wishlist" },
-  { id: 4, action: "Completed", target: "Sapiens", time: "3 days ago", icon: "🏆", type: "milestone" },
-  { id: 5, action: "Reviewed", target: "Deep Work", time: "5 days ago", icon: "⭐", type: "review" },
-  { id: 6, action: "Reading streak", target: "12 days", time: "Ongoing", icon: "🔥", type: "milestone" },
-];
-
-const MONTHLY_STATS: MonthlyStat[] = [
-  { month: "Jan", books: 2, pages: 340, hours: 12 },
-  { month: "Feb", books: 3, pages: 520, hours: 18 },
-  { month: "Mar", books: 1, pages: 280, hours: 9 },
-  { month: "Apr", books: 4, pages: 680, hours: 24 },
-  { month: "May", books: 2, pages: 410, hours: 15 },
-  { month: "Jun", books: 3, pages: 590, hours: 20 },
-];
-
-const SIDEBAR_ITEMS = [
-  { id: "Dashboard", label: "Dashboard", icon: FiHome },
-  { id: "MyBooks", label: "My Books", icon: FiBook },
-  { id: "Orders", label: "My Orders", icon: FiPackage },
-  { id: "Wishlist", label: "Wishlist", icon: FiHeart },
-  { id: "Analytics", label: "Analytics", icon: FiBarChart2 },
-  { id: "Settings", label: "Settings", icon: FiSettings },
-  { id: "Support", label: "Support", icon: FiHelpCircle },
-];
-
-const STATUS_CONFIG = {
-  Delivered:   { bg: "bg-emerald-500/10", text: "text-emerald-600", dot: "bg-emerald-500", border: "border-emerald-500/20" },
-  "In Transit":{ bg: "bg-amber-500/10", text: "text-amber-600", dot: "bg-amber-500", border: "border-amber-500/20" },
-  Processing:  { bg: "bg-violet-500/10", text: "text-violet-600", dot: "bg-violet-500", border: "border-violet-500/20" },
-  Cancelled:   { bg: "bg-red-500/10", text: "text-red-600", dot: "bg-red-500", border: "border-red-500/20" },
+const ROLE_SUBTITLE: Record<RoleName, string> = {
+  CUSTOMER: "Here's what's happening with your orders.",
+  SELLER: "Here's how your store is performing.",
+  ADMIN: "Here's the health of your marketplace.",
 };
 
-const BOOK_STATUS_CONFIG = {
-  Reading:     { bg: "bg-amber-500/10", text: "text-amber-600", label: "In Progress", bar: "#f59e0b" },
-  Completed:   { bg: "bg-emerald-500/10", text: "text-emerald-600", label: "Completed", bar: "#10b981" },
-  "Not Started":{ bg: "bg-gray-500/10", text: "text-gray-600", label: "Not Started", bar: "#6b7280" },
+/** Sidebar items per role — same look, role-specific entries */
+const SIDEBAR_BY_ROLE: Record<
+  RoleName,
+  { id: string; label: string; icon: typeof FiHome }[]
+> = {
+  CUSTOMER: [
+    { id: "Dashboard", label: "Dashboard", icon: FiHome },
+    { id: "Orders", label: "My Orders", icon: FiPackage },
+    { id: "Analytics", label: "Analytics", icon: FiBarChart2 },
+    { id: "Settings", label: "Settings", icon: FiSettings },
+    { id: "Support", label: "Support", icon: FiHelpCircle },
+  ],
+  SELLER: [
+    { id: "Dashboard", label: "Dashboard", icon: FiHome },
+    { id: "Orders", label: "Orders", icon: FiPackage },
+    { id: "Settings", label: "Settings", icon: FiSettings },
+    { id: "Support", label: "Support", icon: FiHelpCircle },
+  ],
+  ADMIN: [
+    { id: "Dashboard", label: "Dashboard", icon: FiHome },
+    { id: "Orders", label: "Orders", icon: FiPackage },
+    { id: "Settings", label: "Settings", icon: FiSettings },
+    { id: "Support", label: "Support", icon: FiHelpCircle },
+  ],
 };
 
-// ═══════════════════════════════════════════════════════════
-//  UTILITY HOOKS & COMPONENTS
-// ═══════════════════════════════════════════════════════════
+const ORDER_STATUS_CONFIG: Record<
+  OrderStatus,
+  { bg: string; text: string; dot: string; border: string; label: string }
+> = {
+  CREATED:   { bg: "bg-amber-500/10",   text: "text-amber-600",   dot: "bg-amber-500",   border: "border-amber-500/20",   label: "Created" },
+  ACCEPTED:  { bg: "bg-blue-500/10",    text: "text-blue-600",    dot: "bg-blue-500",    border: "border-blue-500/20",    label: "Accepted" },
+  SHIPPED:   { bg: "bg-violet-500/10",  text: "text-violet-600",  dot: "bg-violet-500",  border: "border-violet-500/20",  label: "Shipped" },
+  DELIVERED: { bg: "bg-emerald-500/10", text: "text-emerald-600", dot: "bg-emerald-500", border: "border-emerald-500/20", label: "Delivered" },
+  CANCELLED: { bg: "bg-red-500/10",     text: "text-red-600",     dot: "bg-red-500",     border: "border-red-500/20",     label: "Cancelled" },
+};
 
-function useAnimatedCounter(value: number, duration = 1500) {
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("") || "U";
+}
+
+function formatDate(iso: string) {
+  try {
+    return new Date(iso).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return iso;
+  }
+}
+
+// ── Reusable visual atoms ───────────────────────────────────
+
+function Avatar({ name, size = 40 }: { name: string; size?: number }) {
+  return (
+    <div
+      className="rounded-xl flex items-center justify-center font-bold text-white flex-shrink-0 bg-gradient-to-br from-amber-500 to-pink-500 select-none"
+      style={{ width: size, height: size, fontSize: size * 0.38 }}
+    >
+      {initials(name)}
+    </div>
+  );
+}
+
+function Badge({
+  children,
+  variant = "default",
+}: {
+  children: React.ReactNode;
+  variant?: "default" | "success" | "warning" | "danger" | "info";
+}) {
+  const map = {
+    default: "bg-gray-100 text-gray-600 border-gray-200",
+    success: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    warning: "bg-amber-100 text-amber-700 border-amber-200",
+    danger: "bg-red-100 text-red-700 border-red-200",
+    info: "bg-blue-100 text-blue-700 border-blue-200",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${map[variant]}`}>
+      {children}
+    </span>
+  );
+}
+
+function StatusPill({ status }: { status: OrderStatus }) {
+  const s = ORDER_STATUS_CONFIG[status];
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${s.bg} ${s.text} ${s.border}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+      {s.label}
+    </span>
+  );
+}
+
+function ProgressBar({ progress, color = "#f5a623", height = 6 }: { progress: number; color?: string; height?: number }) {
+  return (
+    <div className="w-full bg-gray-200 rounded-full overflow-hidden" style={{ height }}>
+      <motion.div
+        className="h-full rounded-full"
+        style={{ background: color }}
+        initial={{ width: 0 }}
+        animate={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+        transition={{ duration: 1, ease: "easeOut" }}
+      />
+    </div>
+  );
+}
+
+function useAnimatedCounter(value: number, duration = 1200) {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
-    const num = value;
+    const num = value || 0;
     let start = 0;
     const step = Math.max(1, Math.ceil(num / (duration / 16)));
     let raf: number;
@@ -194,79 +181,133 @@ function useClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void)
   }, [ref, handler]);
 }
 
-function ProgressBar({ progress, color = "#f59e0b", height = 6, animated = true }: { progress: number; color?: string; height?: number; animated?: boolean }) {
+type StatDef = {
+  label: string;
+  value: number;
+  prefix?: string;
+  color: string;
+  icon: typeof FiHome;
+  trend?: string;
+  /** value used to scale the hover progress bar (defaults to value) */
+  max?: number;
+};
+
+function StatCard({ stat, index }: { stat: StatDef; index: number }) {
+  const animated = useAnimatedCounter(stat.value);
+  const [hovered, setHovered] = useState(false);
+  const ratio = stat.max && stat.max > 0 ? (stat.value / stat.max) * 100 : 100;
   return (
-    <div className="w-full bg-gray-200 rounded-full overflow-hidden" style={{ height }}>
-      <motion.div
-        className="h-full rounded-full"
-        style={{ background: color }}
-        initial={animated ? { width: 0 } : false}
-        animate={{ width: `${progress}%` }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.08 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-gray-300 transition-all duration-300 cursor-default group"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div
+          className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition"
+          style={{ color: stat.color }}
+        >
+          <stat.icon size={18} />
+        </div>
+        {stat.trend && (
+          <div className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+            <FiTrendingUp size={10} />
+            {stat.trend}
+          </div>
+        )}
+      </div>
+      <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1">{stat.label}</p>
+      <p className="text-2xl font-black text-brand-dark">
+        {stat.prefix}
+        {animated.toLocaleString("en-IN")}
+      </p>
+      {/* Hover progress (no layout shift) */}
+      <div className="mt-3 pt-3 border-t border-gray-200 min-h-[22px]">
+        {hovered && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+            <ProgressBar progress={ratio} color={stat.color} height={4} />
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function SectionHeader({ eyebrow, title, action }: { eyebrow: string; title: string; action?: React.ReactNode }) {
+  return (
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
+      <div>
+        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent uppercase">{eyebrow}</p>
+        <h3 className="text-xl font-bold text-brand-dark mt-0.5">{title}</h3>
+      </div>
+      {action}
     </div>
   );
 }
 
-function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) {
-  const full = Math.floor(rating);
-  const half = rating % 1 >= 0.5;
-  const sizeClass = size === "md" ? "text-base" : "text-xs";
+function Loader({ label = "Loading…" }: { label?: string }) {
   return (
-    <div className="flex items-center gap-0.5">
-      {[...Array(5)].map((_, i) => (
-        <FiStar
-          key={i}
-          className={`${sizeClass} ${i < full ? "text-amber-500 fill-amber-500" : i === full && half ? "text-amber-500 fill-amber-500/50" : "text-gray-300"}`}
-        />
-      ))}
-      <span className={`${size === "md" ? "text-sm" : "text-xs"} text-gray-500 ml-1 font-medium`}>{rating}</span>
+    <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+      <div className="w-8 h-8 rounded-full border-2 border-gray-200 border-t-amber-500 animate-spin mb-3" />
+      <p className="text-sm">{label}</p>
     </div>
   );
 }
 
-function Badge({ children, variant = "default" }: { children: React.ReactNode; variant?: "default" | "success" | "warning" | "danger" | "info" }) {
-  const variants = {
-    default: "bg-gray-100 text-gray-700 border-gray-200",
-    success: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    warning: "bg-amber-100 text-amber-700 border-amber-200",
-    danger: "bg-red-100 text-red-700 border-red-200",
-    info: "bg-violet-100 text-violet-700 border-violet-200",
-  };
+function EmptyState({ icon = "📭", title, subtitle }: { icon?: string; title: string; subtitle?: string }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${variants[variant]}`}>
-      {children}
-    </span>
+    <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
+      <span className="text-5xl block mb-4">{icon}</span>
+      <p className="text-gray-700 font-medium">{title}</p>
+      {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
+    </div>
   );
 }
 
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`bg-white rounded-2xl border border-gray-200 ${className}`}>{children}</div>;
+}
+
 // ═══════════════════════════════════════════════════════════
-//  SIDEBAR COMPONENT - STICKY
+//  SIDEBAR  (shared shell — items come from role)
 // ═══════════════════════════════════════════════════════════
-function Sidebar({ 
-  activeTab, 
-  setActiveTab, 
-  isCollapsed, 
-  isMobileOpen, 
-  setIsMobileOpen, 
-  user 
+function Sidebar({
+  items,
+  activeTab,
+  setActiveTab,
+  isCollapsed,
+  isMobileOpen,
+  setIsMobileOpen,
+  name,
+  email,
+  roleLabel,
+  onLogout,
+  onGoHome,
 }: {
+  items: { id: string; label: string; icon: typeof FiHome }[];
   activeTab: string;
   setActiveTab: (id: string) => void;
   isCollapsed: boolean;
   isMobileOpen: boolean;
   setIsMobileOpen: (v: boolean) => void;
-  user: User;
+  name: string;
+  email: string;
+  roleLabel: string;
+  onLogout: () => void;
+  onGoHome: () => void;
 }) {
   const sidebarRef = useRef<HTMLElement>(null!);
   useClickOutside(sidebarRef, () => setIsMobileOpen(false));
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+    const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isMobileOpen) setIsMobileOpen(false);
     };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", onEsc);
+    return () => document.removeEventListener("keydown", onEsc);
   }, [isMobileOpen, setIsMobileOpen]);
 
   const handleNav = (id: string) => {
@@ -276,7 +317,6 @@ function Sidebar({
 
   return (
     <>
-      {/* Mobile Overlay */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
@@ -290,142 +330,117 @@ function Sidebar({
         )}
       </AnimatePresence>
 
-      {/* Sidebar - STICKY */}
       <motion.aside
         ref={sidebarRef}
-        className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-white border-r border-gray-200 flex flex-col
+        className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-brand-dark text-white border-r border-white/10 flex flex-col transition-[width] duration-300
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           ${isCollapsed ? "lg:w-20" : "lg:w-72"}
-          w-[280px]
-        `}
+          w-[280px]`}
         initial={false}
       >
         {/* Logo */}
-        <div className={`p-6 border-b border-gray-200 flex items-center gap-3 ${isCollapsed ? "lg:justify-center" : ""}`}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-purple-500 to-pink-500">
-            <FiBook className="text-white text-lg" />
+        <div className={`p-6 border-b border-white/10 flex items-center gap-3 ${isCollapsed ? "lg:justify-center" : ""}`}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-brand-yellow text-brand-dark">
+            <FiBook className="text-lg" />
           </div>
-          <AnimatePresence>
-            {!isCollapsed && (
-              <motion.div
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: "auto" }}
-                exit={{ opacity: 0, width: 0 }}
-                className="overflow-hidden"
-              >
-                <h2 className="font-bold text-lg text-brand-dark whitespace-nowrap">BookHaven</h2>
-                <p className="text-[10px] text-gray-500 whitespace-nowrap">Your reading journey</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {!isCollapsed && (
+            <div className="overflow-hidden">
+              <h2 className="font-serif font-bold text-lg lux-text-gradient whitespace-nowrap">BookHaven</h2>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap">{roleLabel} Portal</p>
+            </div>
+          )}
         </div>
 
-        {/* Navigation */}
+        {/* Nav */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          <AnimatePresence>
-            {!isCollapsed && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="px-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-3"
-              >
-                Menu
-              </motion.p>
-            )}
-          </AnimatePresence>
-          {SIDEBAR_ITEMS.map((item) => {
+          {!isCollapsed && (
+            <p className="px-3 text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-3">Menu</p>
+          )}
+          {items.map((item) => {
             const isActive = activeTab === item.id;
             const Icon = item.icon;
             return (
               <button
                 key={item.id}
                 onClick={() => handleNav(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
+                className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group relative ${
                   isActive
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/20"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-brand-dark"
+                    ? "bg-gradient-to-r from-amber-400/25 to-pink-500/10 font-semibold text-amber-200 shadow-[inset_0_0_0_1px_rgba(245,166,35,0.3)]"
+                    : "text-gray-400 hover:bg-white/5 hover:text-white"
                 } ${isCollapsed ? "lg:justify-center lg:px-2" : ""}`}
               >
-                <Icon className={`flex-shrink-0 ${isActive ? "text-white" : "text-gray-600 group-hover:text-brand-dark"}`} size={20} />
-                <AnimatePresence>
-                  {!isCollapsed && (
-                    <motion.span
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: "auto" }}
-                      exit={{ opacity: 0, width: 0 }}
-                      className="whitespace-nowrap overflow-hidden"
-                    >
-                      {item.label}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                <Icon className={`flex-shrink-0 transition-all duration-200 ${isActive ? "text-amber-300" : "text-gray-400 group-hover:text-amber-300"}`} size={20} />
+                {!isCollapsed && <span className="whitespace-nowrap overflow-hidden">{item.label}</span>}
                 {isActive && !isCollapsed && (
-                  <motion.span
-                    layoutId="activeIndicator"
-                    className="absolute right-3 w-1.5 h-1.5 rounded-full bg-white"
-                  />
+                  <motion.span layoutId="activeIndicator" className="absolute right-3 w-1.5 h-1.5 rounded-full bg-amber-300" />
                 )}
               </button>
             );
           })}
         </nav>
 
-        {/* User Card */}
-        <AnimatePresence>
-          {!isCollapsed && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="p-4 border-t border-gray-200 overflow-hidden"
-            >
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-gray border border-gray-200">
-                <img src={user.avatar} alt="" className="w-10 h-10 rounded-full object-cover border-2 border-pink-500/30" />
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-brand-dark truncate">{user.name}</p>
-                  <p className="text-[10px] text-gray-500 truncate">{user.email}</p>
-                </div>
+        {/* User card */}
+        {!isCollapsed && (
+          <div className="p-4 border-t border-white/10 overflow-hidden">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+              <Avatar name={name} />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{name}</p>
+                <p className="text-[10px] text-gray-400 truncate">{email}</p>
               </div>
-              <button className="w-full mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-all">
-                <FiLogOut size={16} />
-                <span>Log Out</span>
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+            <button
+              onClick={onGoHome}
+              className="w-full mt-3 flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all"
+            >
+              <FiHome size={16} />
+              <span>Back to Home</span>
+            </button>
+            <button
+              onClick={onLogout}
+              className="w-full mt-1 flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-white/10 transition-all"
+            >
+              <FiLogOut size={16} />
+              <span>Log Out</span>
+            </button>
+          </div>
+        )}
       </motion.aside>
     </>
   );
 }
 
 // ═══════════════════════════════════════════════════════════
-//  TOP HEADER - STICKY
+//  TOP HEADER (shared shell)
 // ═══════════════════════════════════════════════════════════
 function TopHeader({
-  user,
+  name,
+  email,
+  roleLabel,
+  subtitle,
   onMenuToggle,
   onCollapseToggle,
   isCollapsed,
   searchQuery,
   setSearchQuery,
-  notifications,
+  onLogout,
+  onGoHome,
 }: {
-  user: User;
+  name: string;
+  email: string;
+  roleLabel: string;
+  subtitle: string;
   onMenuToggle: () => void;
   onCollapseToggle: () => void;
   isCollapsed: boolean;
   searchQuery: string;
   setSearchQuery: (v: string) => void;
-  notifications: number;
+  onLogout: () => void;
+  onGoHome: () => void;
 }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showNotif, setShowNotif] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null!);
-  const notifRef = useRef<HTMLDivElement>(null!);
-
   useClickOutside(menuRef, () => setShowUserMenu(false));
-  useClickOutside(notifRef, () => setShowNotif(false));
 
   const greeting = useCallback(() => {
     const hour = new Date().getHours();
@@ -438,33 +453,26 @@ function TopHeader({
     <header className="bg-white/95 backdrop-blur-xl border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-30">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <button
-            onClick={onMenuToggle}
-            className="lg:hidden w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition"
-          >
+          <button onClick={onMenuToggle} className="lg:hidden w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition">
             <FiMenu className="text-gray-700" size={18} />
           </button>
-          <button
-            onClick={onCollapseToggle}
-            className="hidden lg:flex w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 items-center justify-center hover:bg-gray-200 transition"
-          >
+          <button onClick={onCollapseToggle} className="hidden lg:flex w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 items-center justify-center hover:bg-gray-200 transition">
             <FiArrowRight className={`text-gray-700 transition-transform duration-300 ${isCollapsed ? "" : "rotate-180"}`} size={16} />
           </button>
           <div className="min-w-0">
             <h1 className="text-lg sm:text-xl font-bold text-brand-dark truncate">
-              {greeting()}, <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">{user.name.split(" ")[0]}</span>!
+              {greeting()}, <span className="bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">{name.split(" ")[0]}</span>!
             </h1>
-            <p className="text-xs text-gray-500 hidden sm:block">What do you want to read today?</p>
+            <p className="text-xs text-gray-500 hidden sm:block">{subtitle}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Search */}
-          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-72 border border-gray-200 focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-200 transition-all">
+          <div className="hidden md:flex items-center bg-gray-100 rounded-xl px-4 py-2.5 gap-2 w-64 border border-gray-200 focus-within:border-pink-500 focus-within:ring-1 focus-within:ring-pink-200 transition-all">
             <FiSearch className="text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Search books..."
+              placeholder="Search…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent text-sm text-brand-dark placeholder:text-gray-400 outline-none w-full"
@@ -476,66 +484,29 @@ function TopHeader({
             )}
           </div>
 
-          {/* Notifications */}
-          <div className="relative" ref={notifRef}>
-            <button
-              onClick={() => setShowNotif(!showNotif)}
-              className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition relative"
-            >
-              <FiBell className="text-gray-600" size={18} />
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-purple-500/30">
-                  {notifications}
-                </span>
-              )}
-            </button>
-            <AnimatePresence>
-              {showNotif && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 z-50"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-bold text-brand-dark">Notifications</p>
-                    <button className="text-[10px] text-pink-600 hover:text-pink-700 transition">Mark all read</button>
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      { icon: "📦", title: "Order Update", desc: "Your order #ORD-4790 is now in transit!", time: "10 min ago", unread: true },
-                      { icon: "📖", title: "Reading Reminder", desc: "You have 52 pages left in The Alchemist.", time: "2 hours ago", unread: true },
-                      { icon: "💰", title: "Price Drop", desc: "The Psychology of Money is now ₹349 (was ₹399)", time: "5 hours ago", unread: false },
-                    ].map((n, i) => (
-                      <div key={i} className={`p-3 rounded-xl transition cursor-pointer ${n.unread ? "bg-brand-gray" : "hover:bg-brand-gray"}`}>
-                        <div className="flex items-start gap-3">
-                          <span className="text-lg">{n.icon}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold text-brand-dark">{n.title}</p>
-                            <p className="text-[11px] text-gray-600 mt-0.5">{n.desc}</p>
-                            <p className="text-[10px] text-gray-400 mt-1">{n.time}</p>
-                          </div>
-                          {n.unread && <span className="w-2 h-2 rounded-full bg-pink-600 flex-shrink-0 mt-1" />}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* Back to Home — always visible */}
+          <button
+            onClick={onGoHome}
+            title="Back to Home"
+            className="flex items-center gap-2 h-10 px-3 sm:px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-amber-500 to-pink-500 hover:opacity-90 transition shadow-lg shadow-amber-500/20"
+          >
+            <FiHome size={16} />
+            <span className="hidden sm:inline">Home</span>
+          </button>
 
-          {/* User */}
+          <button className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 transition relative">
+            <FiBell className="text-gray-600" size={18} />
+          </button>
+
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 sm:gap-3 pl-1 pr-2 sm:pr-3 py-1 rounded-xl hover:bg-gray-100 transition border border-transparent hover:border-gray-200"
             >
-              <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover border border-white/10" />
+              <Avatar name={name} size={36} />
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-semibold text-brand-dark leading-tight">{user.name}</p>
-                <p className="text-[10px] text-gray-500">{user.tier}</p>
+                <p className="text-sm font-semibold text-brand-dark leading-tight">{name}</p>
+                <p className="text-[10px] text-gray-500">{roleLabel}</p>
               </div>
               <FiChevronDown className="text-gray-500 hidden sm:block" size={14} />
             </button>
@@ -549,17 +520,15 @@ function TopHeader({
                   className="absolute right-0 top-12 w-60 bg-white rounded-2xl shadow-2xl border border-gray-200 p-2 z-50"
                 >
                   <div className="p-3 border-b border-gray-200 mb-2">
-                    <p className="text-sm font-semibold text-brand-dark">{user.name}</p>
-                    <p className="text-[10px] text-gray-500">{user.email}</p>
+                    <p className="text-sm font-semibold text-brand-dark">{name}</p>
+                    <p className="text-[10px] text-gray-500">{email}</p>
+                    <span className="inline-block mt-2"><Badge variant="info">{roleLabel}</Badge></span>
                   </div>
-                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-dark transition flex items-center gap-2">
-                    <FiUser size={14} /> Profile
-                  </button>
-                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-dark transition flex items-center gap-2">
-                    <FiSettings size={14} /> Settings
+                  <button onClick={onGoHome} className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-dark transition flex items-center gap-2">
+                    <FiHome size={14} /> Back to Home
                   </button>
                   <div className="border-t border-gray-200 my-1" />
-                  <button className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition flex items-center gap-2">
+                  <button onClick={onLogout} className="w-full text-left px-3 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition flex items-center gap-2">
                     <FiLogOut size={14} /> Log Out
                   </button>
                 </motion.div>
@@ -573,635 +542,284 @@ function TopHeader({
 }
 
 // ═══════════════════════════════════════════════════════════
-//  DASHBOARD TAB
+//  WELCOME BANNER (shared)
 // ═══════════════════════════════════════════════════════════
-function DashboardTab({ user }: { user: User }) {
-  const [hoveredStat, setHoveredStat] = useState<number | null>(null);
-  const ordersCount = useAnimatedCounter(9);
-  const booksCount = useAnimatedCounter(21);
-  const spentCount = useAnimatedCounter(11743);
-  const readCount = useAnimatedCounter(14);
-
-  const stats = [
-    { label: "Total Orders", value: ordersCount, raw: 9, suffix: "", color: "#f97316", icon: FiPackage, trend: "+12%", trendUp: true },
-    { label: "Books Bought", value: booksCount, raw: 21, suffix: "", color: "#ec4899", icon: FiBook, trend: "+5%", trendUp: true },
-    { label: "Total Spent", value: spentCount, raw: 11743, suffix: "₹", color: "#f97316", icon: FiShoppingCart, trend: "+8%", trendUp: true },
-    { label: "Books Read", value: readCount, raw: 14, suffix: "", color: "#10b981", icon: FiCheck, trend: "+3", trendUp: true },
-  ];
-
+function WelcomeBanner({ name, roleLabel, headline }: { name: string; roleLabel: string; headline: string }) {
   return (
-    <div className="space-y-6">
-      {/* Welcome Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-[#0f0d1a] border border-white/10 p-6 sm:p-8 text-white"
-      >
-        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/15 blur-3xl" />
-        <div className="absolute -left-10 -bottom-10 w-60 h-60 rounded-full bg-pink-500/10 blur-3xl" />
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          <div className="relative">
-            <img src={user.avatar} alt="" className="w-20 h-20 rounded-2xl object-cover border border-white/10" />
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#0f0d1a] flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-white" />
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <Badge variant="warning">⭐ {user.tier}</Badge>
-              <span className="text-[10px] text-[#6b6888] tracking-widest uppercase">Member since {user.memberSince}</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#f1f0f9]">{user.name}</h2>
-            <p className="text-sm text-[#8b86a8] mt-1">{user.bio}</p>
-          </div>
-          <div className="hidden sm:flex flex-col items-end gap-2">
-            <div className="text-right">
-              <p className="text-[10px] text-[#6b6888] tracking-widest uppercase">Reading Streak</p>
-              <p className="text-2xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">12 <span className="text-sm font-normal text-[#6b6888]">days</span></p>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-     {/* Stat Cards */}
-<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-  {stats.map((s, i) => (
     <motion.div
-      key={s.label}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: i * 0.1 }}
-      className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-gray-300 transition-all duration-300 cursor-default group"
-      onMouseEnter={() => setHoveredStat(i)}
-      onMouseLeave={() => setHoveredStat(null)}
+      className="relative overflow-hidden rounded-3xl bg-[#0f0d1a] border border-white/10 p-6 sm:p-8 text-white"
     >
-      {/* Top row */}
-      <div className="flex items-center justify-between mb-3">
-        <div
-          className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition"
-          style={{ color: s.color }}
-        >
-          <s.icon size={18} />
+      <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/15 blur-3xl" />
+      <div className="absolute -left-10 -bottom-10 w-60 h-60 rounded-full bg-pink-500/10 blur-3xl" />
+      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <Avatar name={name} size={80} />
+        <div className="flex-1">
+          <span className="inline-block mb-2"><Badge variant="warning">⭐ {roleLabel}</Badge></span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#f1f0f9]">{name}</h2>
+          <p className="text-sm text-[#8b86a8] mt-1">{headline}</p>
         </div>
-
-        <div
-          className={`flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-            s.trendUp
-              ? "bg-emerald-100 text-emerald-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          <FiTrendingUp size={10} />
-          {s.trend}
-        </div>
-      </div>
-
-      {/* Label */}
-      <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1">
-        {s.label}
-      </p>
-
-      {/* Value */}
-      <p className="text-2xl font-black text-brand-dark">
-        {s.suffix}
-        {s.value.toLocaleString("en-IN")}
-      </p>
-
-      {/* Progress section (NO layout shift fix) */}
-      <div className="mt-3 pt-3 border-t border-gray-200 min-h-[44px]">
-        {hoveredStat === i && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ProgressBar
-              progress={Math.min(100, (s.raw / 30) * 100)}
-              color={s.color}
-              height={4}
-            />
-          </motion.div>
-        )}
       </div>
     </motion.div>
-  ))}
-</div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Currently Reading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6"
-        >
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">In Progress</p>
-              <h3 className="text-lg font-bold text-brand-dark">Currently Reading</h3>
-            </div>
-            <button className="text-xs font-semibold text-gray-500 hover:text-brand-dark transition flex items-center gap-1">
-              View all <FiArrowRight size={12} />
-            </button>
-          </div>
-          <div className="space-y-3">
-            {MY_BOOKS.filter(b => b.status === "Reading").map((book, i) => (
-              <motion.div
-                key={book.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-brand-gray border border-gray-200 hover:border-purple-300 transition-all group"
-              >
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl bg-gradient-to-br ${book.coverColor} flex-shrink-0 border border-gray-200`}>
-                  {book.cover}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-sm text-brand-dark truncate">{book.title}</p>
-                    <Badge variant="warning">{BOOK_STATUS_CONFIG[book.status].label}</Badge>
-                  </div>
-                  <p className="text-xs text-gray-600 mb-2">{book.author} · {book.currentPage} of {book.totalPages} pages</p>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <ProgressBar progress={book.progress} color={BOOK_STATUS_CONFIG[book.status].bar} height={5} />
-                    </div>
-                    <span className="text-[10px] text-gray-500 font-medium">{book.progress}%</span>
-                  </div>
-                </div>
-                <button className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition opacity-0 group-hover:opacity-100 flex-shrink-0">
-                  Continue
-                </button>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Recent Activity */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl border border-gray-200 p-6"
-        >
-          <div className="flex items-center justify-between mb-5">
-            <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Activity</p>
-            <button className="text-xs font-semibold text-gray-500 hover:text-brand-dark transition">View all</button>
-          </div>
-          <div className="space-y-4">
-            {RECENT_ACTIVITY.slice(0, 5).map((act, i) => (
-              <motion.div
-                key={act.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 + i * 0.05 }}
-                className="flex items-start gap-3"
-              >
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm flex-shrink-0 border border-gray-200">
-                  {act.icon}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs text-gray-700">
-                    <span className="font-semibold text-brand-dark">{act.action}</span>{" "}
-                    <span className="text-gray-600">{act.target}</span>
-                  </p>
-                  <p className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-1">
-                    <FiClock size={8} /> {act.time}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Promo Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="relative overflow-hidden rounded-2xl bg-[#1a1625] border border-white/10 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4"
-      >
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30" />
-        <div className="relative z-10">
-          <p className="text-[10px] font-bold tracking-widest text-[#6b6888] uppercase mb-1">Premium Access</p>
-          <h3 className="text-xl font-bold text-[#f1f0f9] mb-1">Explore 10K+ books with 1 year full access</h3>
-          <p className="text-sm text-[#8b86a8]">Unlimited reading, exclusive discounts, and early access.</p>
-        </div>
-        <button className="relative z-10 px-6 py-3 rounded-xl text-sm font-bold text-white transition shadow-[0_0_18px_rgba(139,92,246,0.45)] hover:shadow-[0_0_24px_rgba(236,72,153,0.55)] flex-shrink-0" style={{ background: "linear-gradient(135deg,#8b5cf6,#ec4899)" }}>
-          Upgrade to PRO
-        </button>
-      </motion.div>
-    </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════
-//  MY BOOKS TAB
+//  GENERIC ORDERS TABLE (customer / seller / admin reuse)
 // ═══════════════════════════════════════════════════════════
-function MyBooksTab() {
-  const [filter, setFilter] = useState<"All" | "Reading" | "Completed" | "Not Started">("All");
-  const [books, setBooks] = useState<Book[]>(MY_BOOKS);
+type AnyOrder = {
+  id: number;
+  status: OrderStatus;
+  totalAmount: number;
+  createdAt: string;
+  sellerName?: string;
+  customerId?: number;
+};
 
-  const filters: ("All" | "Reading" | "Completed" | "Not Started")[] = ["All", "Reading", "Completed", "Not Started"];
-  const filtered = filter === "All" ? books : books.filter(b => b.status === filter);
-
-  const updateProgress = (id: number, delta: number) => {
-    setBooks(prev => prev.map(b => {
-      if (b.id !== id) return b;
-      const newPage = Math.max(0, Math.min(b.totalPages, b.currentPage + delta));
-      const newProgress = Math.round((newPage / b.totalPages) * 100);
-      const newStatus: Book["status"] = newProgress === 100 ? "Completed" : newProgress > 0 ? "Reading" : "Not Started";
-      return { ...b, currentPage: newPage, progress: newProgress, status: newStatus };
-    }));
-  };
+function OrdersTable({
+  orders,
+  thirdCol,
+  thirdLabel,
+}: {
+  orders: AnyOrder[];
+  thirdCol?: (o: AnyOrder) => React.ReactNode;
+  thirdLabel?: string;
+}) {
+  const [filter, setFilter] = useState<"All" | OrderStatus>("All");
+  const filters: ("All" | OrderStatus)[] = ["All", "CREATED", "ACCEPTED", "SHIPPED", "DELIVERED", "CANCELLED"];
+  const filtered = filter === "All" ? orders : orders.filter((o) => o.status === filter);
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Library</p>
-          <h3 className="text-xl font-bold text-brand-dark">My Books</h3>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
-            {filters.map(f => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  filter === f
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                    : "text-gray-600 hover:text-brand-dark"
-                }`}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map((book, i) => (
-          <motion.div
-            key={book.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-gray-300 transition-all group"
+      <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 border border-gray-200 w-fit mb-5">
+        {filters.map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              filter === f ? "bg-gradient-to-r from-amber-500 to-pink-500 text-white shadow" : "text-gray-600 hover:text-brand-dark"
+            }`}
           >
-            <div className="flex items-start gap-4 mb-4">
-              <div className={`w-16 h-20 rounded-xl flex items-center justify-center text-3xl bg-gradient-to-br ${book.coverColor} flex-shrink-0 border border-gray-200`}>
-                {book.cover}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="font-bold text-sm text-brand-dark truncate">{book.title}</p>
-                </div>
-                <p className="text-xs text-gray-600 mb-1">{book.author}</p>
-                <div className="flex items-center gap-2">
-                  <Badge variant={book.status === "Completed" ? "success" : book.status === "Reading" ? "warning" : "default"}>
-                    {BOOK_STATUS_CONFIG[book.status].label}
-                  </Badge>
-                  <span className="text-[10px] text-gray-500">{book.category}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-1.5">
-                <span className="text-xs text-gray-600">{book.progress}% completed</span>
-                <span className="text-[10px] text-gray-500">{book.currentPage}/{book.totalPages} pages</span>
-              </div>
-              <ProgressBar progress={book.progress} color={BOOK_STATUS_CONFIG[book.status].bar} height={6} />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => updateProgress(book.id, -10)}
-                disabled={book.currentPage <= 0}
-                className="flex-1 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-600 hover:bg-gray-200 hover:text-brand-dark transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-1"
-              >
-                <FiMinus size={12} /> 10
-              </button>
-              <button
-                onClick={() => updateProgress(book.id, 10)}
-                disabled={book.currentPage >= book.totalPages}
-                className="flex-1 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-xs font-bold text-white hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
-              >
-                <FiPlus size={12} /> 10
-              </button>
-            </div>
-
-            {book.status === "Reading" && (
-              <p className="text-[10px] text-gray-500 mt-3 flex items-center gap-1">
-                <FiClock size={10} /> Last read {book.lastRead}
-              </p>
-            )}
-          </motion.div>
+            {f === "All" ? "All" : ORDER_STATUS_CONFIG[f].label}
+          </button>
         ))}
       </div>
-    </div>
-  );
-}
 
-// ═══════════════════════════════════════════════════════════
-//  ORDERS TAB
-// ═══════════════════════════════════════════════════════════
-function OrdersTab() {
-  const [orders, setOrders] = useState<Order[]>(ORDERS);
-  const [filter, setFilter] = useState<"All" | "Delivered" | "In Transit" | "Processing" | "Cancelled">("All");
-  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
-
-  const filters: ("All" | "Delivered" | "In Transit" | "Processing" | "Cancelled")[] = ["All", "Delivered", "In Transit", "Processing", "Cancelled"];
-  const filtered = filter === "All" ? orders : orders.filter(o => o.status === filter);
-
-  const reorder = (orderId: string) => {
-    alert(`Re-ordering ${orderId}...`);
-  };
-
-  const cancelOrder = (orderId: string) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "Cancelled" as const } : o));
-  };
-
-  return (
-    <div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Purchase History</p>
-          <h3 className="text-xl font-bold text-brand-dark">My Orders</h3>
-        </div>
-        <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
-          {filters.map(f => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                filter === f
-                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-brand-dark"
-              }`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 bg-brand-gray text-[10px] font-bold tracking-widest text-gray-500 uppercase">
-          <div className="col-span-4">Book</div>
-          <div className="col-span-2">Order ID</div>
-          <div className="col-span-2">Date</div>
-          <div className="col-span-2">Status</div>
-          <div className="col-span-2 text-right">Amount</div>
-        </div>
-        <div className="divide-y divide-gray-200">
-          {filtered.map((order, i) => {
-            const s = STATUS_CONFIG[order.status];
-            return (
+      {filtered.length === 0 ? (
+        <EmptyState icon="🧾" title="No orders here" subtitle="Orders matching this filter will appear here." />
+      ) : (
+        <Card className="overflow-hidden">
+          <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3 bg-brand-gray text-[10px] font-bold tracking-widest text-gray-500 uppercase">
+            <div className="col-span-2">Order</div>
+            <div className="col-span-3">{thirdLabel ?? "Reference"}</div>
+            <div className="col-span-3">Date</div>
+            <div className="col-span-2">Status</div>
+            <div className="col-span-2 text-right">Amount</div>
+          </div>
+          <div className="divide-y divide-gray-200">
+            {filtered.map((o, i) => (
               <motion.div
-                key={order.id}
+                key={o.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: i * 0.05 }}
-                className="p-4 sm:px-6 sm:py-4 hover:bg-brand-gray transition-all group cursor-pointer"
-                onClick={() => setSelectedOrder(selectedOrder === order.id ? null : order.id)}
+                transition={{ delay: i * 0.03 }}
+                className="p-4 sm:px-6 sm:py-4 hover:bg-brand-gray transition-all"
               >
-                <div className="sm:hidden mb-3">
+                {/* mobile */}
+                <div className="sm:hidden">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm text-brand-dark">{order.title}</span>
-                    <span className="text-sm font-bold text-brand-dark">{order.amount}</span>
+                    <span className="font-semibold text-sm text-brand-dark">#ORD-{o.id}</span>
+                    <span className="text-sm font-bold text-brand-dark">{formatPrice(o.totalAmount)}</span>
                   </div>
-                  <p className="text-xs text-gray-600 mt-1">{order.id} · {order.date}</p>
+                  <p className="text-xs text-gray-600 mt-1">{formatDate(o.createdAt)}{thirdCol ? <> · {thirdCol(o)}</> : null}</p>
+                  <div className="mt-2"><StatusPill status={o.status} /></div>
                 </div>
+                {/* desktop */}
                 <div className="hidden sm:grid grid-cols-12 gap-4 items-center">
-                  <div className="col-span-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-gray-100 border border-gray-200">{order.cover}</div>
-                    <div>
-                      <p className="font-semibold text-sm text-brand-dark">{order.title}</p>
-                      <p className="text-[10px] text-gray-600">{order.seller} · {order.items} item{order.items > 1 ? "s" : ""}</p>
-                    </div>
-                  </div>
-                  <div className="col-span-2 text-xs text-gray-600 font-mono">{order.id}</div>
-                  <div className="col-span-2 text-xs text-gray-600">{order.date}</div>
-                  <div className="col-span-2">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${s.bg} ${s.text} ${s.border}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-                      {order.status}
-                    </span>
-                  </div>
-                  <div className="col-span-2 text-right">
-                    <span className="text-sm font-bold text-brand-dark">{order.amount}</span>
-                  </div>
+                  <div className="col-span-2 font-mono text-xs text-gray-700">#ORD-{o.id}</div>
+                  <div className="col-span-3 text-sm text-brand-dark truncate">{thirdCol ? thirdCol(o) : "—"}</div>
+                  <div className="col-span-3 text-xs text-gray-600">{formatDate(o.createdAt)}</div>
+                  <div className="col-span-2"><StatusPill status={o.status} /></div>
+                  <div className="col-span-2 text-right text-sm font-bold text-brand-dark">{formatPrice(o.totalAmount)}</div>
                 </div>
-                <div className="sm:hidden flex items-center justify-between mt-2">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border ${s.bg} ${s.text} ${s.border}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-                    {order.status}
-                  </span>
-                  {order.status === "Delivered" && (
-                    <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="text-xs font-semibold text-pink-600 hover:text-pink-700 transition">Reorder →</button>
-                  )}
-                </div>
-                <AnimatePresence>
-                  {selectedOrder === order.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-3 mt-3 border-t border-gray-200 flex items-center gap-3">
-                        {order.status === "Delivered" && (
-                          <button onClick={(e) => { e.stopPropagation(); reorder(order.id); }} className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-brand-dark transition flex items-center gap-1.5">
-                            <FiShoppingCart size={12} /> Reorder
-                          </button>
-                        )}
-                        {order.status === "In Transit" && (
-                          <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-brand-dark transition flex items-center gap-1.5">
-                            <FiPackage size={12} /> Track Order
-                          </button>
-                        )}
-                        {(order.status === "Processing" || order.status === "In Transit") && (
-                          <button onClick={(e) => { e.stopPropagation(); cancelOrder(order.id); }} className="px-4 py-2 rounded-xl bg-red-100 text-xs font-semibold text-red-700 hover:bg-red-200 transition flex items-center gap-1.5">
-                            <FiX size={12} /> Cancel
-                          </button>
-                        )}
-                        <button className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:text-brand-dark transition flex items-center gap-1.5 ml-auto">
-                          <FiDownload size={12} /> Invoice
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </motion.div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════
-//  WISHLIST TAB
-// ═══════════════════════════════════════════════════════════
-function WishlistTab() {
-  const [items, setItems] = useState<WishlistItem[]>(WISHLIST_DATA);
-  const [sortBy, setSortBy] = useState<"rating" | "price" | "reviews">("rating");
-
-  const toggleLike = (id: number) => {
-    setItems(prev => prev.map(item => item.id === id ? { ...item, liked: !item.liked } : item));
-  };
-
-  const removeItem = (id: number) => {
-    setItems(prev => prev.filter(item => item.id !== id));
-  };
-
-  const moveToCart = (title: string) => {
-    alert(`Added "${title}" to cart!`);
-  };
-
-  const sorted = [...items].sort((a, b) => {
-    if (sortBy === "rating") return b.rating - a.rating;
-    if (sortBy === "price") return parseInt(a.price.replace(/[^0-9]/g, "")) - parseInt(b.price.replace(/[^0-9]/g, ""));
-    return b.reviews - a.reviews;
-  });
-
-  return (
-    <div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Saved Books</p>
-          <h3 className="text-xl font-bold text-brand-dark">My Wishlist</h3>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-600">{items.filter(i => i.liked).length} items</span>
-          <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200">
-            {(["rating", "price", "reviews"] as const).map(s => (
-              <button
-                key={s}
-                onClick={() => setSortBy(s)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
-                  sortBy === s
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                    : "text-gray-600 hover:text-brand-dark"
-                }`}
-              >
-                {s}
-              </button>
             ))}
           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <AnimatePresence mode="popLayout">
-          {sorted.map((book, i) => (
-            <motion.div
-              key={book.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-white rounded-2xl border border-gray-200 p-5 hover:border-gray-300 transition-all group relative"
-            >
-              <button
-                onClick={() => removeItem(book.id)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-10"
-              >
-                <FiTrash2 size={14} />
-              </button>
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-14 h-18 rounded-xl flex items-center justify-center text-2xl bg-gray-100 border border-gray-200 flex-shrink-0">
-                  {book.cover}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-brand-dark truncate pr-6">{book.title}</p>
-                  <p className="text-xs text-gray-600">{book.author}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="px-2 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-600 border border-gray-200">{book.category}</span>
-                    {!book.inStock && (
-                      <span className="px-2 py-0.5 rounded-md bg-red-100 text-[10px] font-medium text-red-700 border border-red-200">Out of Stock</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mb-4">
-                <StarRating rating={book.rating} />
-                <span className="text-xs text-gray-500">{book.reviews.toLocaleString()} reviews</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-brand-dark">{book.price}</span>
-                  <button
-                    onClick={() => toggleLike(book.id)}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
-                      book.liked ? "text-red-500" : "text-gray-300 hover:text-red-500"
-                    }`}
-                  >
-                    <FiHeart className={book.liked ? "fill-red-500" : ""} size={16} />
-                  </button>
-                </div>
-                <button
-                  onClick={() => moveToCart(book.title)}
-                  disabled={!book.inStock}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold border border-transparent hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5"
-                >
-                  <FiShoppingCart size={12} /> Add
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {items.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-16 bg-white rounded-2xl border border-gray-200"
-        >
-          <span className="text-5xl block mb-4">📭</span>
-          <p className="text-gray-600 font-medium">Your wishlist is empty</p>
-          <p className="text-xs text-gray-500 mt-1">Start exploring books to save them here!</p>
-        </motion.div>
+        </Card>
       )}
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════
-//  ANALYTICS TAB
+//  CUSTOMER TABS
 // ═══════════════════════════════════════════════════════════
-function AnalyticsTab() {
-  const [metric, setMetric] = useState<"books" | "pages" | "hours">("books");
-  const maxVal = Math.max(...MONTHLY_STATS.map(s => s[metric]));
+function useCustomerOrders(customerId?: number) {
+  return useQuery({
+    queryKey: ["profile", "customer-orders", customerId],
+    queryFn: () => ordersApi.getCustomerOrders(customerId!),
+    enabled: !!customerId,
+  });
+}
 
-  const metrics = [
-    { key: "books" as const, label: "Books Read", color: "#f97316", icon: FiBook },
-    { key: "pages" as const, label: "Pages Read", color: "#ec4899", icon: FiBook },
-    { key: "hours" as const, label: "Hours Spent", color: "#f97316", icon: FiClock },
-  ];
+function CustomerDashboard({ name, customerId }: { name: string; customerId?: number }) {
+  const { data: orders = [], isLoading } = useCustomerOrders(customerId);
+
+  const stats = useMemo<StatDef[]>(() => {
+    const active = orders.filter((o) => o.status !== "CANCELLED");
+    const itemsBought = orders.reduce(
+      (s, o) => s + (o.items?.reduce((a, it) => a + it.quantity, 0) ?? 0),
+      0
+    );
+    const spent = active.reduce((s, o) => s + o.totalAmount, 0);
+    const delivered = orders.filter((o) => o.status === "DELIVERED").length;
+    return [
+      { label: "Total Orders", value: orders.length, max: Math.max(orders.length, 10), color: "#f5a623", icon: FiPackage },
+      { label: "Books Bought", value: itemsBought, max: Math.max(itemsBought, 20), color: "#ec4899", icon: FiBook },
+      { label: "Total Spent", value: Math.round(spent), max: Math.max(spent, 10000), prefix: "₹", color: "#8b5cf6", icon: FiShoppingCart },
+      { label: "Delivered", value: delivered, max: Math.max(orders.length, 1), color: "#10b981", icon: FiCheck },
+    ];
+  }, [orders]);
+
+  if (!customerId) return <EmptyState icon="🔒" title="No customer profile linked" subtitle="Log in with a customer account to see your dashboard." />;
+  if (isLoading) return <Loader label="Loading your dashboard…" />;
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Insights</p>
-        <h3 className="text-xl font-bold text-brand-dark mt-0.5">Reading Analytics</h3>
+      <WelcomeBanner name={name} roleLabel="Customer" headline="Track your orders and keep building your library." />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((s, i) => <StatCard key={s.label} stat={s} index={i} />)}
       </div>
+      <Card className="p-6">
+        <SectionHeader eyebrow="Recent" title="Latest Orders" />
+        {orders.length === 0 ? (
+          <EmptyState icon="🛒" title="No orders yet" subtitle="Browse the catalog to place your first order." />
+        ) : (
+          <div className="space-y-3">
+            {orders.slice(0, 5).map((o) => (
+              <div key={o.id} className="flex items-center gap-4 p-4 rounded-2xl bg-brand-gray border border-gray-200">
+                <div className="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500">
+                  <FiPackage size={18} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-brand-dark">#ORD-{o.id} · {o.sellerName}</p>
+                  <p className="text-xs text-gray-600">{formatDate(o.createdAt)} · {o.items?.length ?? 0} item(s)</p>
+                </div>
+                <StatusPill status={o.status} />
+                <span className="text-sm font-bold text-brand-dark w-24 text-right">{formatPrice(o.totalAmount)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+}
 
-      <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200 w-fit">
-        {metrics.map(m => (
+function CustomerOrdersTab({ customerId }: { customerId?: number }) {
+  const { data: orders = [], isLoading } = useCustomerOrders(customerId);
+  if (!customerId) return <EmptyState icon="🔒" title="No customer profile linked" />;
+  if (isLoading) return <Loader />;
+  return (
+    <div>
+      <SectionHeader eyebrow="Purchase History" title="My Orders" />
+      <OrdersTable orders={orders} thirdLabel="Seller" thirdCol={(o) => o.sellerName} />
+    </div>
+  );
+}
+
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function CustomerAnalyticsTab({ customerId }: { customerId?: number }) {
+  const { data: orders = [], isLoading } = useCustomerOrders(customerId);
+  const [metric, setMetric] = useState<"orders" | "books" | "spend">("orders");
+
+  // Build last-6-months buckets from real orders
+  const monthly = useMemo(() => {
+    const now = new Date();
+    const buckets: { key: string; month: string; orders: number; books: number; spend: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      buckets.push({
+        key: `${d.getFullYear()}-${d.getMonth()}`,
+        month: MONTH_NAMES[d.getMonth()],
+        orders: 0,
+        books: 0,
+        spend: 0,
+      });
+    }
+    const idx = new Map(buckets.map((b, i) => [b.key, i]));
+    for (const o of orders) {
+      if (o.status === "CANCELLED") continue;
+      const d = new Date(o.createdAt);
+      const k = `${d.getFullYear()}-${d.getMonth()}`;
+      const i = idx.get(k);
+      if (i === undefined) continue;
+      buckets[i].orders += 1;
+      buckets[i].books += o.items?.reduce((a, it) => a + it.quantity, 0) ?? 0;
+      buckets[i].spend += o.totalAmount;
+    }
+    return buckets;
+  }, [orders]);
+
+  // Spending distribution by seller (real data)
+  const distribution = useMemo(() => {
+    const bySeller = new Map<string, number>();
+    let total = 0;
+    for (const o of orders) {
+      if (o.status === "CANCELLED") continue;
+      bySeller.set(o.sellerName, (bySeller.get(o.sellerName) ?? 0) + o.totalAmount);
+      total += o.totalAmount;
+    }
+    const palette = ["#f5a623", "#ec4899", "#8b5cf6", "#10b981", "#9ca3af"];
+    return Array.from(bySeller.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([label, amount], i) => ({
+        label,
+        value: total ? Math.round((amount / total) * 100) : 0,
+        color: palette[i % palette.length],
+      }));
+  }, [orders]);
+
+  const metrics = [
+    { key: "orders" as const, label: "Orders", color: "#f5a623", icon: FiPackage },
+    { key: "books" as const, label: "Books Bought", color: "#ec4899", icon: FiBook },
+    { key: "spend" as const, label: "Amount Spent", color: "#8b5cf6", icon: FiDollarSign },
+  ];
+
+  const activeOrders = orders.filter((o) => o.status !== "CANCELLED");
+  const totalSpend = activeOrders.reduce((s, o) => s + o.totalAmount, 0);
+  const totalBooks = activeOrders.reduce((s, o) => s + (o.items?.reduce((a, it) => a + it.quantity, 0) ?? 0), 0);
+  const avgOrder = activeOrders.length ? totalSpend / activeOrders.length : 0;
+
+  const summary = [
+    { label: "Total Orders", value: orders.length, icon: FiPackage, color: "#f5a623", fmt: (v: number) => `${v}` },
+    { label: "Books Bought", value: totalBooks, icon: FiBook, color: "#ec4899", fmt: (v: number) => `${v}` },
+    { label: "Total Spent", value: Math.round(totalSpend), icon: FiShoppingCart, color: "#8b5cf6", fmt: (v: number) => `₹${v.toLocaleString("en-IN")}` },
+    { label: "Avg / Order", value: Math.round(avgOrder), icon: FiTrendingUp, color: "#10b981", fmt: (v: number) => `₹${v.toLocaleString("en-IN")}` },
+  ];
+
+  if (!customerId) return <EmptyState icon="🔒" title="No customer profile linked" />;
+  if (isLoading) return <Loader label="Crunching your numbers…" />;
+
+  const maxVal = Math.max(1, ...monthly.map((m) => m[metric]));
+  const activeMetric = metrics.find((m) => m.key === metric)!;
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader eyebrow="Insights" title="Shopping Analytics" />
+
+      {/* Metric switcher */}
+      <div className="flex flex-wrap bg-gray-100 rounded-xl p-1 border border-gray-200 w-fit gap-1">
+        {metrics.map((m) => (
           <button
             key={m.key}
             onClick={() => setMetric(m.key)}
             className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
               metric === m.key
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                ? "bg-gradient-to-r from-amber-500 to-pink-500 text-white shadow-lg"
                 : "text-gray-600 hover:text-brand-dark"
             }`}
           >
@@ -1211,67 +829,60 @@ function AnalyticsTab() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div
-          key={metric}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl border border-gray-200 p-6"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <p className="text-sm font-bold text-brand-dark">{metrics.find(m => m.key === metric)?.label} Per Month</p>
-            <span className="text-xs text-gray-500">Last 6 months</span>
-          </div>
-          <div className="flex items-end gap-3 h-52">
-            {MONTHLY_STATS.map((stat) => (
-              <div key={stat.month} className="flex-1 flex flex-col items-center gap-2 group">
-                <div className="relative w-full flex justify-center">
-                  <motion.div
-                    className="w-full max-w-[48px] rounded-t-xl relative cursor-pointer"
-                    style={{ background: metrics.find(m => m.key === metric)?.color }}
-                    initial={{ height: 0 }}
-                    animate={{ height: `${(stat[metric] / maxVal) * 180}px` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                  >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-brand-dark text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 shadow-xl">
-                      {stat[metric]} {metric}
-                    </div>
-                  </motion.div>
+        {/* Monthly bar chart */}
+        <motion.div key={metric} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm font-bold text-brand-dark">{activeMetric.label} Per Month</p>
+              <span className="text-xs text-gray-500">Last 6 months</span>
+            </div>
+            <div className="flex items-end gap-3 h-52">
+              {monthly.map((stat) => (
+                <div key={stat.key} className="flex-1 flex flex-col items-center gap-2 group">
+                  <div className="relative w-full flex justify-center">
+                    <motion.div
+                      className="w-full max-w-[48px] rounded-t-xl relative cursor-pointer"
+                      style={{ background: activeMetric.color }}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${(stat[metric] / maxVal) * 180}px` }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-brand-dark text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-gray-200 shadow-xl">
+                        {metric === "spend" ? `₹${stat[metric].toLocaleString("en-IN")}` : stat[metric]}
+                      </div>
+                    </motion.div>
+                  </div>
+                  <span className="text-[10px] font-semibold text-gray-500">{stat.month}</span>
                 </div>
-                <span className="text-[10px] font-semibold text-gray-500">{stat.month}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Card>
         </motion.div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <p className="text-sm font-bold text-brand-dark mb-6">Reading Distribution</p>
-          <div className="space-y-4">
-            {[
-              { label: "Fiction", value: 35, color: "#f97316" },
-              { label: "Self-Help", value: 25, color: "#ec4899" },
-              { label: "History", value: 20, color: "#f97316" },
-              { label: "Business", value: 15, color: "#10b981" },
-              { label: "Other", value: 5, color: "#9ca3af" },
-            ].map((cat) => (
-              <div key={cat.label}>
-                <div className="flex justify-between items-center mb-1.5">
-                  <span className="text-xs text-gray-600">{cat.label}</span>
-                  <span className="text-xs text-brand-dark font-medium">{cat.value}%</span>
+        {/* Spending distribution */}
+        <Card className="p-6">
+          <p className="text-sm font-bold text-brand-dark mb-6">Spending by Seller</p>
+          {distribution.length === 0 ? (
+            <p className="text-sm text-gray-500">No spending data yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {distribution.map((cat) => (
+                <div key={cat.label}>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-xs text-gray-600 truncate pr-2">{cat.label}</span>
+                    <span className="text-xs text-brand-dark font-medium">{cat.value}%</span>
+                  </div>
+                  <ProgressBar progress={cat.value} color={cat.color} height={8} />
                 </div>
-                <ProgressBar progress={cat.value} color={cat.color} height={8} />
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
 
+      {/* Summary cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { label: "Total Books Read", value: 15, icon: FiBook, color: "#f97316" },
-          { label: "Total Pages", value: 2820, icon: FiBook, color: "#ec4899" },
-          { label: "Avg per Month", value: 2.5, suffix: "", icon: FiTrendingUp, color: "#f97316" },
-          { label: "Reading Streak", value: 12, suffix: " days", icon: FiCalendar, color: "#10b981" },
-        ].map((s, i) => (
+        {summary.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 20 }}
@@ -1282,7 +893,7 @@ function AnalyticsTab() {
             <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3" style={{ color: s.color }}>
               <s.icon size={18} />
             </div>
-            <p className="text-2xl font-black text-brand-dark">{s.value}{s.suffix || ""}</p>
+            <p className="text-2xl font-black text-brand-dark">{s.fmt(s.value)}</p>
             <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase mt-1">{s.label}</p>
           </motion.div>
         ))}
@@ -1292,402 +903,468 @@ function AnalyticsTab() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  SETTINGS TAB
+//  SELLER TABS
 // ═══════════════════════════════════════════════════════════
-function SettingsTab() {
-  const [settings, setSettings] = useState({
-    emailFreq: "Daily Digest",
-    genres: ["Philosophy", "Sci-Fi"],
-    readingGoal: 3,
-    theme: "Dark" as "Light" | "Dark" | "System",
-    notifications: true,
-    emailNotifications: true,
-    pushNotifications: true,
-    publicProfile: false,
-    twoFactor: false,
+function useSellerListings(sellerId?: number) {
+  return useQuery({
+    queryKey: ["profile", "seller-listings", sellerId],
+    queryFn: () => sellerApi.getMyListings(sellerId!),
+    enabled: !!sellerId,
   });
-  const [saved, setSaved] = useState(false);
-  const [activeSection, setActiveSection] = useState<"general" | "privacy" | "notifications">("general");
+}
+function useSellerOrders(sellerId?: number) {
+  return useQuery({
+    queryKey: ["profile", "seller-orders", sellerId],
+    queryFn: () => sellerApi.getMyOrders(sellerId!),
+    enabled: !!sellerId,
+  });
+}
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
+function SellerDashboard({ name, sellerId }: { name: string; sellerId?: number }) {
+  const { data: listings = [], isLoading: l1 } = useSellerListings(sellerId);
+  const { data: orders = [], isLoading: l2 } = useSellerOrders(sellerId);
 
-  const genres = ["Fiction", "Sci-Fi", "Philosophy", "History", "Self-Help", "Business", "Psychology", "Biography"];
+  const stats = useMemo<StatDef[]>(() => {
+    const stock = listings.reduce((s, l) => s + l.stock, 0);
+    const revenue = orders.filter((o) => o.status !== "CANCELLED").reduce((s, o) => s + o.totalAmount, 0);
+    return [
+      { label: "Active Listings", value: listings.length, color: "#f5a623", icon: FiLayers },
+      { label: "Units in Stock", value: stock, color: "#ec4899", icon: FiBook },
+      { label: "Total Orders", value: orders.length, color: "#8b5cf6", icon: FiPackage },
+      { label: "Revenue", value: Math.round(revenue), prefix: "₹", color: "#10b981", icon: FiDollarSign },
+    ];
+  }, [listings, orders]);
 
-  const sections = [
-    { id: "general" as const, label: "General", icon: FiSettings },
-    { id: "privacy" as const, label: "Privacy", icon: FiEye },
-    { id: "notifications" as const, label: "Notifications", icon: FiBell },
-  ];
+  if (!sellerId) return <EmptyState icon="🔒" title="No seller profile linked" subtitle="Log in with an approved seller account." />;
+  if (l1 || l2) return <Loader label="Loading your store…" />;
+
+  const lowStock = listings.filter((l) => l.stock <= 3);
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <p className="text-[10px] font-bold tracking-widest text-emerald-600 uppercase">Preferences</p>
-          <h3 className="text-xl font-bold text-brand-dark">Account Settings</h3>
-        </div>
-        <motion.button
-          onClick={handleSave}
-          className={`px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all flex items-center gap-2 ${
-            saved ? "bg-emerald-600" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-          }`}
-          whileTap={{ scale: 0.95 }}
-        >
-          {saved ? <FiCheck size={16} /> : <FiEdit3 size={16} />}
-          {saved ? "Saved!" : "Save Changes"}
-        </motion.button>
+    <div className="space-y-6">
+      <WelcomeBanner name={name} roleLabel="Seller" headline="Monitor your listings, stock and incoming orders." />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((s, i) => <StatCard key={s.label} stat={s} index={i} />)}
       </div>
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Settings Nav */}
-        <div className="lg:w-48 flex lg:flex-col gap-2">
-          {sections.map(s => (
-            <button
-              key={s.id}
-              onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                activeSection === s.id
-                  ? "bg-gray-100 text-brand-dark border border-gray-300"
-                  : "text-gray-600 hover:text-brand-dark hover:bg-brand-gray"
-              }`}
-            >
-              <s.icon size={16} />
-              <span className="hidden lg:inline">{s.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Settings Content */}
-        <div className="flex-1 space-y-4 max-w-2xl">
-          {activeSection === "general" && (
-            <>
-              <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-brand-dark">📧 Email Frequency</p>
-                    <p className="text-xs text-gray-600">How often should we email you?</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2 p-6">
+          <SectionHeader eyebrow="Activity" title="Recent Orders" />
+          {orders.length === 0 ? (
+            <EmptyState icon="📦" title="No orders yet" />
+          ) : (
+            <div className="space-y-3">
+              {orders.slice(0, 5).map((o) => (
+                <div key={o.id} className="flex items-center gap-4 p-4 rounded-2xl bg-brand-gray border border-gray-200">
+                  <div className="w-11 h-11 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500"><FiPackage size={18} /></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm text-brand-dark">#ORD-{o.id}</p>
+                    <p className="text-xs text-gray-600">{formatDate(o.createdAt)} · {o.items?.length ?? 0} item(s)</p>
                   </div>
-                  <select
-                    value={settings.emailFreq}
-                    onChange={(e) => setSettings({ ...settings, emailFreq: e.target.value })}
-                    className="text-sm border border-gray-300 rounded-xl px-4 py-2.5 bg-white text-brand-dark focus:outline-none focus:border-pink-500 cursor-pointer"
-                  >
-                    {["Instantly", "Daily Digest", "Weekly", "Never"].map(o => <option key={o} className="bg-white">{o}</option>)}
-                  </select>
+                  <StatusPill status={o.status} />
+                  <span className="text-sm font-bold text-brand-dark w-24 text-right">{formatPrice(o.totalAmount)}</span>
                 </div>
-              </div>
-
-              <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                <p className="text-sm font-semibold text-brand-dark mb-1">🎯 Preferred Genres</p>
-                <p className="text-xs text-gray-600 mb-3">Personalise your book recommendations</p>
-                <div className="flex flex-wrap gap-2">
-                  {genres.map((g) => {
-                    const active = settings.genres.includes(g);
-                    return (
-                      <button
-                        key={g}
-                        onClick={() => setSettings(prev => ({
-                          ...prev,
-                          genres: active ? prev.genres.filter(x => x !== g) : [...prev.genres, g]
-                        }))}
-                        className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
-                          active
-                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent"
-                            : "bg-gray-100 text-gray-600 border-gray-300 hover:border-gray-400"
-                        }`}
-                      >
-                        {g}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-brand-dark">🎯 Reading Goal</p>
-                    <p className="text-xs text-gray-600">Books per month target</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.max(1, prev.readingGoal - 1) }))}
-                      className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-brand-dark font-bold flex items-center justify-center transition border border-gray-300"
-                    >
-                      <FiMinus size={14} />
-                    </button>
-                    <span className="text-xl font-black text-brand-dark w-6 text-center">{settings.readingGoal}</span>
-                    <button
-                      onClick={() => setSettings(prev => ({ ...prev, readingGoal: Math.min(20, prev.readingGoal + 1) }))}
-                      className="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold flex items-center justify-center transition hover:opacity-90"
-                    >
-                      <FiPlus size={14} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-brand-dark">🎨 Interface Theme</p>
-                    <p className="text-xs text-gray-600">Choose your display preference</p>
-                  </div>
-                  <div className="flex gap-2">
-                    {(["Light", "Dark", "System"] as const).map((o) => (
-                      <button
-                        key={o}
-                        onClick={() => setSettings({ ...settings, theme: o })}
-                        className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 ${
-                          settings.theme === o
-                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent"
-                            : "bg-gray-100 text-gray-600 border-gray-300 hover:border-gray-400"
-                        }`}
-                      >
-                        {o === "Light" && <FiSun size={12} />}
-                        {o === "Dark" && <FiMoon size={12} />}
-                        {o === "System" && <FiMonitor size={12} />}
-                        {o}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </>
+              ))}
+            </div>
           )}
-
-          {activeSection === "privacy" && (
-            <>
-              <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
-                {[
-                  { key: "publicProfile" as const, label: "👁️ Public Profile", desc: "Allow others to see your reading list and reviews" },
-                  { key: "twoFactor" as const, label: "🔐 Two-Factor Authentication", desc: "Add an extra layer of security to your account" },
-                ].map(({ key, label, desc }) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-brand-dark">{label}</p>
-                      <p className="text-xs text-gray-600">{desc}</p>
-                    </div>
-                    <button
-                      onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))}
-                      className={`w-12 h-6 rounded-full transition-all duration-300 relative ${
-                        settings[key] ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-gray-300"
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${
-                        settings[key] ? "left-6" : "left-0.5"
-                      }`} />
-                    </button>
+        </Card>
+        <Card className="p-6">
+          <SectionHeader eyebrow="Inventory" title="Low Stock" />
+          {lowStock.length === 0 ? (
+            <p className="text-sm text-gray-500 flex items-center gap-2"><FiCheck className="text-emerald-500" /> All listings well stocked.</p>
+          ) : (
+            <div className="space-y-3">
+              {lowStock.map((l) => (
+                <div key={l.id} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center"><FiAlertCircle size={14} /></div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-brand-dark truncate">{l.book?.title ?? `Book #${l.bookId}`}</p>
+                    <p className="text-[10px] text-gray-500">{l.stock} left</p>
                   </div>
-                ))}
-              </div>
-            </>
+                  <Badge variant="danger">Low</Badge>
+                </div>
+              ))}
+            </div>
           )}
-
-          {activeSection === "notifications" && (
-            <>
-              <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
-                {[
-                  { key: "notifications" as const, label: "🔔 All Notifications", desc: "Master switch for all notifications" },
-                  { key: "emailNotifications" as const, label: "📧 Email Notifications", desc: "Get order updates and reading reminders via email" },
-                  { key: "pushNotifications" as const, label: "📱 Push Notifications", desc: "Receive push notifications on your device" },
-                ].map(({ key, label, desc }) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-brand-dark">{label}</p>
-                      <p className="text-xs text-gray-600">{desc}</p>
-                    </div>
-                    <button
-                      onClick={() => setSettings(prev => ({ ...prev, [key]: !prev[key] }))}
-                      className={`w-12 h-6 rounded-full transition-all duration-300 relative ${
-                        settings[key] ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-gray-300"
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${
-                        settings[key] ? "left-6" : "left-0.5"
-                      }`} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* Danger Zone */}
-          <div className="bg-white rounded-2xl border border-red-300 p-5">
-            <p className="text-sm font-semibold text-red-700 mb-1">⚠️ Danger Zone</p>
-            <p className="text-xs text-gray-600 mb-3">Once deleted, your account and all data cannot be recovered.</p>
-            <button className="px-5 py-2.5 rounded-xl bg-red-100 text-red-700 text-sm font-semibold hover:bg-red-200 transition border border-red-300 flex items-center gap-2">
-              <FiTrash2 size={14} /> Delete Account
-            </button>
-          </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════
-//  SUPPORT TAB
-// ═══════════════════════════════════════════════════════════
-function SupportTab() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [message, setMessage] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [ticketType, setTicketType] = useState("General");
-  const [searchFaq, setSearchFaq] = useState("");
+function SellerOrdersTab({ sellerId }: { sellerId?: number }) {
+  const { data: orders = [], isLoading } = useSellerOrders(sellerId);
+  if (!sellerId) return <EmptyState icon="🔒" title="No seller profile linked" />;
+  if (isLoading) return <Loader />;
+  return (
+    <div>
+      <SectionHeader eyebrow="Fulfilment" title="Incoming Orders" />
+      <OrdersTable orders={orders} thirdLabel="Customer" thirdCol={(o) => `Customer #${o.customerId}`} />
+    </div>
+  );
+}
 
-  const faqs = [
-    { q: "How do I track my order?", a: "Go to the Orders tab and click on any order to see real-time tracking details and estimated delivery date. You can also click 'Track Order' for in-transit items." },
-    { q: "Can I return a book?", a: "Yes! We offer a 7-day return policy for unused books in original condition. Initiate returns from your Orders page by clicking on any delivered order." },
-    { q: "How do I change my email?", a: "Visit the Settings tab, update your email address under General settings, and verify the new email via the confirmation link sent to your inbox." },
-    { q: "What payment methods are accepted?", a: "We accept UPI, Credit/Debit cards, Net Banking, and Cash on Delivery for orders above ₹200. All transactions are secured with 256-bit encryption." },
-    { q: "How does the reading tracker work?", a: "Manually update your progress in My Books using the +10/-10 buttons, or sync with our mobile app for automatic tracking via page detection." },
-    { q: "How do I upgrade to PRO?", a: "Click the 'Upgrade to PRO' banner on your Dashboard or visit the Settings tab. PRO members get unlimited access to 10K+ books and exclusive discounts." },
+// ═══════════════════════════════════════════════════════════
+//  ADMIN TABS
+// ═══════════════════════════════════════════════════════════
+function AdminDashboard({ name }: { name: string }) {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["profile", "admin-stats"],
+    queryFn: () => adminApi.getStats(),
+  });
+
+  if (isLoading || !stats) return <Loader label="Loading marketplace…" />;
+
+  const cards: StatDef[] = [
+    { label: "Sellers", value: stats.totalSellers, color: "#f5a623", icon: FiUsers },
+    { label: "Customers", value: stats.totalCustomers, color: "#ec4899", icon: FiUser },
+    { label: "Books", value: stats.totalBooks, color: "#8b5cf6", icon: FiBook },
+    { label: "Orders", value: stats.totalOrders, color: "#10b981", icon: FiPackage },
   ];
 
-  const filteredFaqs = faqs.filter(f => f.q.toLowerCase().includes(searchFaq.toLowerCase()) || f.a.toLowerCase().includes(searchFaq.toLowerCase()));
+  return (
+    <div className="space-y-6">
+      <WelcomeBanner name={name} roleLabel="Administrator" headline="Approve sellers & books, and keep the marketplace healthy." />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {cards.map((s, i) => <StatCard key={s.label} stat={s} index={i} />)}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card className="p-6 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center"><FiUsers size={20} /></div>
+          <div>
+            <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">Pending Sellers</p>
+            <p className="text-2xl font-black text-brand-dark">{stats.pendingSellers}</p>
+          </div>
+          {stats.pendingSellers > 0 && <span className="ml-auto"><Badge variant="warning">Action needed</Badge></span>}
+        </Card>
+        <Card className="p-6 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-violet-100 text-violet-600 flex items-center justify-center"><FiBook size={20} /></div>
+          <div>
+            <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">Pending Books</p>
+            <p className="text-2xl font-black text-brand-dark">{stats.pendingBooks}</p>
+          </div>
+          {stats.pendingBooks > 0 && <span className="ml-auto"><Badge variant="warning">Action needed</Badge></span>}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function AdminOrdersTab() {
+  const { data: orders = [], isLoading } = useQuery({ queryKey: ["profile", "admin-orders"], queryFn: () => adminApi.getOrders() });
+  if (isLoading) return <Loader />;
+  return (
+    <div>
+      <SectionHeader eyebrow="Transactions" title="All Orders" />
+      <OrdersTable orders={orders} thirdLabel="Seller" thirdCol={(o) => o.sellerName} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SETTINGS & SUPPORT (shared for all roles)
+// ═══════════════════════════════════════════════════════════
+function SettingsTab({
+  name,
+  email,
+  roleLabel,
+  role,
+  customerId,
+  sellerId,
+}: {
+  name: string;
+  email: string;
+  roleLabel: string;
+  role: RoleName;
+  customerId?: number;
+  sellerId?: number;
+}) {
+  const [prefs, setPrefs] = useState({ email: true, push: false, marketing: false });
+  const [saved, setSaved] = useState(false);
+  const toggle = (k: keyof typeof prefs) => setPrefs((p) => ({ ...p, [k]: !p[k] }));
+
+  // ── Editable profile (all roles) ──────────────────────────
+  const canEdit =
+    (role === "CUSTOMER" && !!customerId) ||
+    (role === "SELLER" && !!sellerId) ||
+    role === "ADMIN";
+
+  const { updateUser } = useAuthStore();
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  // Customer fields
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  // Seller fields
+  const [businessName, setBusinessName] = useState("");
+  const [contactPerson, setContactPerson] = useState("");
+  const [mobile, setMobile] = useState("");
+  // Admin field
+  const [displayName, setDisplayName] = useState("");
+
+  const startEdit = async () => {
+    if (role === "CUSTOMER") {
+      setFirstName(name.split(" ")[0] ?? "");
+      setLastName(name.split(" ").slice(1).join(" ") ?? "");
+    } else if (role === "SELLER" && sellerId) {
+      setBusinessName(name);
+      setContactPerson("");
+      setMobile("");
+      try {
+        const s = await sellerApi.getSeller(sellerId);
+        setBusinessName(s.businessName);
+        setContactPerson(s.contactPerson);
+        setMobile(s.mobile);
+      } catch {
+        /* keep defaults */
+      }
+    } else if (role === "ADMIN") {
+      setDisplayName(name);
+    }
+    setEditing(true);
+  };
+
+  const saveProfile = async () => {
+    setSavingProfile(true);
+    try {
+      if (role === "CUSTOMER" && customerId) {
+        if (!firstName.trim()) { toast.error("First name is required."); setSavingProfile(false); return; }
+        const fullName = await authApi.updateCustomerProfile(customerId, {
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+        });
+        updateUser({ name: fullName });
+      } else if (role === "SELLER" && sellerId) {
+        if (!businessName.trim()) { toast.error("Business name is required."); setSavingProfile(false); return; }
+        const newName = await authApi.updateSellerProfile(sellerId, {
+          businessName: businessName.trim(),
+          contactPerson: contactPerson.trim(),
+          mobile: mobile.trim(),
+        });
+        updateUser({ name: newName });
+      } else if (role === "ADMIN") {
+        if (!displayName.trim()) { toast.error("Display name is required."); setSavingProfile(false); return; }
+        // No admin table in the data model — persist locally to the auth session.
+        updateUser({ name: displayName.trim() });
+      }
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      toast.success("Profile updated successfully.");
+      setEditing(false);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not update profile.");
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const inputCls =
+    "w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm text-brand-dark outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-200 transition";
+
+  return (
+    <div>
+      <SectionHeader
+        eyebrow="Preferences"
+        title="Account Settings"
+        action={
+          <button
+            onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 1800); }}
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all flex items-center gap-2 ${saved ? "bg-emerald-600" : "bg-gradient-to-r from-amber-500 to-pink-500 hover:opacity-90"}`}
+          >
+            {saved ? <FiCheck size={16} /> : <FiSettings size={16} />}
+            {saved ? "Saved!" : "Save Changes"}
+          </button>
+        }
+      />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-bold text-brand-dark">👤 Account Information</p>
+            {canEdit && !editing && (
+              <button
+                onClick={startEdit}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 transition flex items-center gap-1.5"
+              >
+                <FiEdit3 size={13} /> Edit Profile
+              </button>
+            )}
+          </div>
+
+          {editing ? (
+            <div className="space-y-4">
+              {role === "CUSTOMER" && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">First Name</label>
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">Last Name</label>
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputCls} />
+                  </div>
+                </div>
+              )}
+
+              {role === "SELLER" && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">Business Name</label>
+                    <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} className={inputCls} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">Contact Person</label>
+                      <input value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} className={inputCls} />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">Mobile</label>
+                      <input value={mobile} onChange={(e) => setMobile(e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {role === "ADMIN" && (
+                <div>
+                  <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">Display Name</label>
+                  <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} className={inputCls} />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">Email</label>
+                <div className="w-full bg-brand-gray border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500">{email} <span className="text-[10px]">(read-only)</span></div>
+              </div>
+              <div className="flex items-center gap-3 pt-1">
+                <button
+                  onClick={saveProfile}
+                  disabled={savingProfile}
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-amber-500 to-pink-500 hover:opacity-90 transition flex items-center gap-2 disabled:opacity-60"
+                >
+                  {savingProfile ? <FiClock size={14} className="animate-spin" /> : <FiCheck size={14} />}
+                  {savingProfile ? "Saving…" : "Save"}
+                </button>
+                <button
+                  onClick={() => setEditing(false)}
+                  disabled={savingProfile}
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition flex items-center gap-2"
+                >
+                  <FiX size={14} /> Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {[
+                { label: role === "SELLER" ? "Business Name" : "Full Name", value: name },
+                { label: "Email", value: email },
+                { label: "Role", value: roleLabel },
+              ].map((f) => (
+                <div key={f.label}>
+                  <label className="block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5">{f.label}</label>
+                  <div className="w-full bg-brand-gray border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-brand-dark">{f.value}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+        <Card className="p-6">
+          <p className="text-sm font-bold text-brand-dark mb-4">🔔 Notifications</p>
+          <div className="space-y-4">
+            {([
+              { key: "email" as const, label: "Email notifications", desc: "Order updates & important alerts" },
+              { key: "push" as const, label: "Push notifications", desc: "Real-time updates on your device" },
+              { key: "marketing" as const, label: "Marketing emails", desc: "Offers, news and recommendations" },
+            ]).map(({ key, label, desc }) => (
+              <div key={key} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-brand-dark">{label}</p>
+                  <p className="text-xs text-gray-600">{desc}</p>
+                </div>
+                <button
+                  onClick={() => toggle(key)}
+                  className={`w-12 h-6 rounded-full transition-all duration-300 relative ${prefs[key] ? "bg-gradient-to-r from-amber-500 to-pink-500" : "bg-gray-300"}`}
+                >
+                  <div className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-all duration-300 ${prefs[key] ? "left-6" : "left-0.5"}`} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function SupportTab() {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [message, setMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const faqs = [
+    { q: "How do I track my order?", a: "Open the Orders tab — each order shows its live status (Created, Accepted, Shipped, Delivered)." },
+    { q: "How do sellers get approved?", a: "After registering as a seller, an administrator reviews and approves your account before you can list books." },
+    { q: "Why is a book pending approval?", a: "Books submitted by sellers must be approved by an admin before they appear in the marketplace." },
+    { q: "Can I cancel an order?", a: "Orders can be cancelled before they are shipped. Cancelling restores the seller's stock automatically." },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
       setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setMessage(""); }, 2500);
+      setTimeout(() => { setSubmitted(false); setMessage(""); }, 2200);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-[10px] font-bold tracking-widest bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase">Help Center</p>
-        <h3 className="text-xl font-bold text-brand-dark mt-0.5">Support & FAQ</h3>
-      </div>
-
+    <div>
+      <SectionHeader eyebrow="Help Center" title="Support & FAQ" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* FAQ Accordion */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-bold text-brand-dark">❓ Frequently Asked Questions</p>
-          </div>
-          <div className="relative mb-4">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-            <input
-              type="text"
-              placeholder="Search FAQs..."
-              value={searchFaq}
-              onChange={(e) => setSearchFaq(e.target.value)}
-              className="w-full bg-brand-gray border border-gray-300 rounded-xl pl-9 pr-4 py-2.5 text-sm text-brand-dark placeholder:text-gray-400 outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-200 transition"
-            />
-          </div>
-          <div className="space-y-2 max-h-[400px] overflow-y-auto">
-            <AnimatePresence>
-              {filteredFaqs.map((faq, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="border border-gray-200 rounded-xl overflow-hidden"
-                >
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full flex items-center justify-between p-4 text-left hover:bg-brand-gray transition-all"
-                  >
-                    <span className="text-sm font-semibold text-brand-dark pr-4">{faq.q}</span>
-                    <motion.span
-                      animate={{ rotate: openFaq === i ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-gray-400 flex-shrink-0"
-                    >
-                      <FiChevronDown size={16} />
-                    </motion.span>
-                  </button>
-                  <AnimatePresence>
-                    {openFaq === i && (
-                      <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: "auto" }}
-                        exit={{ height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{faq.a}</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            {filteredFaqs.length === 0 && (
-              <p className="text-center text-gray-500 text-sm py-8">No FAQs found matching your search.</p>
-            )}
-          </div>
-        </div>
-
-        {/* Contact Form */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <p className="text-sm font-bold text-brand-dark mb-1">💬 Contact Support</p>
-          <p className="text-xs text-gray-600 mb-4">We typically reply within 24 hours</p>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Issue Type</label>
-              <div className="flex flex-wrap gap-2">
-                {["General", "Order", "Technical", "Billing"].map(t => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setTicketType(t)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                      ticketType === t
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-brand-dark"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
+        <Card className="p-6">
+          <p className="text-sm font-bold text-brand-dark mb-4 flex items-center gap-2"><FiList /> Frequently Asked Questions</p>
+          <div className="space-y-2">
+            {faqs.map((faq, i) => (
+              <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-4 text-left hover:bg-brand-gray transition">
+                  <span className="text-sm font-semibold text-brand-dark pr-4">{faq.q}</span>
+                  <motion.span animate={{ rotate: openFaq === i ? 180 : 0 }} className="text-gray-400 flex-shrink-0"><FiChevronDown size={16} /></motion.span>
+                </button>
+                <AnimatePresence>
+                  {openFaq === i && (
+                    <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
+                      <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Message</label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Describe your issue in detail..."
-                rows={4}
-                className="w-full bg-brand-gray border border-gray-300 rounded-xl px-4 py-3 text-sm text-brand-dark placeholder:text-gray-400 resize-none outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-200 transition-all"
-              />
-            </div>
-            <motion.button
+            ))}
+          </div>
+        </Card>
+        <Card className="p-6">
+          <p className="text-sm font-bold text-brand-dark mb-1 flex items-center gap-2"><FiMessageCircle /> Contact Support</p>
+          <p className="text-xs text-gray-600 mb-4">We typically reply within 24 hours</p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Describe your issue…"
+              rows={5}
+              className="w-full bg-brand-gray border border-gray-300 rounded-xl px-4 py-3 text-sm text-brand-dark placeholder:text-gray-400 resize-none outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-200 transition"
+            />
+            <button
               type="submit"
               disabled={submitted}
-              className={`w-full py-3 rounded-xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2 ${
-                submitted ? "bg-emerald-600" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-              }`}
-              whileTap={{ scale: 0.98 }}
+              className={`w-full py-3 rounded-xl text-sm font-bold text-white transition-all flex items-center justify-center gap-2 ${submitted ? "bg-emerald-600" : "bg-gradient-to-r from-amber-500 to-pink-500 hover:opacity-90"}`}
             >
               {submitted ? <FiCheck size={16} /> : <FiSend size={16} />}
               {submitted ? "Ticket Submitted!" : "Submit Ticket"}
-            </motion.button>
+            </button>
           </form>
-
           <div className="mt-4 p-4 rounded-xl bg-brand-gray border border-gray-200">
             <p className="text-xs font-semibold text-brand-dark mb-1">📞 Other ways to reach us</p>
             <p className="text-xs text-gray-600">support@bookhaven.com · +91 98765 43210</p>
-            <div className="flex gap-3 mt-3">
-              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-brand-dark hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
-                <FiMessageCircle size={12} /> Live Chat
-              </button>
-              <button className="px-3 py-2 rounded-lg bg-white text-xs text-gray-600 hover:text-brand-dark hover:bg-gray-100 transition flex items-center gap-1.5 border border-gray-300">
-                <FiShare2 size={12} /> Share Feedback
-              </button>
-            </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
@@ -1697,6 +1374,9 @@ function SupportTab() {
 //  MAIN PAGE
 // ═══════════════════════════════════════════════════════════
 export default function ProfilePage() {
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -1707,24 +1387,58 @@ export default function ProfilePage() {
     return () => { document.body.style.overflow = ""; };
   }, [isMobileOpen]);
 
+  // Not logged in → bounce to login
+  useEffect(() => {
+    if (!user) navigate("/login?redirect=/profile", { replace: true });
+  }, [user, navigate]);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  const goHome = () => navigate("/");
+
+  if (!user) return null;
+
+  const role = user.role;
+  const items = SIDEBAR_BY_ROLE[role];
+  const roleLabel = ROLE_LABEL[role];
+
+  // keep active tab valid for the role
+  const validIds = items.map((i) => i.id);
+  const safeTab = validIds.includes(activeTab) ? activeTab : "Dashboard";
+
   const renderTab = () => {
-    switch (activeTab) {
-      case "Dashboard": return <DashboardTab user={MOCK_USER} />;
-      case "MyBooks":   return <MyBooksTab />;
-      case "Orders":    return <OrdersTab />;
-      case "Wishlist":  return <WishlistTab />;
-      case "Analytics": return <AnalyticsTab />;
-      case "Settings":  return <SettingsTab />;
-      case "Support":   return <SupportTab />;
-      default:          return <DashboardTab user={MOCK_USER} />;
+    // Shared tabs
+    if (safeTab === "Settings") return <SettingsTab name={user.name} email={user.email} roleLabel={roleLabel} role={role} customerId={user.customerId} sellerId={user.sellerId} />;
+    if (safeTab === "Support") return <SupportTab />;
+
+    if (role === "CUSTOMER") {
+      switch (safeTab) {
+        case "Dashboard": return <CustomerDashboard name={user.name} customerId={user.customerId} />;
+        case "Orders": return <CustomerOrdersTab customerId={user.customerId} />;
+        case "Analytics": return <CustomerAnalyticsTab customerId={user.customerId} />;
+      }
     }
+    if (role === "SELLER") {
+      switch (safeTab) {
+        case "Dashboard": return <SellerDashboard name={user.name} sellerId={user.sellerId} />;
+        case "Orders": return <SellerOrdersTab sellerId={user.sellerId} />;
+      }
+    }
+    if (role === "ADMIN") {
+      switch (safeTab) {
+        case "Dashboard": return <AdminDashboard name={user.name} />;
+        case "Orders": return <AdminOrdersTab />;
+      }
+    }
+    return null;
   };
 
   return (
     <div className="min-h-screen bg-brand-gray text-brand-dark">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        * { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.2); border-radius: 3px; }
@@ -1733,26 +1447,35 @@ export default function ProfilePage() {
 
       <div className="flex min-h-screen">
         <Sidebar
-          activeTab={activeTab}
+          items={items}
+          activeTab={safeTab}
           setActiveTab={setActiveTab}
           isCollapsed={isCollapsed}
           isMobileOpen={isMobileOpen}
           setIsMobileOpen={setIsMobileOpen}
-          user={MOCK_USER}
+          name={user.name}
+          email={user.email}
+          roleLabel={roleLabel}
+          onLogout={handleLogout}
+          onGoHome={goHome}
         />
         <div className="flex-1 flex flex-col min-w-0">
           <TopHeader
-            user={MOCK_USER}
+            name={user.name}
+            email={user.email}
+            roleLabel={roleLabel}
+            subtitle={ROLE_SUBTITLE[role]}
             onMenuToggle={() => setIsMobileOpen(!isMobileOpen)}
             onCollapseToggle={() => setIsCollapsed(!isCollapsed)}
             isCollapsed={isCollapsed}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            notifications={2}
+            onLogout={handleLogout}
+            onGoHome={goHome}
           />
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <motion.div
-              key={activeTab}
+              key={safeTab}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}

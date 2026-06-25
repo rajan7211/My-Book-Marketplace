@@ -1,5 +1,5 @@
 import { api } from "./client";
-import type { Book, Listing, OrderStatus } from "@/types";
+import type { Book, Listing, OrderStatus, Seller } from "@/types";
 import type { OrderRecord, OrderItemRecord } from "./orders.api";
 
 export interface ListingWithBook extends Listing {
@@ -33,6 +33,12 @@ export const SELLER_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
 };
 
 export const sellerApi = {
+  /** Fetch a single seller's profile details */
+  async getSeller(sellerId: number): Promise<Seller> {
+    const { data } = await api.get<Seller>(`/sellers/${sellerId}`);
+    return data;
+  },
+
   /** All listings owned by this seller (Rule 3: inventory belongs to seller) */
   async getMyListings(sellerId: number): Promise<ListingWithBook[]> {
     const [{ data: listings }, { data: books }] = await Promise.all([
