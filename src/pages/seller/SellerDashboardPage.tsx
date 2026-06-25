@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   FiActivity,
   FiAlertTriangle,
@@ -71,7 +71,7 @@ const ORDER_STATUS_META: Record<
 };
 
 // Animation variants
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -82,20 +82,23 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+const itemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       type: "spring",
       stiffness: 100,
-      damping: 12,
+      damping: 20,
     },
   },
 };
 
-const fadeVariants = {
+const fadeVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -924,4 +927,3 @@ function SummaryLine({ label, value }: { label: string; value: string | number }
     </motion.div>
   );
 }
-

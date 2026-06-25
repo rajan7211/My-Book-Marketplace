@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { FiPlus, FiX, FiPackage, FiAlertCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { SellerLayout } from "./SellerLayout";
@@ -50,7 +50,7 @@ const newBookSchema = Yup.object({
 const CATEGORIES = ["Fictions", "Biography", "History", "Graphic Design", "Self Help"];
 
 // Animation variants
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -61,7 +61,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
@@ -74,7 +74,7 @@ const cardVariants = {
   },
 };
 
-const modalVariants = {
+const modalVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -86,7 +86,7 @@ const modalVariants = {
   },
 };
 
-const modalContentVariants = {
+const modalContentVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95, y: 20 },
   visible: {
     opacity: 1,
@@ -229,7 +229,7 @@ export default function SellerListingsPage() {
             animate="visible"
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
           >
-            {listings.map((listing, index) => (
+            {listings.map((listing) => (
               <motion.div
                 key={listing.id}
                 variants={cardVariants}
@@ -508,5 +508,7 @@ function Modal({
     </motion.div>
   );
 }
+
+
 
 
