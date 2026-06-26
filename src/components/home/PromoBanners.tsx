@@ -68,7 +68,7 @@ export function PromoBanners() {
           </Link>
         </div>
         <img
-          src="https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg"
+          src="https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781501124020-L.jpg&w=220&output=webp&we"
           alt="Deal of the day"
           className="h-36 w-24 rotate-6 rounded shadow-lg"
         />
