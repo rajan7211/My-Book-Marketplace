@@ -115,7 +115,7 @@
       "businessName": "BookHub Traders",
       "contactPerson": "Amit Sharma",
       "email": "seller.a@bookhub.com",
-      "mobile": "8580432871",
+      "mobile": "9876543210",
       "status": "APPROVED",
       "createdAt": "2026-02-12T10:00:00.000Z"
     },
@@ -179,7 +179,7 @@
       "publisher": "Random House",
       "description": "An easy and proven way to build good habits and break bad ones. Tiny changes, remarkable results.",
       "category": "Self Help",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781847941831-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781847941831-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller",
@@ -195,7 +195,7 @@
       "publisher": "Bloomsbury",
       "description": "The sixth book in the Harry Potter series, where Voldemort's past is unveiled through memories.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/id/13222714-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13222714-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "trending"
@@ -210,7 +210,7 @@
       "publisher": "Pegasus",
       "description": "An epic tale of warriors, conquest and survival in the brutal Viking age.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9786053435693-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9786053435693-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "trending"
@@ -225,7 +225,7 @@
       "publisher": "Berkley",
       "description": "A woman goes head-to-head with the CEO of the company gentrifying her neighborhood in this fresh retelling.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780349436937-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780349436937-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "created-for-you"
@@ -240,7 +240,7 @@
       "publisher": "Harvard Business",
       "description": "In this powerful yet practical book, economist and thought leader shows why sponsors matter.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/id/13069105-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13069105-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "created-for-you"
@@ -255,7 +255,7 @@
       "publisher": "Viking",
       "description": "Between life and death there is a library, and within that library, the shelves go on forever.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780525559474-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-02-13T11:10:00.000Z"
@@ -268,7 +268,7 @@
       "publisher": "PublicAffairs",
       "description": "A 5000-year history of wealth, greed and endeavour across the African continent.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781610396356-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781610396356-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller",
@@ -284,7 +284,7 @@
       "publisher": "Crown Business",
       "description": "Notes on startups, or how to build the future. Doing what we already know takes the world from 1 to n. Creating something new takes it from 0 to 1.",
       "category": "Graphic Design",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780804139298-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "created-for-you"
@@ -299,7 +299,7 @@
       "publisher": "PublicAffairs",
       "description": "Warlords, oligarchs, corporations, smugglers, and the theft of Africa's wealth.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781610394390-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781610394390-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -314,7 +314,7 @@
       "publisher": "Harper & Brothers",
       "description": "The saga of Captain Ahab and his monomaniacal pursuit of the white whale.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/id/10410387-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/10410387-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-02-15T11:00:00.000Z"
@@ -327,7 +327,7 @@
       "publisher": "Premium Times",
       "description": "The life and times of one of Nigeria's most influential chiefs of staff.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/id/11402968-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/11402968-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -342,7 +342,7 @@
       "publisher": "Crown Business",
       "description": "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
       "category": "Graphic Design",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780307887894-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780307887894-L.jpg&w=400&output=webp&we",
       "status": "REJECTED",
       "tags": [
         "created-for-you"
@@ -357,7 +357,7 @@
       "publisher": "Simon & Schuster",
       "description": "Masters on the craft — the world's greatest investors reveal their strategies.",
       "category": "Graphic Design",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781982132798-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781982132798-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -372,7 +372,7 @@
       "publisher": "Tor Books",
       "description": "The long-awaited sequel to the dark academia sensation The Atlas Six.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781250854513-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781250854513-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -387,7 +387,7 @@
       "publisher": "Harper Perennial",
       "description": "The unforgettable novel of childhood in a sleepy Southern town and the crisis of conscience that rocked it.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/id/13008678-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13008678-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -402,7 +402,7 @@
       "publisher": "Farrar, Straus",
       "description": "The first full biography of Martin Luther King Jr. in decades — a landmark work.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780374279295-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780374279295-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -417,7 +417,7 @@
       "publisher": "Scribner",
       "description": "A memoir by the creator of Nike — a candid and riveting story of the company's early days.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781501135910-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781501135910-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -432,7 +432,7 @@
       "publisher": "Macmillan",
       "description": "The struggle for freedom and democracy in Uganda.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/id/10795906-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/10795906-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -447,7 +447,7 @@
       "publisher": "Little, Brown",
       "description": "The autobiography of Nelson Mandela — one of the great moral and political leaders of our time.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780316548182-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780316548182-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "biography-autography"
@@ -462,7 +462,7 @@
       "publisher": "Metropolitan",
       "description": "A hundred years' history on Palestine — settler colonialism and resistance.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781250787651-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781250787651-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -477,7 +477,7 @@
       "publisher": "Spiegel & Grau",
       "description": "Stories from a South African childhood by the comedian and host.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/id/8294078-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/8294078-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -492,7 +492,7 @@
       "publisher": "Kachifo",
       "description": "How an incumbent president was defeated in Nigeria.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/id/15230833-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/15230833-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -507,7 +507,7 @@
       "publisher": "Simon & Schuster",
       "description": "Life and work principles from the founder of Bridgewater Associates.",
       "category": "Graphic Design",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781501124020-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-03-02T11:00:00.000Z"
@@ -519,7 +519,7 @@
       "publisher": "Harriman House",
       "category": "Self Help",
       "description": "A personal finance book that argues doing well with money has less to do with intelligence and everything to do with behavior",
-      "coverImage": "https://covers.openlibrary.org/b/id/10389354-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/10389354-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-06-12T07:49:05.968Z",
@@ -533,7 +533,7 @@
       "publisher": "Free Press",
       "description": "Powerful lessons in personal change — timeless principles for effectiveness in life and work.",
       "category": "Self Help",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781451639612-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781451639612-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -548,7 +548,7 @@
       "publisher": "Harper",
       "description": "A sweeping account of the history of our species — from the Cognitive Revolution to the present.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780062316097-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -563,7 +563,7 @@
       "publisher": "HarperOne",
       "description": "A young Andalusian shepherd embarks on a journey to find a worldly treasure — and discovers the treasure within.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780062315007-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -578,7 +578,7 @@
       "publisher": "Crown",
       "description": "An intimate, powerful, and inspiring memoir by the former First Lady of the United States.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781524763138-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -593,7 +593,7 @@
       "publisher": "Farrar, Straus and Giroux",
       "description": "Engaging the reader in a lively conversation about how we think, make choices, and arrive at judgments.",
       "category": "Self Help",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780374533557-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "bestseller"
@@ -608,7 +608,7 @@
       "publisher": "Random House",
       "description": "An unforgettable memoir about a young woman who, kept out of school, leaves her survivalist family and goes on to earn a PhD.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9780399590504-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9780399590504-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -623,7 +623,7 @@
       "publisher": "New World Library",
       "description": "A guide to spiritual enlightenment — living in the present moment and finding inner peace.",
       "category": "Self Help",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781577314806-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/isbn/9781577314806-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "macrobiotic"
@@ -638,7 +638,7 @@
       "publisher": "Verso",
       "description": "The story of the Palestinian national movement and its struggle against settler colonialism.",
       "category": "History",
-      "coverImage": "https://covers.openlibrary.org/b/id/320696-M.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/320696-M.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -653,7 +653,7 @@
       "publisher": "Bloomsbury",
       "description": "A Palestinian doctor's journey from grief to hope — turning pain into a force for reconciliation.",
       "category": "Biography",
-      "coverImage": "https://covers.openlibrary.org/b/id/6676944-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/6676944-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -668,7 +668,7 @@
       "publisher": "Bloomsbury",
       "description": "A poignant, multigenerational story of a Palestinian family caught in the conflict of the Middle East.",
       "category": "Fictions",
-      "coverImage": "https://covers.openlibrary.org/b/id/6935052-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/6935052-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "palestine"
@@ -682,7 +682,7 @@
       "publisher": "Rajan",
       "category": "History",
       "description": "One nation one earth",
-      "coverImage": "https://covers.openlibrary.org/b/id/10108744-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/10108744-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [],
       "createdAt": "2026-06-16T08:08:08.648Z",
@@ -696,7 +696,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Fourth Wing by Rebecca Yarros.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/14407898-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/14407898-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -711,7 +711,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Powerless by Lauren Roberts.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/14567864-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/14567864-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -726,7 +726,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Iron Flame by Rebecca Yarros.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/14405746-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/14405746-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -741,7 +741,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: అమ్మ డైరీలో... కొన్ని పేజీలు! by రవే మంత్రీ.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/15223433-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/15223433-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -756,7 +756,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: King of Pride by Ana Huang.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13244526-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13244526-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -771,7 +771,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: The Housemaid's Secret by Freida McFadden.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13439869-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13439869-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -786,7 +786,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: 8 Rules of Love by Jay Shetty.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13110571-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13110571-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -801,7 +801,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Love Theoretically by Ali Hazelwood.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13264824-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13264824-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -816,7 +816,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: No Brainer by Jeff Kinney.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13442265-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13442265-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -831,7 +831,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: King of Greed by Ana Huang.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/15230385-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/15230385-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -846,7 +846,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: The Chalice of the Gods by Rick Riordan.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/14596529-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/14596529-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -861,7 +861,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: The Art of Being Alone by Renuka Gavrani.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/15052166-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/15052166-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -876,7 +876,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: The Sun and the Star by Rick Riordan.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13348151-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13348151-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -891,7 +891,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Black Ties and White Lies by Kat Singleton.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13224876-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13224876-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -906,7 +906,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Wildfire by Hannah Grace.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13820942-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13820942-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -921,7 +921,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Spare by Prince Harry, Duke of Sussex.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13415348-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13415348-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -936,7 +936,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Yellowface by R. F. Kuang.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13195421-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13195421-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -951,7 +951,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: God of Fury by Rina Kent.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/14858421-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/14858421-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -966,7 +966,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Happy Place by Emily Henry.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13233403-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13233403-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -981,7 +981,7 @@
       "publisher": "Independent",
       "description": "A highly anticipated new release: Final Offer by Lauren Asher.",
       "category": "Fiction",
-      "coverImage": "https://covers.openlibrary.org/b/id/13258475-L.jpg",
+      "coverImage": "https://images.weserv.nl/?url=covers.openlibrary.org/b/id/13258475-L.jpg&w=400&output=webp&we",
       "status": "APPROVED",
       "tags": [
         "new-release"
@@ -1156,7 +1156,7 @@
       "sellerId": 1,
       "price": 1186,
       "mrp": 1350,
-      "stock": 11,
+      "stock": 13,
       "status": "ACTIVE",
       "createdAt": "2026-02-22T10:10:00.000Z"
     },
@@ -1709,16 +1709,6 @@
       "status": "CREATED",
       "createdAt": "2026-06-23T12:58:05.031Z",
       "id": 11
-    },
-    {
-      "customerId": 2,
-      "sellerId": 1,
-      "sellerName": "BookHub Traders",
-      "shippingAddress": "Ronak Thakur, 9845436272, 1324 , sector 80, mohali, punjab, 149004",
-      "totalAmount": 2372,
-      "status": "CREATED",
-      "createdAt": "2026-06-25T12:29:16.817Z",
-      "id": 12
     }
   ],
   "orderItems": [
@@ -1831,16 +1821,7 @@
       "price": 2100,
       "quantity": 1,
       "id": 11
-    },
-    {
-      "orderId": 12,
-      "listingId": 17,
-      "bookId": 14,
-      "title": "The Atlas Paradox",
-      "coverImage": "https://covers.openlibrary.org/b/isbn/9781250854513-L.jpg",
-      "price": 1186,
-      "quantity": 2,
-      "id": 12
     }
   ]
 }
+
