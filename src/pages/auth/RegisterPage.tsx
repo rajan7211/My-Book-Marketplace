@@ -7,7 +7,7 @@ import { AuthLayout } from "./AuthLayout";
 import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { authApi, type RegisterPayload } from "@/api/auth.api";
-import { useAuthStore } from "@/store/auth.store";
+import { getApiErrorMessage } from "@/lib/api-helpers";
 
 
 
@@ -36,16 +36,15 @@ const registerSchema = Yup.object({
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const login = useAuthStore((s) => s.login);
 
   const mutation = useMutation({
-    mutationFn: (payload: RegisterPayload) => authApi.registerCustomer(payload),
-    onSuccess: (user) => {
-      login(user);
-      toast.success("Account created! Welcome to World Knowledge 🎉");
-      navigate("/");
+    mutationFn: (payload: RegisterPayload) => authApi.register(payload),
+    onSuccess: (_data, payload) => {
+      toast.success("Verification code sent. Please check your email.");
+      // Account isn't created until the OTP is verified on the next screen.
+      navigate("/verify-otp", { state: { email: payload.email } });
     },
-    onError: (err: Error) => toast.error(err.message),
+    onError: (err) => toast.error(getApiErrorMessage(err)),
   });
 
   return (

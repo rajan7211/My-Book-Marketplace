@@ -108,11 +108,11 @@ export default function AdminCustomersPage() {
                         variant="dark"
                         onClick={() => {
                           impersonate({
-                            userId: c.userId,
+                            userId: String(c.userId),
                             email: c.email,
                             name: `${c.firstName} ${c.lastName}`,
                             role: "CUSTOMER",
-                            customerId: c.id,
+                            customerId: String(c.id),
                           });
                           navigate("/orders");
                         }}

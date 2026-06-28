@@ -1,4 +1,6 @@
-import { api } from "./client";
+// Uses the mock json-server (port 4000) until the books module is migrated to
+// the real backend. Imported as `api` so the rest of this file is unchanged.
+import { mockApi as api } from "./mock-client";
 import type {
   Book,
   BookWithListings,

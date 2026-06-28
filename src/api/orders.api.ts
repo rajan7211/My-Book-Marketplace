@@ -1,4 +1,6 @@
-import { api } from "./client";
+// Uses the mock json-server (port 4000) until the orders module is migrated to
+// the real backend. Imported as `api` so the rest of this file is unchanged.
+import { mockApi as api } from "./mock-client";
 import type { CartItem, Listing, OrderStatus } from "@/types";
 
 export interface OrderRecord {
@@ -24,7 +26,7 @@ export interface OrderItemRecord {
 }
 
 export interface PlaceOrderPayload {
-  customerId: number;
+  customerId: string | number;
   shippingAddress: string;
   items: CartItem[];
 }
@@ -98,7 +100,7 @@ export const ordersApi = {
     return created;
   },
 
-  async getCustomerOrders(customerId: number) {
+  async getCustomerOrders(customerId: string | number) {
     const { data: orders } = await api.get<OrderRecord[]>("/orders", {
       params: { customerId, _sort: "createdAt", _order: "desc" },
     });

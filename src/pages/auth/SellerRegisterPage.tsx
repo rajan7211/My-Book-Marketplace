@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { AuthLayout } from "./AuthLayout";
 import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
-import { api } from "@/api/client";
-import { authApi } from "@/api/auth.api";
+import { authApi, type RegisterSellerPayload } from "@/api/auth.api";
+import { getApiErrorMessage } from "@/lib/api-helpers";
 
 /**
  * PDF seller fields: Business Name, Contact Person, Email, Mobile Number.
@@ -36,46 +36,18 @@ const sellerSchema = Yup.object({
     .required("Password cannot be empty"),
 });
 
-interface SellerPayload {
-  businessName: string;
-  contactPerson: string;
-  email: string;
-  mobile: string;
-  password: string;
-}
-
 export default function SellerRegisterPage() {
   const navigate = useNavigate();
 
   const mutation = useMutation({
-    mutationFn: async (payload: SellerPayload) => {
-      const exists = await authApi.checkEmailExists(payload.email);
-      if (exists) throw new Error("Email already registered. Please login.");
-
-      const { data: user } = await api.post("/users", {
-        email: payload.email.toLowerCase(),
-        password: payload.password,
-        roleId: 2,
-        createdAt: new Date().toISOString(),
-      });
-
-      await api.post("/sellers", {
-        userId: user.id,
-        businessName: payload.businessName,
-        contactPerson: payload.contactPerson,
-        email: payload.email.toLowerCase(),
-        mobile: payload.mobile,
-        status: "PENDING_APPROVAL",
-        createdAt: new Date().toISOString(),
-      });
+    mutationFn: (payload: RegisterSellerPayload) =>
+      authApi.registerSeller(payload),
+    onSuccess: (_data, payload) => {
+      toast.success("Verification code sent. Please check your email.");
+      // The seller account (PENDING_APPROVAL) is created after OTP verification.
+      navigate("/verify-otp", { state: { email: payload.email } });
     },
-    onSuccess: () => {
-      toast.success(
-        "Seller registration submitted! Status: Pending Approval. You can login once the admin approves your account."
-      );
-      navigate("/login");
-    },
-    onError: (err: Error) => toast.error(err.message),
+    onError: (err) => toast.error(getApiErrorMessage(err)),
   });
 
   return (

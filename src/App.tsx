@@ -17,6 +17,12 @@ const OrdersPage = lazy(() => import("@/pages/OrdersPage"));
 const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/auth/RegisterPage"));
 const SellerRegisterPage = lazy(() => import("@/pages/auth/SellerRegisterPage"));
+const VerifyOtpPage = lazy(() => import("@/pages/auth/VerifyOtpPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/auth/ResetPasswordPage"));
+const ChangePasswordPage = lazy(
+  () => import("@/pages/profile/ChangePasswordPage")
+);
 
 const SellerPendingPage = lazy(() => import("@/pages/seller/SellerPendingPage"));
 const SellerDashboardPage = lazy(() => import("@/pages/seller/SellerDashboardPage"));
@@ -54,6 +60,9 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/seller/register" element={<SellerRegisterPage />} />
+            <Route path="/verify-otp" element={<VerifyOtpPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/seller/pending" element={<SellerPendingPage />} />
 
             {/* Customer */}
@@ -84,6 +93,10 @@ export default function App() {
             {/* Profile Page (any authenticated role) */}
             <Route element={<ProtectedRoute roles={["CUSTOMER", "SELLER", "ADMIN"]} />}>
               <Route path="/profile" element={<ProfilePage />} />
+              <Route
+                path="/profile/change-password"
+                element={<ChangePasswordPage />}
+              />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -64,7 +64,7 @@ export default function AdminSellersPage() {
     });
 
   const update = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: "APPROVED" | "REJECTED" }) =>
+    mutationFn: ({ id, status }: { id: string | number; status: "APPROVED" | "REJECTED" }) =>
       adminApi.updateSellerStatus(id, status),
     onSuccess: (s) => {
       qc.invalidateQueries({ queryKey: ["admin"] });
@@ -200,11 +200,11 @@ export default function AdminSellersPage() {
                       size="sm"
                     onClick={() => {
                       const impersonatedUser = {
-                        userId: s.userId ?? s.id,
+                        userId: String(s.userId ?? s.id),
                         email: s.email,
                         name: s.businessName,
                         role: "SELLER" as const,
-                        sellerId: s.id,
+                        sellerId: String(s.id),
                         sellerStatus: "APPROVED" as const,
                       };
                       impersonate(impersonatedUser);

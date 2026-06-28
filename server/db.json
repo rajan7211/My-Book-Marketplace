@@ -1106,7 +1106,7 @@
       "sellerId": 2,
       "price": 1008,
       "mrp": 1150,
-      "stock": 14,
+      "stock": 13,
       "status": "ACTIVE",
       "createdAt": "2026-02-21T10:15:00.000Z"
     },
@@ -1719,6 +1719,16 @@
       "status": "CREATED",
       "createdAt": "2026-06-25T12:29:16.817Z",
       "id": 12
+    },
+    {
+      "customerId": "6a4153c0b8772f1dfa55234b",
+      "sellerId": 2,
+      "sellerName": "Readers Paradise",
+      "shippingAddress": "Rajan Thakur, 9845436272, 1324 , sector 80, mohali, punjab, 149004",
+      "totalAmount": 1008,
+      "status": "CREATED",
+      "createdAt": "2026-06-28T17:03:27.142Z",
+      "id": 13
     }
   ],
   "orderItems": [
@@ -1841,6 +1851,16 @@
       "price": 1186,
       "quantity": 2,
       "id": 12
+    },
+    {
+      "orderId": 13,
+      "listingId": 12,
+      "bookId": 9,
+      "title": "The Looting Machine",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781610394390-L.jpg",
+      "price": 1008,
+      "quantity": 1,
+      "id": 13
     }
   ]
 }

@@ -1,5 +1,15 @@
 import { api } from "./client";
-import type { AuthUser, Customer, Seller, User } from "@/types";
+import { mockApi } from "./mock-client";
+import { unwrap } from "@/lib/api-helpers";
+import type {
+  ApiEnvelope,
+  AuthResult,
+  Customer,
+  OtpPurpose,
+  Seller,
+} from "@/types";
+
+// ───────────────────────── Request payload types ─────────────────────────
 
 export interface RegisterPayload {
   firstName: string;
@@ -8,131 +18,167 @@ export interface RegisterPayload {
   password: string;
 }
 
+export interface RegisterSellerPayload {
+  businessName: string;
+  contactPerson: string;
+  email: string;
+  mobile: string;
+  password: string;
+}
+
 export interface LoginPayload {
   email: string;
   password: string;
 }
 
-const ROLE_MAP: Record<number, "CUSTOMER" | "SELLER" | "ADMIN"> = {
-  1: "CUSTOMER",
-  2: "SELLER",
-  3: "ADMIN",
-};
+export interface VerifyOtpPayload {
+  email: string;
+  purpose: OtpPurpose;
+  otp: string;
+}
 
+export interface ResendOtpPayload {
+  email: string;
+  purpose: OtpPurpose;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  otp: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
+/**
+ * Auth service — talks to the real NestJS backend.
+ *
+ * Every endpoint is mounted under the global `/api` prefix (configured via
+ * VITE_API_URL) and returns the standard response envelope
+ * `{ success, statusCode, message, data, timestamp }`, so we `unwrap` the
+ * `data` field before returning.
+ */
 export const authApi = {
-  /** Email must be unique (PDF validation rule) */
-  async checkEmailExists(email: string): Promise<boolean> {
-    const { data } = await api.get<User[]>("/users", {
-      params: { email: email.toLowerCase() },
-    });
-    return data.length > 0;
-  },
-
-  async registerCustomer(payload: RegisterPayload): Promise<AuthUser> {
-    const exists = await this.checkEmailExists(payload.email);
-    if (exists) {
-      throw new Error("Email already registered. Please login instead.");
-    }
-
-    const { data: user } = await api.post<User>("/users", {
+  // ───── Registration (customer) ─────
+  // Sends a 6-digit OTP to the email. No account is created until verify-otp.
+  async register(payload: RegisterPayload): Promise<void> {
+    await api.post("/auth/register", {
       email: payload.email.toLowerCase(),
-      password: payload.password,
-      roleId: 1,
-      createdAt: new Date().toISOString(),
-    });
-
-    const { data: customer } = await api.post<Customer>("/customers", {
-      userId: user.id,
+      purpose: "REGISTRATION",
       firstName: payload.firstName,
       lastName: payload.lastName,
-      createdAt: new Date().toISOString(),
+      password: payload.password,
     });
-
-    // create an empty cart for the new customer
-    await api.post("/carts", {
-      customerId: customer.id,
-      createdAt: new Date().toISOString(),
-    });
-
-    return {
-      userId: user.id,
-      email: user.email,
-      role: "CUSTOMER",
-      name: `${customer.firstName} ${customer.lastName}`,
-      customerId: customer.id,
-    };
   },
 
-  /** Update a customer's name. Returns the new full name. */
+  // ───── Registration (seller) ─────
+  // Sends OTP; the seller account is created PENDING_APPROVAL after verify-otp.
+  async registerSeller(payload: RegisterSellerPayload): Promise<void> {
+    await api.post("/auth/register-seller", {
+      businessName: payload.businessName,
+      contactPerson: payload.contactPerson,
+      email: payload.email.toLowerCase(),
+      mobile: payload.mobile,
+      password: payload.password,
+    });
+  },
+
+  // ───── Verify OTP ─────
+  // For REGISTRATION the backend creates the user and returns tokens + user.
+  // For PASSWORD_RESET it returns null (the reset itself happens separately).
+  async verifyOtp(payload: VerifyOtpPayload): Promise<AuthResult | null> {
+    const { data } = await api.post<ApiEnvelope<AuthResult | null>>(
+      "/auth/verify-otp",
+      {
+        email: payload.email.toLowerCase(),
+        purpose: payload.purpose,
+        otp: payload.otp,
+      }
+    );
+    return unwrap(data);
+  },
+
+  // ───── Resend OTP ─────
+  // Backend enforces a 60-second cooldown and returns 409 if called too soon.
+  async resendOtp(payload: ResendOtpPayload): Promise<void> {
+    await api.post("/auth/resend-otp", {
+      email: payload.email.toLowerCase(),
+      purpose: payload.purpose,
+    });
+  },
+
+  // ───── Login ─────
+  async login(payload: LoginPayload): Promise<AuthResult> {
+    const { data } = await api.post<ApiEnvelope<AuthResult>>("/auth/login", {
+      email: payload.email.toLowerCase(),
+      password: payload.password,
+    });
+    return unwrap(data);
+  },
+
+  // ───── Logout (revokes the refresh token server-side) ─────
+  async logout(): Promise<void> {
+    await api.post("/auth/logout");
+  },
+
+  // ───── Current identity ─────
+  async me(): Promise<AuthResult["user"]> {
+    const { data } = await api.get<ApiEnvelope<AuthResult["user"]>>("/auth/me");
+    return unwrap(data);
+  },
+
+  // ───── Password recovery ─────
+  // Always succeeds (no email enumeration); sends a PASSWORD_RESET OTP.
+  async forgotPassword(email: string): Promise<void> {
+    await api.post("/auth/forgot-password", { email: email.toLowerCase() });
+  },
+
+  // Single-step reset: OTP + new password are submitted together.
+  async resetPassword(payload: ResetPasswordPayload): Promise<void> {
+    await api.post("/auth/reset-password", {
+      email: payload.email.toLowerCase(),
+      otp: payload.otp,
+      newPassword: payload.newPassword,
+    });
+  },
+
+  // ───── Change password (authenticated) ─────
+  // Backend revokes all sessions afterwards, so the UI must log out.
+  async changePassword(payload: ChangePasswordPayload): Promise<void> {
+    await api.patch("/auth/change-password", {
+      currentPassword: payload.currentPassword,
+      newPassword: payload.newPassword,
+    });
+  },
+
+  // ───── Profile editing (legacy mock json-server) ─────
+  // NOTE: These still target the legacy mock API and are used by the Profile
+  // "Settings" tab. They are intentionally left untouched as part of the
+  // auth-focused migration (Path 1) and will move to the real backend when the
+  // profile/customer/seller modules are migrated.
   async updateCustomerProfile(
-    customerId: number,
+    customerId: string | number,
     changes: { firstName: string; lastName: string }
   ): Promise<string> {
-    const { data } = await api.patch<Customer>(`/customers/${customerId}`, {
+    const { data } = await mockApi.patch<Customer>(`/customers/${customerId}`, {
       firstName: changes.firstName,
       lastName: changes.lastName,
     });
     return `${data.firstName} ${data.lastName}`;
   },
 
-  /** Update a seller's profile. Returns the (new) display name = businessName. */
   async updateSellerProfile(
-    sellerId: number,
+    sellerId: string | number,
     changes: { businessName: string; contactPerson: string; mobile: string }
   ): Promise<string> {
-    const { data } = await api.patch<Seller>(`/sellers/${sellerId}`, {
+    const { data } = await mockApi.patch<Seller>(`/sellers/${sellerId}`, {
       businessName: changes.businessName,
       contactPerson: changes.contactPerson,
       mobile: changes.mobile,
     });
     return data.businessName;
-  },
-
-  async login(payload: LoginPayload): Promise<AuthUser> {
-    const { data: users } = await api.get<User[]>("/users", {
-      params: { email: payload.email.toLowerCase() },
-    });
-
-    const user = users[0];
-    if (!user || user.password !== payload.password) {
-      throw new Error("Invalid email or password.");
-    }
-
-    const role = ROLE_MAP[user.roleId];
-    const authUser: AuthUser = {
-      userId: user.id,
-      email: user.email,
-      role,
-      name: user.email,
-    };
-
-    if (role === "CUSTOMER") {
-      const { data: customers } = await api.get<Customer[]>("/customers", {
-        params: { userId: user.id },
-      });
-      const c = customers[0];
-      if (c) {
-        authUser.name = `${c.firstName} ${c.lastName}`;
-        authUser.customerId = c.id;
-      }
-    }
-
-    if (role === "SELLER") {
-      const { data: sellers } = await api.get<Seller[]>("/sellers", {
-        params: { userId: user.id },
-      });
-      const s = sellers[0];
-      if (s) {
-        authUser.name = s.businessName;
-        authUser.sellerId = s.id;
-        authUser.sellerStatus = s.status;
-      }
-    }
-
-    if (role === "ADMIN") {
-      authUser.name = "Marketplace Admin";
-    }
-
-    return authUser;
   },
 };

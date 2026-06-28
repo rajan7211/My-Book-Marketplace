@@ -8,6 +8,7 @@ import { AuthLayout } from "./AuthLayout";
 import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
 import { authApi, type LoginPayload } from "@/api/auth.api";
+import { getApiErrorMessage } from "@/lib/api-helpers";
 import { useAuthStore } from "@/store/auth.store";
 
 
@@ -26,7 +27,8 @@ export default function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
-    onSuccess: (user) => {
+    onSuccess: (result) => {
+      const user = result.user;
       // Edge case: rejected seller cannot access seller features
       if (user.role === "SELLER" && user.sellerStatus === "REJECTED") {
         toast.error(
@@ -34,7 +36,10 @@ export default function LoginPage() {
         );
         return;
       }
-      login(user);
+      login(user, {
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
       toast.success(`Welcome back, ${user.name}!`);
 
       if (user.role === "ADMIN") navigate("/admin");
@@ -49,7 +54,7 @@ export default function LoginPage() {
         navigate("/", { replace: true });
       }
     },
-    onError: (err: Error) => toast.error(err.message),
+    onError: (err) => toast.error(getApiErrorMessage(err)),
   });
 
   return (
@@ -89,15 +94,12 @@ export default function LoginPage() {
                 />
                 Remember me
               </label>
-              <button
-                type="button"
-                onClick={() =>
-                  toast.info("Password reset is simulated in this demo.")
-                }
+              <Link
+                to="/forgot-password"
                 className="font-medium text-gray-700 underline hover:text-brand-dark"
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             <Button

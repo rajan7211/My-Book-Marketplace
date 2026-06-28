@@ -73,17 +73,17 @@ export default function AdminDashboardPage() {
 
   const handleLoginAs = (
     kind: "seller" | "customer",
-    target: { id: number; userId: number; email?: string; businessName?: string; firstName?: string; lastName?: string }
+    target: { id: string | number; userId: string | number; email?: string; businessName?: string; firstName?: string; lastName?: string }
   ) => {
     // fixed 
     // Create a proper AuthUser object for impersonation
     const impersonatedUser: AuthUser = {
-      userId: target.userId ?? target.id,
+      userId: String(target.userId ?? target.id),
       email: kind === "seller" ? (target.email ?? "") : `user${target.id}@bookhub.com`,
       name: kind === "seller" ? (target.businessName ?? "") : `${target.firstName} ${target.lastName}`,
       role: kind === "seller" ? "SELLER" : "CUSTOMER",
-      sellerId: kind === "seller" ? target.id : undefined,
-      customerId: kind === "customer" ? target.id : undefined,
+      sellerId: kind === "seller" ? String(target.id) : undefined,
+      customerId: kind === "customer" ? String(target.id) : undefined,
     };
 
     impersonate(impersonatedUser);

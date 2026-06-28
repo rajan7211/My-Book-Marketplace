@@ -31,13 +31,17 @@ export interface Customer {
 }
 
 export interface Seller {
-  id: number;
-  userId: number;
+  // Real backend uses a Mongo string `_id` (normalized into `id`); the mock
+  // used numeric ids — hence `string | number`.
+  id: string | number;
+  _id?: string;
+  userId: string | number;
   businessName: string;
   contactPerson: string;
   email: string;
   mobile: string;
   status: SellerStatus;
+  rejectionReason?: string | null;
   createdAt: string;
 }
 
@@ -89,19 +93,70 @@ export interface CartItem {
   stock: number;
 }
 
+/**
+ * The authenticated identity returned by the NestJS backend.
+ * NOTE: the real backend uses MongoDB string ids (e.g. "665f1a..."),
+ * unlike the legacy mock json-server which used numeric ids.
+ */
 export interface AuthUser {
-  userId: number;
+  userId: string;
   email: string;
   role: RoleName;
   name: string;
-  customerId?: number;
-  sellerId?: number;
+  customerId?: string;
+  sellerId?: string;
   sellerStatus?: SellerStatus;
 }
 
 export interface PaginatedResult<T> {
   data: T[];
   total: number;
+}
+
+// ───────────────────────── Auth / OTP contracts ─────────────────────────
+
+/** Purpose discriminator the backend's OTP endpoints expect. */
+export type OtpPurpose = "REGISTRATION" | "PASSWORD_RESET";
+
+/** A pair of JWTs issued by the backend on login / register-verify. */
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+/** Shape of `data.user` returned by login / verify-otp (REGISTRATION). */
+export interface BackendAuthUser {
+  userId: string;
+  email: string;
+  role: RoleName;
+  name: string;
+  customerId?: string;
+  sellerId?: string;
+  sellerStatus?: SellerStatus;
+}
+
+/** Full auth payload: tokens + user. */
+export interface AuthResult extends AuthTokens {
+  user: BackendAuthUser;
+}
+
+/** Standard success envelope wrapping every backend response. */
+export interface ApiEnvelope<T> {
+  success: true;
+  statusCode: number;
+  message: string;
+  data: T;
+  timestamp: string;
+}
+
+/** Standard error envelope the backend returns on failures. */
+export interface ApiErrorEnvelope {
+  success: false;
+  statusCode: number;
+  message: string;
+  details?: unknown;
+  path: string;
+  timestamp: string;
 }
 
 

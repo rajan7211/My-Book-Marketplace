@@ -20,7 +20,7 @@ function InventoryRow({
   index,
 }: {
   listing: ListingWithBook;
-  sellerId: number;
+  sellerId: string | number;
   index: number;
 }) {
   const queryClient = useQueryClient();

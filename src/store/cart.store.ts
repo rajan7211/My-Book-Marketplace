@@ -4,9 +4,9 @@ import type { CartItem } from "@/types";
 
 interface CartState {
   items: CartItem[];
-  activeUserId: number | null;
-  userCarts: Record<number, CartItem[]>;
-  switchUser: (userId: number | null) => void;
+  activeUserId: string | number | null;
+  userCarts: Record<string, CartItem[]>;
+  switchUser: (userId: string | number | null) => void;
   addItem: (item: CartItem) => { ok: boolean; message: string };
   updateQuantity: (listingId: number, quantity: number) => void;
   removeItem: (listingId: number) => void;

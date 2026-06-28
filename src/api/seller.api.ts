@@ -1,4 +1,6 @@
-import { api } from "./client";
+// Uses the mock json-server (port 4000) until the seller module is migrated to
+// the real backend. Imported as `api` so the rest of this file is unchanged.
+import { mockApi as api } from "./mock-client";
 import type { Book, Listing, OrderStatus, Seller } from "@/types";
 import type { OrderRecord, OrderItemRecord } from "./orders.api";
 
@@ -7,7 +9,7 @@ export interface ListingWithBook extends Listing {
 }
 
 export interface CreateListingPayload {
-  sellerId: number;
+  sellerId: string | number;
   bookId: number;
   price: number;
   mrp: number;
@@ -34,13 +36,13 @@ export const SELLER_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
 
 export const sellerApi = {
   /** Fetch a single seller's profile details */
-  async getSeller(sellerId: number): Promise<Seller> {
+  async getSeller(sellerId: string | number): Promise<Seller> {
     const { data } = await api.get<Seller>(`/sellers/${sellerId}`);
     return data;
   },
 
   /** All listings owned by this seller (Rule 3: inventory belongs to seller) */
-  async getMyListings(sellerId: number): Promise<ListingWithBook[]> {
+  async getMyListings(sellerId: string | number): Promise<ListingWithBook[]> {
     const [{ data: listings }, { data: books }] = await Promise.all([
       api.get<Listing[]>("/listings", {
         params: { sellerId, _sort: "createdAt", _order: "desc" },
@@ -116,7 +118,7 @@ export const sellerApi = {
 
   async updateListing(
     listingId: number,
-    sellerId: number,
+    sellerId: string | number,
     changes: Partial<Pick<Listing, "price" | "mrp" | "stock" | "status">>
   ): Promise<Listing> {
     const { data: listing } = await api.get<Listing>(`/listings/${listingId}`);
@@ -137,7 +139,7 @@ export const sellerApi = {
   },
 
   /** Orders that belong to this seller, with their items */
-  async getMyOrders(sellerId: number) {
+  async getMyOrders(sellerId: string | number) {
     const { data: orders } = await api.get<OrderRecord[]>("/orders", {
       params: { sellerId, _sort: "createdAt", _order: "desc" },
     });
@@ -151,7 +153,7 @@ export const sellerApi = {
 
   async updateOrderStatus(
     orderId: number,
-    sellerId: number,
+    sellerId: string | number,
     next: OrderStatus
   ): Promise<OrderRecord> {
     const { data: order } = await api.get<OrderRecord>(`/orders/${orderId}`);

@@ -112,18 +112,18 @@ const fadeVariants: Variants = {
 
 export default function SellerDashboardPage() {
   const { user } = useAuthStore();
-  const sellerId = user?.sellerId ?? 0;
+  const sellerId = user?.sellerId;
 
   const { data: listings, isLoading: loadingListings } = useQuery({
     queryKey: ["seller", "listings", sellerId],
-    queryFn: () => sellerApi.getMyListings(sellerId),
-    enabled: sellerId > 0,
+    queryFn: () => sellerApi.getMyListings(sellerId!),
+    enabled: !!sellerId,
   });
 
   const { data: orders, isLoading: loadingOrders } = useQuery({
     queryKey: ["seller", "orders", sellerId],
-    queryFn: () => sellerApi.getMyOrders(sellerId),
-    enabled: sellerId > 0,
+    queryFn: () => sellerApi.getMyOrders(sellerId!),
+    enabled: !!sellerId,
   });
 
   const isLoading = loadingListings || loadingOrders;
