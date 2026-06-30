@@ -175,7 +175,6 @@ export default function SellerListingsPage() {
 
   return (
     <SellerLayout>
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -204,7 +203,6 @@ export default function SellerListingsPage() {
         </div>
       </motion.div>
 
-      {/* Listings Grid */}
       <AnimatePresence mode="wait">
         {isLoading ? (
           <motion.div
@@ -212,7 +210,7 @@ export default function SellerListingsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
           >
             {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} className="h-52 rounded-2xl" />
@@ -228,7 +226,7 @@ export default function SellerListingsPage() {
           >
             <FiPackage className="mx-auto mb-4 text-gray-300" size={48} />
             <p className="text-lg font-medium text-brand-dark">No listings yet</p>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-gray-500">
               Create your first listing to start selling!
             </p>
             <Button
@@ -244,7 +242,7 @@ export default function SellerListingsPage() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
           >
             {listings.map((listing) => (
               <motion.div
@@ -261,23 +259,22 @@ export default function SellerListingsPage() {
                     alt={listing.book?.title}
                     className="h-20 w-14 shrink-0 rounded-lg object-cover ring-1 ring-gray-100"
                   />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base leading-tight line-clamp-2">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="line-clamp-2 text-base font-semibold leading-tight">
                       {listing.book?.title}
                     </h3>
-                    <p className="text-sm text-gray-500 mt-0.5">{listing.book?.author}</p>
+                    <p className="mt-0.5 text-sm text-gray-500">{listing.book?.author}</p>
 
-                    <div className="mt-3 flex items-center gap-2 text-xs text-gray-400 font-mono">
+                    <div className="mt-3 flex items-center gap-2 font-mono text-xs text-gray-400">
                       {listing.book?.isbn}
                     </div>
                   </div>
                 </div>
 
-                {/* Price & Stock Info */}
                 <div className="mt-5 grid grid-cols-3 gap-4 text-sm">
                   <div>
                     <p className="text-[10px] uppercase tracking-widest text-gray-400">Price</p>
-                    <p className="font-semibold text-lg">{formatPrice(listing.price)}</p>
+                    <p className="text-lg font-semibold">{formatPrice(listing.price)}</p>
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-widest text-gray-400">MRP</p>
@@ -302,8 +299,7 @@ export default function SellerListingsPage() {
                   </div>
                 </div>
 
-                {/* Status */}
-                <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                <div className="mt-4 flex items-center justify-between border-t pt-4">
                   <Badge
                     variant={listing.status === "ACTIVE" ? "success" : "outline"}
                     className="transition-transform group-hover:scale-105"
@@ -317,7 +313,6 @@ export default function SellerListingsPage() {
         )}
       </AnimatePresence>
 
-      {/* Modals */}
       <AnimatePresence>
         {modal === "listing" && (
           <Modal title="Create Listing" onClose={() => setModal("closed")}>
@@ -483,6 +478,7 @@ export default function SellerListingsPage() {
                       </motion.p>
                     )}
                   </div>
+
                   <div>
                     <label className="mb-1.5 block text-sm font-medium">Cover Image</label>
                     <input
@@ -510,6 +506,7 @@ export default function SellerListingsPage() {
                         <FiAlertCircle size={12} /> {errors.image as string}
                       </motion.p>
                     )}
+
                     {imagePreviewUrl && (
                       <div className="mt-3 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3">
                         <img
@@ -522,12 +519,15 @@ export default function SellerListingsPage() {
                             {selectedImage?.name}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {selectedImage ? `${(selectedImage.size / 1024 / 1024).toFixed(2)} MB` : ""}
+                            {selectedImage
+                              ? `${(selectedImage.size / 1024 / 1024).toFixed(2)} MB`
+                              : ""}
                           </p>
                         </div>
                       </div>
                     )}
                   </div>
+
                   <Button
                     type="submit"
                     className="h-11 w-full font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
@@ -586,7 +586,4 @@ function Modal({
     </motion.div>
   );
 }
-
-
-
 

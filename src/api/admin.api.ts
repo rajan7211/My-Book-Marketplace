@@ -1,5 +1,3 @@
-// Seller approval is migrated to the REAL NestJS backend (admin endpoints).
-// Books / customers / orders still use the mock json-server for now.
 import { mockApi as api } from "./mock-client";
 import { api as realApi } from "./client";
 import { unwrap } from "@/lib/api-helpers";
@@ -8,10 +6,19 @@ import type { OrderRecord } from "./orders.api";
 
 /**
  * Backend seller documents use Mongo `_id` (string). The frontend reads `id`,
- * so we normalize every seller.
+ * so we normalize every seller into the shape the UI expects.
  */
 function normalizeSeller(raw: Seller & { _id?: string }): Seller {
   return { ...raw, id: raw._id ?? raw.id };
+}
+
+function normalizeBook(raw: Partial<Book> & { _id?: string; coverImage?: string; createdAt?: string }) {
+  return {
+    ...raw,
+    id: raw._id ?? raw.id,
+    coverImage: raw.coverImage ?? "",
+    createdAt: raw.createdAt ?? new Date().toISOString(),
+  } as Book;
 }
 
 export interface MarketplaceStats {
@@ -28,7 +35,6 @@ export interface CustomerWithEmail extends Customer {
 }
 
 export const adminApi = {
-  /** Admin dashboard: Total Sellers / Customers / Books / Orders (PDF) */
   async getStats(): Promise<MarketplaceStats> {
     // Sellers come from the REAL backend; the rest from the mock for now.
     const [sellers, customers, books, orders] = await Promise.all([
@@ -57,13 +63,6 @@ export const adminApi = {
     return unwrap(data).map(normalizeSeller);
   },
 
-  /**
-   * Approve / Reject a seller via the real backend's dedicated endpoints:
-   *   PATCH /admin/sellers/:id/approve
-   *   PATCH /admin/sellers/:id/reject  { reason? }
-   * Signature kept identical so AdminSellersPage doesn't change.
-   */
-
   async updateSellerStatus(
     sellerId: string | number,
     status: "APPROVED" | "REJECTED",
@@ -81,20 +80,38 @@ export const adminApi = {
   },
 
   async getBooks(): Promise<Book[]> {
-    const { data } = await api.get<Book[]>("/books", {
-      params: { _sort: "createdAt", _order: "desc" },
+    const { data } = await realApi.get<
+      ApiEnvelope<{
+        data: (Book & { _id?: string })[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      }>
+    >("/admin/books", {
+      params: { page: 1, limit: 100 },
     });
-    return data;
-  },
 
+    const payload = unwrap(data);
+    return payload.data.map(normalizeBook);
+  },
 
   /** Approve / Reject a book */
   async updateBookStatus(
-    bookId: number,
+    bookId: string | number,
     status: "APPROVED" | "REJECTED"
   ): Promise<Book> {
-    const { data } = await api.patch<Book>(`/books/${bookId}`, { status });
-    return data;
+    const path =
+      status === "APPROVED"
+        ? `/admin/books/${bookId}/approve`
+        : `/admin/books/${bookId}/reject`;
+
+    const { data } = await realApi.patch<ApiEnvelope<Book & { _id?: string }>>(
+      path,
+      status === "REJECTED" ? { reason: "Rejected by admin" } : {}
+    );
+
+    return normalizeBook(unwrap(data));
   },
 
   /** Customers joined with their user email */
@@ -118,9 +135,5 @@ export const adminApi = {
     return data;
   },
 };
-
-
-
-
 
 

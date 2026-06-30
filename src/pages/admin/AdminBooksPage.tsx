@@ -52,7 +52,7 @@ export default function AdminBooksPage() {
   }, [books]);
 
   const update = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: "APPROVED" | "REJECTED" }) =>
+    mutationFn: ({ id, status }: { id: string | number; status: "APPROVED" | "REJECTED" }) =>
       adminApi.updateBookStatus(id, status),
     onSuccess: (b) => {
       qc.invalidateQueries({ queryKey: ["admin"] });

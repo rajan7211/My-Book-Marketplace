@@ -32,8 +32,8 @@ export interface CreateBookPayload {
 /** Allowed order status transitions for a seller */
 export const SELLER_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   CREATED: ["ACCEPTED", "CANCELLED"],
-  ACCEPTED: ["SHIPPED", "CANCELLED"], // may cancel before shipment
-  SHIPPED: ["DELIVERED"],             // cannot cancel after shipment
+  ACCEPTED: ["SHIPPED", "CANCELLED"],
+  SHIPPED: ["DELIVERED"],
   DELIVERED: [],
   CANCELLED: [],
 };
@@ -133,15 +133,12 @@ export const sellerApi = {
       throw new Error("Forbidden: you cannot modify another seller's listing.");
     }
     if (changes.stock !== undefined && changes.stock < 0) {
-      throw new Error("Stock cannot be negative."); // Rule 5
+      throw new Error("Stock cannot be negative.");
     }
     if (changes.price !== undefined && changes.price <= 0) {
       throw new Error("Price must be greater than zero.");
     }
-    const { data } = await api.patch<Listing>(
-      `/listings/${listingId}`,
-      changes
-    );
+    const { data } = await api.patch<Listing>(`/listings/${listingId}`, changes);
     return data;
   },
 
@@ -156,7 +153,6 @@ export const sellerApi = {
       items: allItems.filter((i) => i.orderId === o.id),
     }));
   },
-
 
   async updateOrderStatus(
     orderId: number,
@@ -195,8 +191,5 @@ export const sellerApi = {
     return data;
   },
 };
-
-
-
 
 
