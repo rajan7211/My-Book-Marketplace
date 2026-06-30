@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -45,6 +45,16 @@ const newBookSchema = Yup.object({
     .trim()
     .min(20, "Description must be at least 20 characters")
     .required("Description is required"),
+  image: Yup.mixed<File>()
+    .required("Cover image is required")
+    .test("fileType", "Please upload a JPG, PNG, WEBP, or GIF image", (value) => {
+      if (!(value instanceof File)) return false;
+      return ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(value.type);
+    })
+    .test("fileSize", "Image must be 5MB or smaller", (value) => {
+      if (!(value instanceof File)) return false;
+      return value.size <= 5 * 1024 * 1024;
+    }),
 });
 
 const CATEGORIES = ["Fictions", "Biography", "History", "Graphic Design", "Self Help"];
@@ -113,6 +123,7 @@ export default function SellerListingsPage() {
   const queryClient = useQueryClient();
 
   const [modal, setModal] = useState<"closed" | "listing" | "book">("closed");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["seller", "listings", sellerId],
@@ -144,6 +155,7 @@ export default function SellerListingsPage() {
     mutationFn: sellerApi.createBook,
     onSuccess: (book) => {
       invalidate();
+      setSelectedImage(null);
       toast.success(
         `"${book.title}" submitted. Status: Pending Approval — you can create a listing after the admin approves it.`
       );
@@ -151,6 +163,11 @@ export default function SellerListingsPage() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const imagePreviewUrl = useMemo(
+    () => (selectedImage ? URL.createObjectURL(selectedImage) : null),
+    [selectedImage]
+  );
 
   // Books this seller has NOT listed yet (avoid duplicate listings)
   const listedBookIds = new Set(listings?.map((l) => l.bookId));
@@ -387,9 +404,25 @@ export default function SellerListingsPage() {
                 publisher: "",
                 category: "",
                 description: "",
+                image: null as File | null,
               }}
               validationSchema={newBookSchema}
-              onSubmit={(v) => createBook.mutate(v)}
+              onSubmit={(v) => {
+                if (!v.image) {
+                  toast.error("Please select a cover image.");
+                  return;
+                }
+
+                createBook.mutate({
+                  isbn: v.isbn,
+                  title: v.title,
+                  author: v.author,
+                  publisher: v.publisher,
+                  category: v.category,
+                  description: v.description,
+                  image: v.image,
+                });
+              }}
             >
               {({ values, setFieldValue, errors, touched, handleChange, handleBlur }) => (
                 <Form className="space-y-4">
@@ -448,6 +481,51 @@ export default function SellerListingsPage() {
                       >
                         <FiAlertCircle size={12} /> {errors.description}
                       </motion.p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium">Cover Image</label>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      onChange={(e) => {
+                        const file = e.currentTarget.files?.[0] ?? null;
+                        setFieldValue("image", file);
+                        setSelectedImage(file);
+                      }}
+                      className={cn(
+                        "block w-full rounded-lg border bg-white px-3 py-2.5 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-brand-yellow/15 file:px-3 file:py-2 file:font-medium file:text-brand-dark",
+                        touched.image && errors.image ? "border-red-400" : "border-gray-200"
+                      )}
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      Upload JPG, PNG, WEBP, or GIF. Maximum size: 5MB.
+                    </p>
+                    {touched.image && errors.image && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-1 flex items-center gap-1 text-xs font-medium text-red-500"
+                      >
+                        <FiAlertCircle size={12} /> {errors.image as string}
+                      </motion.p>
+                    )}
+                    {imagePreviewUrl && (
+                      <div className="mt-3 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3">
+                        <img
+                          src={imagePreviewUrl}
+                          alt="Selected cover preview"
+                          className="h-20 w-14 rounded-md object-cover ring-1 ring-gray-200"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium text-brand-dark">
+                            {selectedImage?.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {selectedImage ? `${(selectedImage.size / 1024 / 1024).toFixed(2)} MB` : ""}
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
                   <Button

@@ -8,7 +8,7 @@ import type { OrderRecord } from "./orders.api";
 
 /**
  * Backend seller documents use Mongo `_id` (string). The frontend reads `id`,
- * so we normalize every seller into the shape the UI expects.
+ * so we normalize every seller.
  */
 function normalizeSeller(raw: Seller & { _id?: string }): Seller {
   return { ...raw, id: raw._id ?? raw.id };
@@ -63,6 +63,7 @@ export const adminApi = {
    *   PATCH /admin/sellers/:id/reject  { reason? }
    * Signature kept identical so AdminSellersPage doesn't change.
    */
+
   async updateSellerStatus(
     sellerId: string | number,
     status: "APPROVED" | "REJECTED",
@@ -85,6 +86,7 @@ export const adminApi = {
     });
     return data;
   },
+
 
   /** Approve / Reject a book */
   async updateBookStatus(
@@ -116,5 +118,9 @@ export const adminApi = {
     return data;
   },
 };
+
+
+
+
 
 

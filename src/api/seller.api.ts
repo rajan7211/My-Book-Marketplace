@@ -1,7 +1,9 @@
-// Uses the mock json-server (port 4000) until the seller module is migrated to
-// the real backend. Imported as `api` so the rest of this file is unchanged.
+// Most seller features still use the mock json-server (port 4000) until the
+// seller module is fully migrated to the real backend.
 import { mockApi as api } from "./mock-client";
-import type { Book, Listing, OrderStatus, Seller } from "@/types";
+import { api as realApi } from "./client";
+import { unwrap } from "@/lib/api-helpers";
+import type { ApiEnvelope, Book, Listing, OrderStatus, Seller } from "@/types";
 import type { OrderRecord, OrderItemRecord } from "./orders.api";
 
 export interface ListingWithBook extends Listing {
@@ -23,6 +25,8 @@ export interface CreateBookPayload {
   publisher: string;
   description: string;
   category: string;
+  image: File;
+  tags?: string[];
 }
 
 /** Allowed order status transitions for a seller */
@@ -63,27 +67,30 @@ export const sellerApi = {
 
   /**
    * Scenario B: seller submits a NEW book.
-   * Rule 1 / Edge case 1: duplicate ISBN must be rejected.
-   * Book starts as PENDING_APPROVAL — admin must approve before listing.
+   * Only this action is now connected to the real NestJS backend so the seller
+   * can upload a real cover image via multipart/form-data.
    */
   async createBook(payload: CreateBookPayload): Promise<Book> {
-    const { data: existing } = await api.get<Book[]>("/books", {
-      params: { isbn: payload.isbn },
-    });
-    if (existing.length > 0) {
-      throw new Error(
-        `A book with ISBN ${payload.isbn} already exists ("${existing[0].title}"). Duplicate ISBN entries are not allowed — create a listing on the existing book instead.`
-      );
-    }
+    const formData = new FormData();
+    formData.append("image", payload.image);
+    formData.append("isbn", payload.isbn);
+    formData.append("title", payload.title);
+    formData.append("author", payload.author);
+    formData.append("publisher", payload.publisher);
+    formData.append("description", payload.description);
+    formData.append("category", payload.category);
 
-    const { data } = await api.post<Book>("/books", {
-      ...payload,
-      coverImage: "https://covers.openlibrary.org/b/isbn/9781501124020-L.jpg", // placeholder cover
-      status: "PENDING_APPROVAL",
-      tags: [],
-      createdAt: new Date().toISOString(),
+    payload.tags?.forEach((tag) => {
+      formData.append("tags", tag);
     });
-    return data;
+
+    const { data } = await realApi.post<ApiEnvelope<Book>>("/books", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return unwrap(data);
   },
 
   /**

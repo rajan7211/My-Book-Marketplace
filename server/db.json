@@ -1216,7 +1216,7 @@
       "sellerId": 1,
       "price": 1010,
       "mrp": 1150,
-      "stock": 17,
+      "stock": 16,
       "status": "ACTIVE",
       "createdAt": "2026-02-24T10:00:00.000Z"
     },
@@ -1579,6 +1579,16 @@
       "stock": 28,
       "status": "ACTIVE",
       "createdAt": "2026-06-25T04:06:00.709Z"
+    },
+    {
+      "sellerId": "6a422f8c83fb802e0426f4d5",
+      "bookId": 30,
+      "price": 999,
+      "mrp": 1199,
+      "stock": 30,
+      "status": "ACTIVE",
+      "createdAt": "2026-06-29T12:24:27.233Z",
+      "id": 60
     }
   ],
   "carts": [
@@ -1729,6 +1739,16 @@
       "status": "CREATED",
       "createdAt": "2026-06-28T17:03:27.142Z",
       "id": 13
+    },
+    {
+      "customerId": "6a425e9e83fb802e0426f545",
+      "sellerId": 1,
+      "sellerName": "BookHub Traders",
+      "shippingAddress": "Yash Sharma, 9845436272, 1324 , sector 80, mohali, punjab, 149004",
+      "totalAmount": 1010,
+      "status": "CREATED",
+      "createdAt": "2026-06-29T12:11:30.857Z",
+      "id": 14
     }
   ],
   "orderItems": [
@@ -1861,6 +1881,16 @@
       "price": 1008,
       "quantity": 1,
       "id": 13
+    },
+    {
+      "orderId": 14,
+      "listingId": 23,
+      "bookId": 20,
+      "title": "Palestine: The Story",
+      "coverImage": "https://covers.openlibrary.org/b/isbn/9781250787651-L.jpg",
+      "price": 1010,
+      "quantity": 1,
+      "id": 14
     }
   ]
 }
